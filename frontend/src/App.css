@@ -1,7 +1,7 @@
 .App {
   font-family: Arial, sans-serif;
   text-align: center;
-  background-color: #f4f4f4;
+  background-color: #020611;
 }
 
 .navbar {
@@ -27,7 +27,7 @@
 
 .hero {
   padding: 5rem 2rem;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: linear-gradient(to right, #570fa4, #2575fc);
   color: white;
 }
 
@@ -36,7 +36,7 @@
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
   background: white;
-  color: #2575fc;
+  color: #27395a;
   text-decoration: none;
   font-weight: bold;
   border-radius: 5px;

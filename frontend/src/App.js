@@ -4,6 +4,7 @@ import Home from "./Home";
 import About from "./About";
 import Services from "./Services";
 import Contact from "./Contact";
+import ThreeScene from "./components/ThreeScene";  // Import the 3D page
 import "./App.css";
 
 function App() {
@@ -18,6 +19,8 @@ function App() {
             <li><Link to="/about">About</Link></li>
             <li><Link to="/services">Services</Link></li>
             <li><Link to="/contact">Contact</Link></li>
+            {/* Optional: Add direct link to Metaverse if you want */}
+            {/* <li><Link to="/metaverse">Metaverse</Link></li> */}
           </ul>
         </nav>
 
@@ -27,6 +30,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/metaverse" element={<ThreeScene />} />   {/* New Route for Metaverse */}
         </Routes>
 
         {/* Footer */}
@@ -39,5 +43,4 @@ function App() {
 }
 
 export default App;
-
 
