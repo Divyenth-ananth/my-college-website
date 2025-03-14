@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Ecology from "./pages/Ecology";
 import Awards from "./pages/Awards";
+import Metaverse from "./pages/metaverse";
 import "./App.css";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <li><Link to="/about">About</Link></li>
             <li><Link to="/ecology">Ecology</Link></li>
             <li><Link to="/awards">Awards</Link></li>
+            <li><Link to="/metaverse">Metaverse</Link></li> 
           </ul>
           <button 
             className="theme-toggle"
@@ -37,6 +39,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/ecology" element={<Ecology />} />
           <Route path="/awards" element={<Awards />} />
+          <Route path="/metaverse" element={<Metaverse />} />
         </Routes>
 
         <footer className="footer">
