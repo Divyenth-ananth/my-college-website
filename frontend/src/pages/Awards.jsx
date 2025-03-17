@@ -1,33 +1,11 @@
+// Awards.js
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../styles/Awards.css';
+import awards from '../data/awards'; // Adjust the path based on where you store awards.js
 
 const Awards = () => {
   const [selectedAward, setSelectedAward] = useState(null);
-  
-  const awards = [
-    { 
-      id: 1,
-      year: 2025, 
-      title: 'Hottest Campus Award', 
-      issuer: 'Students',
-      description: 'Temperature rising like it\'s summer even in February'
-    },
-    { 
-      id: 2,
-      year: 2023, 
-      title: 'Best buildings award', 
-      issuer: 'Students',
-      description: 'No budget to paint buildings and calling it an innovation'
-    },
-    { 
-      id: 3,
-      year: 2024, 
-      title: 'Best Water Conservation Award', 
-      issuer: 'IDK',
-      description: 'Award for conservation of water achieved by not giving water to students'
-    }
-  ];
 
   return (
     <div className="awards-container">

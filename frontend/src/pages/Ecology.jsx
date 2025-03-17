@@ -2,14 +2,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import '../styles/Ecology.css';
+import species from '../data/species'; // Adjust the path if needed
 
 const Ecology = () => {
-  const species = [
-    { name: 'Peacockkk', habitat: 'Forest Areas', status: 'Hidden' },
-    { name: 'Neem Tree', habitat: 'South Campus', status: 'A big one' },
-    { name: 'Dogs', habitat: 'Everywhere', status: 'Too many' }
-  ];
-
   return (
     <div className="ecology-container">
       <h2>Campus Biodiversity</h2>

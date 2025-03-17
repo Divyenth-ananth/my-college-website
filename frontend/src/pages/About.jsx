@@ -2,6 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import '../styles/About.css';
+import milestones from '../data/milestones'; // Adjust the path based on where you store milestones.js
 
 const About = () => {
   return (
@@ -20,17 +21,17 @@ const About = () => {
         </p>
         
         <div className="timeline">
-          {[2015, 2020, 2023].map((year, index) => (
+          {milestones.map((milestone, index) => (
             <motion.div 
-              key={year}
+              key={milestone.year}
               className="timeline-item"
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.2 }}
             >
               <div className="timeline-marker" />
-              <h3>{year}</h3>
-              <p>Milestone description goes here...</p>
+              <h3>{milestone.year}</h3>
+              <p>{milestone.description}</p>
             </motion.div>
           ))}
         </div>
