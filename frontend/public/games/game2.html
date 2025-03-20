@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trash Thrower - Waste Sorting Challenge</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #d4e8d4;
+            font-family: Arial, sans-serif;
+        }
+        #gameContainer {
+            position: relative;
+            margin-top: 20px;
+        }
+        #gameCanvas {
+            border: 2px solid #333;
+            background-color: #87ceeb;
+            border-radius: 10px;
+        }
+        #scoreBoard {
+            font-size: 28px;
+            margin: 10px;
+            color: #333;
+            text-shadow: 1px 1px 2px #fff;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 15px;
+            border-radius: 5px;
+        }
+        #message {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            display: none;
+        }
+        #powerMeter {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            width: 200px;
+            height: 30px;
+            background: #333;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        #powerFill {
+            height: 100%;
+            background: linear-gradient(to right, #ff4444, #ff9999);
+            border-radius: 3px;
+            transition: width 0.1s;
+        }
+        #howToPlayOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #howToPlayBox {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            text-align: center;
+            max-width: 500px;
+        }
+        #howToPlayBox h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        #howToPlayBox p {
+            margin: 10px 0;
+            color: #555;
+        }
+        #playButton {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #008000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #playButton:hover {
+            background-color: #006600;
+        }
+    </style>
+</head>
+<body>
+    <div id="scoreBoard">Score: 0 | Misses: 0 | Combo: 0x</div>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div id="message"></div>
+        <div id="powerMeter">
+            <div id="powerFill"></div>
+        </div>
+    </div>
+    <div id="howToPlayOverlay">
+        <div id="howToPlayBox">
+            <h2>How to Play</h2>
+            <p>Welcome to Trash Thrower! Sort waste into the correct bins to score points.</p>
+            <p><strong>Controls:</strong></p>
+            <p>- Use <strong>A</strong> and <strong>D</strong> keys to aim left or right (red line shows direction).</p>
+            <p>- Click and hold the <strong>mouse</strong> to charge power (green line shows trajectory), release to throw.</p>
+            <p><strong>Objective:</strong></p>
+            <p>- Throw trash into the correct bin: Recycling (blue), Compost (green), or Waste (gray).</p>
+            <p>- Earn points for correct throws, build combos, and avoid misses!</p>
+            <button id="playButton">Play</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreBoard = document.getElementById('scoreBoard');
+        const message = document.getElementById('message');
+        const powerFill = document.getElementById('powerFill');
+        const howToPlayOverlay = document.getElementById('howToPlayOverlay');
+        const playButton = document.getElementById('playButton');
+
+        // Game state
+        let score = 0;
+        let misses = 0;
+        let combo = 0;
+        let trash = null;
+        let power = 0;
+        let chargingPower = false;
+        let angle = 0; // Angle in radians, 0 = straight up, positive = right, negative = left
+        let directionLocked = false; // Flag to lock horizontal direction when charging starts
+
+        const bins = [
+            { x: 200, y: 450, width: 100, height: 150, type: 'recycling', color: '#0000ff', lidAngle: 0, targetLidAngle: 0 },
+            { x: 350, y: 450, width: 100, height: 150, type: 'compost', color: '#008000', lidAngle: 0, targetLidAngle: 0 },
+            { x: 500, y: 450, width: 100, height: 150, type: 'waste', color: '#808080', lidAngle: 0, targetLidAngle: 0 }
+        ];
+
+        const trashTypes = [
+            { name: 'plastic bottle', correctBin: 'recycling', size: 30, color: '#00b7eb', shape: 'bottle' },
+            { name: 'glass jar', correctBin: 'recycling', size: 35, color: '#aaaaaa', shape: 'jar' },
+            { name: 'aluminum can', correctBin: 'recycling', size: 25, color: '#cccccc', shape: 'can' },
+            { name: 'apple core', correctBin: 'compost', size: 20, color: '#8b4513', shape: 'organic' },
+            { name: 'banana peel', correctBin: 'compost', size: 30, color: '#ffff99', shape: 'peel' },
+            { name: 'coffee grounds', correctBin: 'compost', size: 25, color: '#4b2e2e', shape: 'grounds' },
+            { name: 'candy wrapper', correctBin: 'waste', size: 20, color: '#ff69b4', shape: 'wrapper' },
+            { name: 'used tissue', correctBin: 'waste', size: 15, color: '#f0f0f0', shape: 'tissue' },
+            { name: 'styrofoam cup', correctBin: 'waste', size: 30, color: '#ffffff', shape: 'cup' },
+            { name: 'golden trash', correctBin: 'recycling', size: 40, color: '#ffd700', shape: 'special', bonus: 5 }
+        ];
+
+        const gravity = 0.5;
+        const friction = 0.98;
+
+        class Trash {
+            constructor() {
+                const type = trashTypes[Math.floor(Math.random() * trashTypes.length)];
+                this.x = canvas.width / 2; // Start from center
+                this.y = canvas.height - 100;
+                this.vx = 0;
+                this.vy = 0;
+                this.type = type.name;
+                this.correctBin = type.correctBin;
+                this.size = type.size;
+                this.color = type.color;
+                this.shape = type.shape;
+                this.bonus = type.bonus || 0;
+                this.isThrown = false;
+                this.rotation = 0;
+                this.rotSpeed = 0;
+                this.fallingIntoBin = false;
+                this.opacity = 1;
+                this.shrink = 1;
+                this.countedAsMiss = false;
+            }
+
+            draw() {
+                if (this.opacity <= 0 || this.shrink <= 0) return;
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.scale(this.shrink, this.shrink);
+                ctx.globalAlpha = this.opacity;
+
+                ctx.fillStyle = this.color;
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 2;
+
+                switch(this.shape) {
+                    case 'bottle':
+                        ctx.beginPath();
+                        ctx.moveTo(-this.size * 0.3, -this.size);
+                        ctx.lineTo(this.size * 0.3, -this.size);
+                        ctx.lineTo(this.size * 0.4, this.size);
+                        ctx.lineTo(-this.size * 0.4, this.size);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+                        break;
+                    case 'can':
+                        ctx.fillRect(-this.size * 0.5, -this.size, this.size, this.size * 2);
+                        ctx.strokeRect(-this.size * 0.5, -this.size, this.size, this.size * 2);
+                        break;
+                    case 'organic':
+                    case 'grounds':
+                        ctx.beginPath();
+                        ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        break;
+                    case 'special':
+                        ctx.beginPath();
+                        ctx.moveTo(0, -this.size);
+                        ctx.lineTo(this.size * 0.87, this.size * 0.5);
+                        ctx.lineTo(-this.size * 0.87, this.size * 0.5);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+                        break;
+                    default:
+                        ctx.fillRect(-this.size * 0.6, -this.size * 0.6, this.size * 1.2, this.size * 1.2);
+                        ctx.strokeRect(-this.size * 0.6, -this.size * 0.6, this.size * 1.2, this.size * 1.2);
+                }
+
+                ctx.fillStyle = '#000';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(this.type, 0, 4);
+                ctx.restore();
+
+                if (!this.isThrown && !this.fallingIntoBin) {
+                    this.drawTrajectory();
+                }
+            }
+
+            drawTrajectory() {
+                const steps = 50;
+                let tx = this.x;
+                let ty = this.y;
+
+                // Horizontal trajectory (always shown)
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(255,0,0,0.9)'; // Bright red, more visible
+                ctx.lineWidth = 3; // Thicker line
+                ctx.moveTo(tx, ty);
+                const maxHorizontal = 300; // Fixed distance for preview
+                const hVel = 10 * Math.sin(angle); // Constant velocity for visibility
+                for (let i = 0; i < steps; i++) {
+                    tx += hVel;
+                    if (tx > canvas.width || tx < 0) break;
+                    ctx.lineTo(tx, ty); // Flat horizontal line
+                }
+                ctx.stroke();
+
+                // Full trajectory (horizontal + vertical) when charging power
+                if (chargingPower) {
+                    tx = this.x; // Reset tx
+                    ty = this.y; // Reset ty
+                    let tvx = power * 0.4 * Math.sin(angle); // Horizontal based on locked angle
+                    let tvy = -power * 0.4; // Vertical based on power
+                    ctx.beginPath();
+                    ctx.strokeStyle = 'rgba(0,255,0,0.9)'; // Bright green
+                    ctx.lineWidth = 3;
+                    ctx.moveTo(tx, ty);
+                    for (let i = 0; i < steps; i++) {
+                        tvy += gravity;
+                        tx += tvx;
+                        ty += tvy;
+                        tvx *= friction;
+                        tvy *= friction;
+                        if (ty > canvas.height || tx > canvas.width || tx < 0) break;
+                        ctx.lineTo(tx, ty);
+                    }
+                    ctx.stroke();
+                }
+            }
+
+            update() {
+                if (this.isThrown && !this.fallingIntoBin) {
+                    this.vy += gravity;
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.vx *= friction;
+                    this.vy *= friction;
+                    this.rotation += this.rotSpeed;
+
+                    if (this.y > canvas.height + this.size || this.x < -this.size || this.x > canvas.width + this.size) {
+                        if (!this.countedAsMiss) {
+                            misses++;
+                            combo = 0;
+                            showMessage('Missed! Combo reset.');
+                            this.countedAsMiss = true;
+                            spawnNewTrash();
+                        }
+                        return;
+                    }
+
+                    bins.forEach(bin => {
+                        if (this.x > bin.x + 10 && this.x < bin.x + bin.width - 10 &&
+                            this.y > bin.y - this.size && this.y < bin.y + 20 &&
+                            this.vy > 0) { // Only catch when falling
+                            this.fallingIntoBin = true;
+                            this.binX = bin.x + bin.width / 2;
+                            this.binY = bin.y + bin.height - 10;
+                            this.vx = 0;
+                            this.vy = 0;
+                            this.rotSpeed = 0;
+
+                            if (bin.type === this.correctBin) {
+                                combo++;
+                                const points = 1 + this.bonus + Math.floor(combo / 3);
+                                score += points;
+                                showMessage(`Correct! +${points} points (Combo: ${combo}x)`);
+                                bin.targetLidAngle = Math.PI / 3;
+                            } else {
+                                misses++;
+                                combo = 0;
+                                showMessage('Wrong bin! Combo reset.');
+                                bin.targetLidAngle = -Math.PI / 6;
+                            }
+                            spawnNewTrash();
+                        }
+                    });
+                }
+            }
+        }
+
+        function drawBackground() {
+            ctx.fillStyle = '#7cfc00';
+            ctx.fillRect(0, canvas.height - 150, canvas.width, 150);
+            ctx.fillStyle = '#87ceeb';
+            ctx.fillRect(0, 0, canvas.width, canvas.height - 150);
+            
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(150, 100, 30, 0, Math.PI * 2);
+            ctx.arc(180, 90, 40, 0, Math.PI * 2);
+            ctx.arc(210, 100, 30, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffff00';
+            ctx.beginPath();
+            ctx.arc(700, 80, 40, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawBins() {
+            bins.forEach(bin => {
+                bin.lidAngle += (bin.targetLidAngle - bin.lidAngle) * 0.15;
+                if (Math.abs(bin.targetLidAngle - bin.lidAngle) < 0.01) bin.targetLidAngle = 0;
+
+                ctx.save();
+                ctx.translate(bin.x + bin.width / 2, bin.y);
+
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetY = 5;
+                const gradient = ctx.createLinearGradient(0, 0, 0, bin.height);
+                gradient.addColorStop(0, bin.color);
+                gradient.addColorStop(1, darkenColor(bin.color, 0.2));
+                ctx.fillStyle = gradient;
+                ctx.fillRect(-bin.width/2, -bin.height, bin.width, bin.height);
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetY = 0;
+
+                ctx.save();
+                ctx.translate(0, -bin.height);
+                ctx.rotate(bin.lidAngle);
+                ctx.fillStyle = darkenColor(bin.color, 0.3);
+                ctx.fillRect(-bin.width/2, -15, bin.width, 15);
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(-bin.width/2, -15, bin.width, 15);
+                ctx.restore();
+
+                // Draw text in the center of the bin
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle'; // Vertically center the text
+                ctx.fillText(bin.type.toUpperCase(), 0, -bin.height / 2); // Centered vertically and horizontally
+
+                ctx.restore();
+            });
+        }
+
+        function darkenColor(color, percent) {
+            const num = parseInt(color.replace("#", ""), 16);
+            const r = Math.max(0, (num >> 16) * (1 - percent));
+            const g = Math.max(0, ((num >> 8) & 0xFF) * (1 - percent));
+            const b = Math.max(0, (num & 0xFF) * (1 - percent));
+            return `#${(0x1000000 + Math.round(r) * 0x10000 + Math.round(g) * 0x100 + Math.round(b)).toString(16).slice(1)}`;
+        }
+
+        function spawnNewTrash() {
+            trash = new Trash();
+            power = 0;
+            chargingPower = false;
+            powerFill.style.width = '0%';
+            angle = 0; // Start straight up
+            directionLocked = false; // Reset direction lock
+        }
+
+        function showMessage(text) {
+            message.textContent = text;
+            message.style.display = 'block';
+            message.style.color = text.includes('Correct') ? '#008000' : '#ff0000';
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 1500);
+        }
+
+        function updateMeters() {
+            if (chargingPower && power < 100) {
+                power += 2;
+                powerFill.style.width = `${power}%`;
+            }
+        }
+
+        // Keyboard controls for horizontal direction with A and D
+        const keys = {
+            'a': false,
+            'd': false
+        };
+
+        window.addEventListener('keydown', (e) => {
+            if (trash && !trash.isThrown && !directionLocked && e.key.toLowerCase() in keys) {
+                e.preventDefault();
+                keys[e.key.toLowerCase()] = true;
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.key.toLowerCase() in keys) {
+                e.preventDefault();
+                keys[e.key.toLowerCase()] = false;
+            }
+        });
+
+        function updateAngle() {
+            if (trash && !trash.isThrown && !directionLocked) {
+                if (keys['a']) {
+                    angle -= 0.03; // Reduced sensitivity
+                }
+                if (keys['d']) {
+                    angle += 0.03; // Reduced sensitivity
+                }
+                angle = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, angle)); // Limit to ±90°
+            }
+        }
+
+        // Mouse controls for vertical force and throw
+        canvas.addEventListener('mousedown', (e) => {
+            if (trash && !trash.isThrown && e.button === 0) {
+                chargingPower = true;
+                directionLocked = true; // Lock horizontal direction when charging starts
+            }
+        });
+
+        canvas.addEventListener('mouseup', (e) => {
+            if (trash && !trash.isThrown && e.button === 0 && chargingPower) {
+                chargingPower = false;
+                const throwPower = Math.max(power, 20);
+                trash.isThrown = true;
+                trash.vx = throwPower * 0.4 * Math.sin(angle); // Horizontal based on locked angle
+                trash.vy = -throwPower * 0.4; // Vertical force based on power
+                trash.rotSpeed = throwPower * 0.005 * (Math.random() > 0.5 ? 1 : -1);
+            }
+        });
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBackground();
+            drawBins();
+            if (trash) {
+                trash.update();
+                trash.draw();
+            } else {
+                spawnNewTrash();
+            }
+            updateMeters();
+            updateAngle();
+
+            scoreBoard.textContent = `Score: ${score} | Misses: ${misses} | Combo: ${combo}x`;
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Start game only when Play button is clicked
+        playButton.addEventListener('click', () => {
+            howToPlayOverlay.style.display = 'none'; // Hide the overlay
+            spawnNewTrash(); // Initialize the first trash
+            gameLoop(); // Start the game loop
+        });
+    </script>
+</body>
+</html>

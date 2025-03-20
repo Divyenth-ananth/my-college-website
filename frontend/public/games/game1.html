@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Eco City Planner - Tirupati</title>
+    <style>
+        body {
+            font-family: 'Quicksand', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #D1E8F7 0%, #C3E6CB 70%, #2A9D8F 100%); /* Soft blue to mint green to teal */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDBweCIgdmlld0JveD0iMCAwIDE5MjAgMTAwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxwYXRoIGQ9Ik0wLDEwMEw2NDAsODBMMTI4MCwxMDBMMTkyMCw3MFYzMDAwSDBWMTAwWiIgZmlsbD0iIzJBOUQ4RiIgb3BhY2l0eT0iMC4yIi8+PC9zdmc+') repeat;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .city-planner {
+            width: 100%;
+            max-width: 1200px;
+            height: 750px;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+        .header {
+            background: linear-gradient(90deg, #2A9D8F, #4ABFAB); /* Teal to light teal */
+            color: #F5F5F5;
+            padding: 20px;
+            text-align: center;
+            font-size: 2.3em;
+            font-weight: 600;
+            border-bottom: 4px solid #C3E6CB;
+        }
+        .main-area {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+        }
+        #canvas-container {
+            flex: 3;
+            border: 3px solid #C3E6CB;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #D1E8F7 0%, #F5F5F5 100%); /* Sky gradient */
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        #city-canvas {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(245, 245, 245, 0.8); /* Translucent cream */
+            border-radius: 10px;
+            padding: 20px;
+            gap: 15px;
+            z-index: 1;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        .resource {
+            background: #FFFFFF;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            user-select: none;
+            -webkit-user-drag: element;
+        }
+        .resource:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .resource:active {
+            cursor: grabbing;
+        }
+        .resource img {
+            width: 35px;
+            height: 35px;
+            margin-right: 10px;
+        }
+        .resource span {
+            font-weight: 500;
+            color: #2A9D8F;
+            font-size: 1em;
+        }
+        .controls {
+            background: rgba(195, 230, 203, 0.8); /* Translucent mint green */
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 4px solid #2A9D8F;
+        }
+        #year-display, #stats-display {
+            font-size: 1.1em;
+            color: #2A9D8F;
+            font-weight: 500;
+        }
+        #next-year {
+            padding: 10px 25px;
+            background: #2A9D8F;
+            color: #F5F5F5;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        #next-year:hover {
+            background: #4ABFAB;
+            transform: translateY(-2px);
+        }
+        #next-year:active {
+            transform: translateY(0);
+        }
+        #result {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(245, 245, 245, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 90%;
+            width: 500px;
+            z-index: 10;
+            border: 2px solid #C3E6CB;
+            animation: fadeIn 0.5s ease;
+        }
+        #intro-dialog {
+            display: block;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(245, 245, 245, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 90%;
+            width: 500px;
+            z-index: 20;
+            border: 2px solid #2A9D8F;
+            animation: fadeIn 0.5s ease;
+        }
+        #intro-overlay {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 15;
+        }
+        #intro-dialog h2 {
+            color: #2A9D8F;
+            margin-top: 0;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        #intro-dialog p {
+            font-size: 1.1em;
+            color: #2A9D8F;
+            line-height: 1.5;
+        }
+        #intro-dialog .interactive {
+            margin: 15px 0;
+            color: #666;
+        }
+        #intro-dialog button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #2A9D8F;
+            color: #F5F5F5;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        #intro-dialog button:hover {
+            background: #4ABFAB;
+            transform: translateY(-2px);
+        }
+        #intro-response {
+            margin-top: 10px;
+            font-style: italic;
+            color: #2A9D8F;
+            font-size: 1em;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -60%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+        #result h2 {
+            color: #2A9D8F;
+            margin-top: 0;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        #result p {
+            font-size: 1em;
+            color: #2A9D8F;
+        }
+        #result button {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: #2A9D8F;
+            color: #F5F5F5;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        #result button:hover {
+            background: #4ABFAB;
+            transform: translateY(-2px);
+        }
+        #suggestions {
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        #music-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            background: #2A9D8F;
+            color: #F5F5F5;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+        #music-toggle:hover {
+            background: #4ABFAB;
+        }
+        @media (max-width: 900px) {
+            .city-planner {
+                height: auto;
+                max-width: 95%;
+            }
+            .main-area {
+                flex-direction: column;
+            }
+            .sidebar {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .resource {
+                flex: 1 1 40%;
+                margin: 10px;
+            }
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            #city-canvas {
+                width: 100%;
+                height: auto;
+            }
+            #music-toggle {
+                top: 10px;
+                right: 10px;
+            }
+            #intro-dialog {
+                width: 90%;
+                padding: 15px;
+            }
+            #intro-dialog h2 {
+                font-size: 1.5em;
+            }
+            #intro-dialog p {
+                font-size: 0.9em;
+            }
+            #intro-dialog .interactive {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="city-planner">
+        <div class="header">Eco City Planner - Tirupati</div>
+        <div class="main-area">
+            <div id="canvas-container">
+                <canvas id="city-canvas" width="900" height="500"></canvas>
+            </div>
+            <div class="sidebar">
+                <div class="resource" draggable="true" data-type="solar">
+                    <img src="https://img.icons8.com/color/96/000000/solar-panel.png" alt="Solar Plant">
+                    Solar Plant (<span id="energy">150</span> MW)
+                </div>
+                <div class="resource" draggable="true" data-type="water">
+                    <img src="https://img.icons8.com/color/96/000000/water-tower.png" alt="Water Tower">
+                    Water Tower (<span id="water">150</span> units)
+                </div>
+                <div class="resource" draggable="true" data-type="factory">
+                    <img src="https://img.icons8.com/color/96/000000/factory.png" alt="Factory">
+                    Factory (<span id="co2">300</span> tons CO2)
+                </div>
+            </div>
+        </div>
+        <div class="controls">
+            <div id="year-display">Year: <span id="years">0</span>/5</div>
+            <div id="stats-display">
+                Sustainability: <span id="sustainability">50</span>% | 
+                Pollution: <span id="pollution">0</span>%
+            </div>
+            <button id="next-year" onclick="nextYear()">Next Year</button>
+        </div>
+        <div id="result">
+            <h2>Game Over!</h2>
+            <p id="outcome"></p>
+            <p id="suggestions"></p>
+            <button onclick="resetGame()">Play Again</button>
+        </div>
+    </div>
+    <div id="intro-overlay"></div>
+    <div id="intro-dialog">
+        <h2>Tirupati Needs You!</h2>
+        <p>Hey, Tirupati’s Savior! You’ve got 5 years to keep this city holy—not a pollution dump! Drop some solar plants, water towers, or factories, but don’t mess up the vibes, okay? Ready to be a legend—or just here to watch it burn?</p>
+        <div class="interactive">
+            Are you a planning genius or a total disaster? <br>
+            <label><input type="radio" name="confidence" value="genius"> I’m a genius!</label><br>
+            <label><input type="radio" name="confidence" value="disaster"> Disaster’s my middle name!</label>
+        </div>
+        <button onclick="startGame()">Let’s Do This!</button>
+        <p id="intro-response"></p>
+    </div>
+    <button id="music-toggle" onclick="toggleMusic()">Play Music</button>
+    <audio id="background-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // Icon Attributions:
+        // Temple Icon: "Hindu Temple" by Adrien Coquet from The Noun Project
+        // IIT Icon: "University" by The Noun Project
+        // IISER Icon: "School" by The Noun Project
+
+        const canvas = document.getElementById("city-canvas");
+        const ctx = canvas.getContext("2d");
+        let resources = { water: 150, energy: 150, co2: 300 };
+        let sustainability = 50;
+        let pollution = 0;
+        let years = 0;
+        let buildings = [];
+        let pollutionParticles = [];
+        let clouds = [];
+
+        const images = {
+            solar: new Image(),
+            water: new Image(),
+            factory: new Image(),
+            house: new Image(),
+            temple: new Image(),
+            railway: new Image(),
+            tree: new Image(),
+            collegeIIT: new Image(),
+            collegeIISER: new Image()
+        };
+        images.solar.src = 'https://img.icons8.com/color/96/000000/solar-panel.png';
+        images.water.src = 'https://img.icons8.com/color/96/000000/water-tower.png';
+        images.factory.src = 'https://img.icons8.com/color/96/000000/factory.png';
+        images.house.src = 'https://img.icons8.com/color/96/000000/home.png';
+        // images.temple.src = 'https://static.thenounproject.com/png/3054307-200.png'; // New temple icon
+        images.temple.src = 'https://img.icons8.com/color/96/000000/temple.png';
+        images.railway.src = 'https://img.icons8.com/color/96/000000/train-station.png';
+        images.tree.src = 'https://img.icons8.com/color/96/000000/forest.png';
+        images.collegeIIT.src = 'https://static.thenounproject.com/png/2932878-200.png'; // New IIT college building
+        // images.collegeIISER.src = 'https://static.thenounproject.com/png/2932879-200.png'; // New IISER college building
+        images.collegeIISER.src = 'https://img.icons8.com/color/96/000000/university.png';
+
+        let imagesLoaded = 0;
+        const totalImages = 9;
+
+        function handleImageLoad() {
+            imagesLoaded++;
+            if (imagesLoaded === totalImages) {
+                initializeClouds();
+                drawCity();
+                setupDragEvents();
+            }
+        }
+
+        function handleImageError(event) {
+            console.error(`Image failed to load: ${event.target.src}`);
+            imagesLoaded++;
+            if (imagesLoaded === totalImages) {
+                initializeClouds();
+                drawCity();
+                setupDragEvents();
+            }
+        }
+
+        images.solar.onload = handleImageLoad;
+        images.water.onload = handleImageLoad;
+        images.factory.onload = handleImageLoad;
+        images.house.onload = handleImageLoad;
+        images.temple.onload = handleImageLoad;
+        images.railway.onload = handleImageLoad;
+        images.tree.onload = handleImageLoad;
+        images.collegeIIT.onload = handleImageLoad;
+        images.collegeIISER.onload = handleImageLoad;
+        images.solar.onerror = handleImageError;
+        images.water.onerror = handleImageError;
+        images.factory.onerror = handleImageError;
+        images.house.onerror = handleImageError;
+        images.temple.onerror = handleImageError;
+        images.railway.onerror = handleImageError;
+        images.tree.onerror = handleImageError;
+        images.collegeIIT.onerror = handleImageError;
+        images.collegeIISER.onerror = handleImageError;
+
+        setTimeout(() => {
+            if (imagesLoaded < totalImages) {
+                console.warn("Images took too long, forcing draw");
+                initializeClouds();
+                drawCity();
+                setupDragEvents();
+            }
+        }, 5000);
+
+        function initializeClouds() {
+            for (let i = 0; i < 5; i++) {
+                clouds.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * 100,
+                    size: Math.random() * 50 + 30,
+                    speed: Math.random() * 0.5 + 0.2
+                });
+            }
+        }
+
+        function startGame() {
+            console.log("Game started!");
+            const confidence = document.querySelector('input[name="confidence"]:checked');
+            let response = "";
+            if (confidence) {
+                if (confidence.value === "genius") {
+                    response = "Nice confidence—let’s see if you’re all talk!";
+                } else {
+                    response = "Oh boy, Tirupati’s in for a wild ride!";
+                }
+            } else {
+                response = "No answer? Guess you’re too cool for this!";
+            }
+            document.getElementById("intro-response").textContent = response;
+            setTimeout(() => {
+                document.getElementById("intro-dialog").style.display = "none";
+                document.getElementById("intro-overlay").style.display = "none";
+            }, 1000); // Brief delay for response
+        }
+
+        function setupDragEvents() {
+            const resources = document.querySelectorAll('.resource');
+            resources.forEach(resource => {
+                resource.addEventListener('dragstart', (event) => {
+                    const type = resource.getAttribute('data-type');
+                    event.dataTransfer.setData('text/plain', type);
+                });
+            });
+
+            canvas.addEventListener('dragover', (event) => {
+                event.preventDefault();
+            });
+
+            canvas.addEventListener('drop', (event) => {
+                event.preventDefault();
+                const type = event.dataTransfer.getData('text/plain');
+                const rect = canvas.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+
+                if (canPlaceBuilding(type)) {
+                    placeBuilding(type, x, y);
+                    updateResources(type);
+                    updateStats(type);
+                    drawCity();
+                }
+            });
+        }
+
+        function canPlaceBuilding(type) {
+            if (years >= 5 || pollution >= 90) return false;
+            if (type === "solar" && resources.energy >= 20) return true;
+            if (type === "water" && resources.water >= 20) return true;
+            if (type === "factory" && resources.co2 >= 40 && sustainability > 20) return true;
+            return false;
+        }
+
+        function placeBuilding(type, x, y) {
+            buildings.push({ type, x, y, pollutionLevel: type === "factory" ? 1 : 0 });
+        }
+
+        function updateResources(type) {
+            if (type === "solar") resources.energy -= 20;
+            if (type === "water") resources.water -= 20;
+            if (type === "factory") resources.co2 -= 40;
+
+            document.getElementById("energy").textContent = Math.max(0, resources.energy);
+            document.getElementById("water").textContent = Math.max(0, resources.water);
+            document.getElementById("co2").textContent = Math.max(0, resources.co2);
+        }
+
+        function updateStats(type) {
+            if (type === "solar") sustainability = Math.min(100, sustainability + 10);
+            if (type === "water") sustainability = Math.min(100, sustainability + 5);
+            if (type === "factory") {
+                sustainability = Math.max(0, sustainability - 15);
+                pollution = Math.min(100, pollution + 10);
+            }
+            document.getElementById("sustainability").textContent = sustainability;
+            document.getElementById("pollution").textContent = pollution;
+        }
+
+        function createPollutionParticle(x, y) {
+            return {
+                x,
+                y,
+                size: Math.random() * 5 + 2,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2 - 1,
+                life: 60 + Math.random() * 40,
+                opacity: 0.8
+            };
+        }
+
+        function drawCity() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Sky with clouds
+            clouds.forEach(cloud => {
+                ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+                ctx.beginPath();
+                ctx.arc(cloud.x, cloud.y, cloud.size, 0, Math.PI * 2);
+                ctx.fill();
+                cloud.x += cloud.speed;
+                if (cloud.x > canvas.width + cloud.size) {
+                    cloud.x = -cloud.size;
+                    cloud.y = Math.random() * 100;
+                }
+            });
+
+            // Background: Seshachalam Hills (north)
+            ctx.fillStyle = "#2A9D8F"; // Teal for hills
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(150, 70);
+            ctx.lineTo(300, 40);
+            ctx.lineTo(450, 80);
+            ctx.lineTo(600, 50);
+            ctx.lineTo(750, 90);
+            ctx.lineTo(900, 60);
+            ctx.lineTo(900, 0);
+            ctx.lineTo(0, 0);
+            ctx.fill();
+            ctx.fillStyle = "rgba(42, 157, 143, 0.3)"; // Shadow for depth
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(150, 70);
+            ctx.lineTo(300, 40);
+            ctx.lineTo(450, 80);
+            ctx.lineTo(600, 50);
+            ctx.lineTo(750, 90);
+            ctx.lineTo(900, 60);
+            ctx.lineTo(900, 0);
+            ctx.lineTo(0, 0);
+            ctx.fill();
+
+            // Ground: Affected by pollution
+            const groundColor = `hsl(90, 20%, ${90 - pollution / 2}%)`;
+            ctx.fillStyle = groundColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Foreground hills (south)
+            ctx.fillStyle = "#C3E6CB";
+            ctx.beginPath();
+            ctx.moveTo(0, 500);
+            ctx.quadraticCurveTo(300, 400, 450, 500);
+            ctx.quadraticCurveTo(600, 450, 900, 500);
+            ctx.lineTo(900, 500);
+            ctx.lineTo(0, 500);
+            ctx.fill();
+
+            // Roads: Tirumala Ghat Road (Alipiri to Tirumala Temple)
+            ctx.fillStyle = "#4A4A4A"; // Asphalt
+            ctx.beginPath();
+            ctx.moveTo(450, 500); // Alipiri (bottom-center)
+            ctx.quadraticCurveTo(400, 350, 450, 200);
+            ctx.quadraticCurveTo(500, 50, 450, 50); // Tirumala Temple (top-center)
+            ctx.lineTo(470, 50);
+            ctx.quadraticCurveTo(520, 50, 470, 200);
+            ctx.quadraticCurveTo(420, 350, 470, 500);
+            ctx.lineTo(450, 500);
+            ctx.fill();
+            // Road markings
+            ctx.strokeStyle = "#FFFFFF";
+            ctx.lineWidth = 2;
+            ctx.setLineDash([10, 10]);
+            ctx.beginPath();
+            ctx.moveTo(460, 500);
+            ctx.quadraticCurveTo(410, 350, 460, 200);
+            ctx.quadraticCurveTo(510, 50, 460, 50);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            // Road edges
+            ctx.strokeStyle = "#FFFF00";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(450, 500);
+            ctx.quadraticCurveTo(400, 350, 450, 200);
+            ctx.quadraticCurveTo(500, 50, 450, 50);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(470, 500);
+            ctx.quadraticCurveTo(420, 350, 470, 200);
+            ctx.quadraticCurveTo(520, 50, 470, 50);
+            ctx.stroke();
+
+            // Secondary road to IIT Tirupati and IISER Tirupati (east)
+            ctx.fillStyle = "#4A4A4A";
+            ctx.beginPath();
+            ctx.moveTo(450, 300);
+            ctx.lineTo(750, 350);
+            ctx.lineTo(850, 150); // Extend to IISER Tirupati
+            ctx.lineTo(830, 170);
+            ctx.lineTo(730, 370);
+            ctx.lineTo(430, 320);
+            ctx.lineTo(450, 300);
+            ctx.fill();
+            ctx.strokeStyle = "#FFFFFF";
+            ctx.lineWidth = 2;
+            ctx.setLineDash([8, 8]);
+            ctx.beginPath();
+            ctx.moveTo(450, 310);
+            ctx.lineTo(740, 360);
+            ctx.lineTo(840, 160);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Road to Tirupati Railway Station (center)
+            ctx.fillStyle = "#4A4A4A";
+            ctx.beginPath();
+            ctx.moveTo(450, 300);
+            ctx.lineTo(400, 350);
+            ctx.lineTo(400, 370);
+            ctx.lineTo(470, 320);
+            ctx.lineTo(450, 300);
+            ctx.fill();
+            ctx.strokeStyle = "#FFFFFF";
+            ctx.lineWidth = 2;
+            ctx.setLineDash([8, 8]);
+            ctx.beginPath();
+            ctx.moveTo(450, 310);
+            ctx.lineTo(410, 360);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Stream near Kapila Theertham
+            ctx.fillStyle = "#87CEFA";
+            ctx.beginPath();
+            ctx.moveTo(550, 150);
+            ctx.quadraticCurveTo(600, 200, 650, 250);
+            ctx.lineTo(670, 250);
+            ctx.quadraticCurveTo(620, 200, 570, 150);
+            ctx.lineTo(550, 150);
+            ctx.fill();
+
+            // Trees around residential area and Kapila Theertham
+            const trees = [
+                { x: 220, y: 380 }, { x: 250, y: 450 }, { x: 340, y: 430 },
+                { x: 500, y: 180 }, { x: 580, y: 120 }, { x: 620, y: 170 },
+                { x: 380, y: 100 }, { x: 450, y: 100 }, { x: 200, y: 200 },
+            ];
+            trees.forEach(tree => {
+                if (images.tree.complete && images.tree.naturalWidth !== 0) {
+                    ctx.drawImage(images.tree, tree.x - 20, tree.y - 20, 40, 40);
+                }
+            });
+
+            // Tirumala Venkateswara Temple (top-center)
+            if (images.temple.complete && images.temple.naturalWidth !== 0) {
+                ctx.drawImage(images.temple, 430, 30, 40, 40);
+            } else {
+                // Fallback: Draw a basic gopuram shape if image fails to load
+                ctx.fillStyle = '#FFD700'; // Gold for temple
+                ctx.beginPath();
+                ctx.moveTo(430, 30); // Base
+                ctx.lineTo(450, 30);
+                ctx.lineTo(450, 50); // First tier
+                ctx.lineTo(440, 50);
+                ctx.lineTo(440, 60);
+                ctx.lineTo(450, 60);
+                ctx.lineTo(450, 70); // Second tier
+                ctx.lineTo(435, 70);
+                ctx.lineTo(435, 80);
+                ctx.lineTo(450, 80);
+                ctx.lineTo(450, 90); // Top
+                ctx.lineTo(440, 90);
+                ctx.lineTo(440, 70);
+                ctx.lineTo(425, 70);
+                ctx.lineTo(425, 50);
+                ctx.lineTo(435, 50);
+                ctx.lineTo(435, 30);
+                ctx.closePath();
+                ctx.fill();
+                ctx.strokeStyle = '#8B4513'; // Brown outline
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+            ctx.fillStyle = "#2A9D8F";
+            ctx.font = "12px Quicksand";
+            ctx.fillText("Tirumala Temple", 410, 80);
+
+            // Alipiri (bottom-center)
+            ctx.fillStyle = "#C3E6CB";
+            ctx.beginPath();
+            ctx.arc(460, 480, 20, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#2A9D8F";
+            ctx.font = "10px Quicksand";
+            ctx.fillText("Alipiri", 450, 510);
+
+            // IIT Tirupati (east)
+            if (images.collegeIIT.complete && images.collegeIIT.naturalWidth !== 0) {
+                ctx.drawImage(images.collegeIIT, 710, 330, 40, 40);
+            }
+            ctx.fillStyle = "#2A9D8F";
+            ctx.font = "10px Quicksand";
+            ctx.fillText("IIT Tirupati", 700, 380);
+
+            // IISER Tirupati (northeast, near Yerpedu)
+            if (images.collegeIISER.complete && images.collegeIISER.naturalWidth !== 0) {
+                ctx.drawImage(images.collegeIISER, 640, 90, 40, 40);
+            }
+            ctx.fillStyle = "#2A9D8F";
+            ctx.font = "10px Quicksand";
+            ctx.fillText("IISER Tirupati", 630, 140);
+
+            // Kapila Theertham (northeast)
+            const pondScale = 1 - pollution / 200;
+            ctx.save();
+            ctx.translate(550, 150);
+            ctx.scale(pondScale, pondScale);
+            ctx.beginPath();
+            ctx.moveTo(-25, -25);
+            ctx.quadraticCurveTo(0, -40, 30, -25);
+            ctx.quadraticCurveTo(50, 0, 25, 25);
+            ctx.quadraticCurveTo(-5, 35, -35, 15);
+            ctx.quadraticCurveTo(-45, -5, -25, -25);
+            ctx.fillStyle = "#87CEFA";
+            ctx.fill();
+            ctx.strokeStyle = "#4682B4";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
+            ctx.fillStyle = "#2A9D8F";
+            ctx.font = "10px Quicksand";
+            ctx.fillText("Kapila Theertham", 550, 190);
+
+            // Tirupati Railway Station (center)
+            if (images.railway.complete && images.railway.naturalWidth !== 0) {
+                ctx.drawImage(images.railway, 380, 340, 40, 40);
+            }
+            ctx.fillStyle = "#2A9D8F";
+            ctx.font = "10px Quicksand";
+            ctx.fillText("Tirupati Railway Stn", 370, 390);
+
+            // Residential buildings (center-west, more buildings)
+            const residentialBuildings = [
+                { x: 250, y: 400 }, { x: 290, y: 380 }, { x: 320, y: 410 },
+                { x: 280, y: 200 }, { x: 310, y: 160 }, { x: 340, y: 170 },
+                { x: 260, y: 190 }, { x: 300, y: 220 }
+            ];
+            residentialBuildings.forEach(pos => {
+                if (images.house.complete && images.house.naturalWidth !== 0) {
+                    ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+                    ctx.shadowBlur = 4;
+                    ctx.shadowOffsetX = 2;
+                    ctx.shadowOffsetY = 2;
+                    ctx.drawImage(images.house, pos.x - 20, pos.y - 20, 40, 40);
+                    ctx.shadowBlur = 0;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                }
+            });
+
+            // Pollution particles for factories
+            buildings.forEach(b => {
+                if (b.type === "factory") {
+                    const nearbySolar = buildings.filter(s => 
+                        s.type === "solar" && 
+                        Math.hypot(s.x - b.x, s.y - b.y) < 120
+                    ).length;
+                    b.pollutionLevel = Math.max(1 - (nearbySolar * 0.3), 0.2);
+                    if (Math.random() < 0.3 * b.pollutionLevel) {
+                        pollutionParticles.push(createPollutionParticle(b.x, b.y));
+                    }
+                }
+            });
+
+            pollutionParticles = pollutionParticles.filter(p => p.life > 0);
+            pollutionParticles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life--;
+                p.opacity = p.life / 100;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(105, 105, 105, ${p.opacity})`;
+                ctx.fill();
+            });
+
+            // Draw placed buildings (solar, water, factory)
+            buildings.forEach(b => {
+                const size = b.type === "factory" ? 50 : 40;
+                const offset = size / 2;
+                ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+                ctx.shadowBlur = 4;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+                if (b.type === "solar" && images.solar.complete && images.solar.naturalWidth !== 0) {
+                    ctx.drawImage(images.solar, b.x - offset, b.y - offset, size, size);
+                } else if (b.type === "water" && images.water.complete && images.water.naturalWidth !== 0) {
+                    ctx.drawImage(images.water, b.x - offset, b.y - offset, size, size);
+                } else if (b.type === "factory" && images.factory.complete && images.factory.naturalWidth !== 0) {
+                    ctx.drawImage(images.factory, b.x - offset, b.y - offset, size, size);
+                }
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+            });
+
+            requestAnimationFrame(drawCity);
+        }
+
+        function nextYear() {
+            if (years < 5) {
+                years++;
+                document.getElementById("years").textContent = years;
+
+                buildings.forEach(b => {
+                    if (b.type === "factory") {
+                        const nearbySolar = buildings.filter(s => 
+                            s.type === "solar" && 
+                            Math.hypot(s.x - b.x, s.y - b.y) < 120
+                        ).length;
+                        b.pollutionLevel = Math.min(b.pollutionLevel + 0.2 - (nearbySolar * 0.1), 2);
+                        pollution = Math.min(100, pollution + (b.pollutionLevel * 5));
+                        sustainability = Math.max(0, sustainability - (b.pollutionLevel * 3));
+                        for (let i = 0; i < b.pollutionLevel * 2; i++) {
+                            pollutionParticles.push(createPollutionParticle(b.x, b.y));
+                        }
+                    }
+                    if (b.type === "solar") {
+                        resources.energy += 10;
+                        sustainability = Math.min(100, sustainability + 5);
+                        pollution = Math.max(0, pollution - 3);
+                    }
+                    if (b.type === "water") {
+                        resources.water += 5;
+                        sustainability = Math.min(100, sustainability + 3);
+                    }
+                });
+
+                sustainability = Math.max(0, sustainability - 2);
+                pollution = Math.min(100, pollution + 1);
+
+                document.getElementById("energy").textContent = Math.max(0, resources.energy);
+                document.getElementById("water").textContent = Math.max(0, resources.water);
+                document.getElementById("co2").textContent = Math.max(0, resources.co2);
+                document.getElementById("sustainability").textContent = Math.round(sustainability);
+                document.getElementById("pollution").textContent = Math.round(pollution);
+
+                if (years === 5 || pollution >= 100) showResult();
+            }
+        }
+
+        function showResult() {
+            const resultDiv = document.getElementById("result");
+            const outcome = document.getElementById("outcome");
+            const suggestions = document.getElementById("suggestions");
+            resultDiv.style.display = "block";
+
+            let solarCount = buildings.filter(b => b.type === "solar").length;
+            let waterCount = buildings.filter(b => b.type === "water").length;
+            let factoryCount = buildings.filter(b => b.type === "factory").length;
+            let totalPollutionLevel = buildings.reduce((sum, b) => 
+                b.type === "factory" ? sum + b.pollutionLevel : sum, 0);
+
+            let score = (sustainability * 2) + 
+                       (resources.energy * 0.5) + 
+                       (resources.water * 0.4) - 
+                       (pollution * 1.5) + 
+                       (solarCount * 20) + 
+                       (waterCount * 15) - 
+                       (factoryCount * 10);
+
+            if (score >= 200 && pollution < 30) {
+                outcome.textContent = "Sustainable Tirupati! A green paradise!";
+                resultDiv.style.backgroundColor = "rgba(195, 230, 203, 0.95)";
+                suggestions.textContent = "Perfect balance of progress and nature!";
+            } else if (score >= 100 && pollution < 60) {
+                outcome.textContent = "Green Tirupati! A sustainable success.";
+                resultDiv.style.backgroundColor = "rgba(255, 250, 205, 0.95)";
+                suggestions.textContent = "Well done! Fine-tune pollution control.";
+            } else {
+                outcome.textContent = "Polluted Tirupati! Sustainability failed.";
+                resultDiv.style.backgroundColor = "rgba(222, 184, 135, 0.95)";
+                suggestions.textContent = getLossSuggestions(solarCount, waterCount, factoryCount, totalPollutionLevel);
+            }
+        }
+
+        function getLossSuggestions(solarCount, waterCount, factoryCount, totalPollutionLevel) {
+            let tips = [];
+            if (pollution > 70) {
+                tips.push("Pollution too high—add more solar plants near factories.");
+            }
+            if (sustainability < 30) {
+                tips.push("Sustainability low—prioritize green buildings.");
+            }
+            if (solarCount < factoryCount) {
+                tips.push("More solar needed to offset factories.");
+            }
+            if (waterCount < 2) {
+                tips.push("Water towers boost sustainability.");
+            }
+            return "Tips: " + (tips.length ? tips.join(" ") : "Focus on sustainability!");
+        }
+
+        function resetGame() {
+            resources = { water: 150, energy: 150, co2: 300 };
+            sustainability = 50;
+            pollution = 0;
+            years = 0;
+            buildings = [];
+            pollutionParticles = [];
+            clouds = [];
+            initializeClouds();
+            document.getElementById("energy").textContent = resources.energy;
+            document.getElementById("water").textContent = resources.water;
+            document.getElementById("co2").textContent = resources.co2;
+            document.getElementById("years").textContent = years;
+            document.getElementById("sustainability").textContent = sustainability;
+            document.getElementById("pollution").textContent = pollution;
+            document.getElementById("result").style.display = "none";
+        }
+
+        const music = document.getElementById("background-music");
+        const musicToggle = document.getElementById("music-toggle");
+        let isMusicPlaying = false;
+
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                music.pause();
+                musicToggle.textContent = "Play Music";
+            } else {
+                music.play();
+                musicToggle.textContent = "Pause Music";
+            }
+            isMusicPlaying = !isMusicPlaying;
+        }
+
+        drawCity();
+    </script>
+</body>
+</html>

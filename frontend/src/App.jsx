@@ -8,6 +8,8 @@ import ToggleSwitch from "./components/ToggleSwitch"; // Import the toggle compo
 import "./App.css";
 import logo from "./assets/Images/Logo.svg";
 import Metaverse from "./pages/Metaverse";
+import Games from './pages/Games';
+
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
@@ -29,6 +31,7 @@ function App() {
             <li><Link to="/ecology">Ecology</Link></li>
             <li><Link to="/awards">Awards</Link></li>
             <li><Link to="/metaverse">Metaverse</Link></li>
+            <li><Link to="/games">Games</Link></li>
           </ul>
 
           {/* Replace old button with the custom toggle */}
@@ -42,6 +45,7 @@ function App() {
           <Route path="/ecology" element={<Ecology />} />
           <Route path="/awards" element={<Awards />} />
           <Route path="/metaverse" element={<Metaverse />} />
+          <Route path="/games" element={<Games />} />
         </Routes>
 
         <footer className="footer">
