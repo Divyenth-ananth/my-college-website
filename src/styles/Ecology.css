@@ -1,0 +1,320 @@
+/* styles/Ecology.css */
+
+/* Color and theme variables */
+:root {
+  --primary-green: #2bae66;
+  --secondary-green: #48bb78;
+  --dark-text: #2d3748;
+  --light-bg: #f8fafc;
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --card-bg: #ffffff;
+  --overlay-bg: rgba(0, 0, 0, 0.75); /* Dark overlay background */
+}
+
+.ecology-container {
+  padding: 2rem;           /* Fixed padding on all sides */
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background-color: var(--light-bg);
+}
+
+.ecology-title {
+  text-align: center;
+  font-size: 2rem;
+  color: var(--dark-text);
+  padding: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Category section styling */
+.category-section {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Wrapper for the two category cards */
+.cards-wrapper {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+
+/* Category card styling */
+.category-card {
+  width: 300px;
+  height: 250px;
+  background: var(--glass-bg);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.category-card h3 {
+  color: var(--primary-green);
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.category-card p {
+  color: var(--dark-text);
+  opacity: 0.8;
+}
+
+/* Category tag styling */
+.category-tag {
+  width: 120px;
+  height: 50px;
+  background: var(--primary-green);
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  margin-top: 1rem;
+}
+
+/* Close icon styling */
+.close-tag {
+  margin-left: 0.5rem;
+  font-size: 1.2rem;
+}
+
+/* Species content styling */
+.species-content {
+  margin-top: 2rem;
+}
+
+.species-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+/* Species card: fixed dimensions and a more rectangular look */
+.species-card {
+  background: var(--glass-bg);
+  border-radius: 16px;          /* Reduced radius for a rectangular look */
+  padding: 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.01);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(10px);
+  min-height: 250px;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+  height: 400px;
+}
+
+.species-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+}
+
+.species-image-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  transform: scale(1.05);
+  overflow: hidden;
+}
+/* The image fills the entire species card */
+.species-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  border-radius: 20px;
+  margin-bottom: 0rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Species common name overlaid on the image */
+.species-common {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  margin: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  color: #fff;
+  font-size: 1.4rem;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  z-index: 2;
+}
+
+/* Hide the scientific name if not needed */
+.species-scientific {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(var(--primary-green), 0.9);
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: white;
+  backdrop-filter: blur(2px);
+  font-style: italic;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+/* Sliding overlay for species details (slides from left to right) */
+.species-details {
+  color:#fff;
+  line-height: 1.6;
+  font-size: 0.9rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0,0,0,0.9);
+  padding: 1.5rem;
+  overflow-y: auto;
+  border-radius: 0 4px 4px 0;
+  transform: translateX(-100%);  /* Start off to the left */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  pointer-events: none;
+  will-change: transform;
+  z-index: 3;
+}
+
+.details-content {
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.details-content p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.species-card:hover .species-details {
+  transform: translateX(0);  /* Slide in from left */
+  opacity: 1;
+  pointer-events: auto;
+}/* Sliding overlay for species details */
+
+.filter-controls {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: var(--glass-bg);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  color: var(--primary-green);
+  font-weight: 500;
+}
+
+.filter-group select {
+  background: var(--glass-bg);
+  border: 2px solid var(--primary-green);
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  color: var(--dark-text);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Add this for dropdown options */
+.filter-group select option {
+  background: var(--glass-bg);
+  color: var(--dark-text);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.filter-group select:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: var(--secondary-green);
+}
+
+:root {
+  /* Add these */
+  --filter-bg: rgba(255, 255, 255, 0.8);
+  --filter-border: rgba(255, 255, 255, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --glass-bg: rgba(0, 0, 0, 0.6);
+    --filter-bg: rgba(0, 0, 0, 0.6);
+    --filter-border: rgba(255, 255, 255, 0.1);
+    --dark-text: #ffffff;
+  }
+}
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .species-list {
+    grid-template-columns: repeat(2, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .species-list {
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+  }
+  .species-card {
+    height: 340px;
+  }
+}
+
+@media (max-width: 600px) {
+  .species-list {
+    grid-template-columns: 1fr;
+  }
+  .species-card {
+    height: 400px;
+  }
+}

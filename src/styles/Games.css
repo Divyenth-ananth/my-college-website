@@ -1,0 +1,77 @@
+/* Center the page content */
+.games-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    text-align: center;
+}
+
+/* Game selection content */
+.games-content {
+    max-width: 800px;
+    text-align: center;
+}
+
+/* Buttons for game selection */
+.games-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.game-btn {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    color: white;
+    background: var(--primary-green);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.game-btn:hover {
+    background: var(--secondary-green);
+}
+
+/* Full-screen game view */
+.full-screen-game {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.full-screen-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Exit button */
+.exit-game-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: red;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 5px;
+}
+
+.exit-game-btn:hover {
+    background: darkred;
+}

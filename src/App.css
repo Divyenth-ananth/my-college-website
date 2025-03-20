@@ -1,0 +1,183 @@
+:root {
+  /* Light theme */
+  --primary-green: #2bae66;
+  --secondary-green: #19804f;
+  --accent-gold: #ffd700;
+  --light-bg: #f8f9fa;
+  --dark-text: #1a1a1a;
+  --card-bg: #ffffff;
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  
+  /* Dark theme */
+  --dark-primary: #0f172a;
+  --dark-secondary: #1e293b;
+  --dark-text-inverse: #e4e1e1;
+  --dark-card-bg: #1e293b;
+  --dark-glass-bg: rgba(30, 41, 59, 0.95);
+}
+
+[data-theme="dark"] {
+  --light-bg: var(--dark-primary);
+  --dark-text: var(--dark-text-inverse);
+  --card-bg: var(--dark-card-bg);
+  --glass-bg: var(--dark-glass-bg);
+}
+
+/* Add these new rules */
+.highlight-card,
+.timeline-item,
+.species-card,
+.award-card {
+  background: var(--card-bg);
+  color: var(--dark-text);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .highlight-card,
+[data-theme="dark"] .timeline-item,
+[data-theme="dark"] .species-card,
+[data-theme="dark"] .award-card {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-links a {
+  color: var(--dark-text);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.App {
+  min-height: 100vh;
+  background: var(--light-bg);
+  padding-top: 80px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 5%;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo-link {
+  text-decoration: none;
+}
+
+.allorah-logo {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, var(--primary-green), var(--secondary-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: logoFloat 1.5s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--dark-text);
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--primary-green);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-left: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+.footer {
+  background: var(--dark-primary);
+  color: var(--dark-text-inverse);
+  text-align: center;
+  padding: 2rem;
+  margin-top: 5rem;
+}
+/* Add these media queries at the bottom */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 1rem 5%;
+    position: relative;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .theme-toggle {
+    margin-left: auto;
+    margin-right: 1rem;
+  }
+
+  .footer {
+    padding: 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .allorah-logo {
+    font-size: 1.5rem;
+  }
+
+  .nav-links {
+    gap: 0.5rem;
+  }
+
+  .nav-links a {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}

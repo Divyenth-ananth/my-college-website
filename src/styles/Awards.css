@@ -1,0 +1,146 @@
+.awards-container {
+  padding: 4rem 5%;
+  min-height: 100vh;
+}
+
+.awards-container h2 {
+  text-align: center;
+  margin-bottom: 3rem;
+  color: var(--dark-text);
+}
+
+.awards-list {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.award-card {
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.award-card::before {
+  content: '';
+  position: absolute;
+  left: -100%;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(43, 174, 102, 0.1) 0%,
+    rgba(43, 174, 102, 0.05) 100%
+  );
+  transition: left 0.3s ease;
+  z-index: 0;
+}
+
+.award-card:hover::before {
+  left: 0;
+}
+
+.award-content {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.award-year {
+  background: var(--primary-green);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 700;
+  min-width: 80px;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.award-main h3 {
+  color: var(--dark-text);
+  margin-bottom: 0.5rem;
+}
+
+.issuer {
+  color: var(--dark-text);
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+.award-description {
+  padding: 1rem;
+  margin-top: 1rem;
+  background: rgba(43, 174, 102, 0.05);
+  border-radius: 8px;
+  color: var(--dark-text);
+  border-left: 4px solid var(--primary-green);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+/* Add these media queries at the bottom */
+@media (max-width: 768px) {
+  .awards-container {
+    padding: 2rem 5%;
+    min-height: auto;
+  }
+
+  .awards-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .award-card {
+    margin: 1rem 0;
+    padding: 1rem;
+    max-width: 100%;
+  }
+
+  .award-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .award-year {
+    font-size: 1rem;
+    padding: 0.8rem 1rem;
+    min-width: 70px;
+  }
+
+  .award-main h3 {
+    font-size: 1.1rem;
+  }
+
+  .issuer {
+    font-size: 0.85rem;
+  }
+
+  .award-description {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+    margin-top: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .award-card {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .award-card::before {
+    display: none; /* Disable hover effect on mobile */
+  }
+
+  .award-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
