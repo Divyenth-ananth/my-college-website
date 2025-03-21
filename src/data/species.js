@@ -76,23 +76,24 @@ const taxonomy = [
         age: '100+ years',
         height: '10-15 meters',
         lifespan: '100-150 years',
-        image: banyan_tree
+        image: Mango_tree
       },
       {
         id: 5,
-        name: 'Ficus benghalensis',
-        commonName: 'Banyan Tree',
+        name: 'Passiflora caerulea',
+        commonName: 'Rakhee flower',
         class: 'Magnoliopsida',
         phylum: 'Tracheophyta',
-        order: 'Rosales',
-        family: 'Moraceae',
-        conservationStatus: 'Not Evaluated',
-        habitat: 'Tropical regions',
-        description: 'National tree of India with aerial roots',
-        age: '200+ years',
-        height: '20-30 meters',
-        lifespan: 'Indefinite through prop roots',
-        image: banyan_tree  // Added image path here
+        order: 'Malpighiales',
+        family: 'Passifloraceae',
+        conservationStatus: 'Least Concern',
+        habitat: 'Tropical and subtropical regions',
+        description: 'Ornamental vine with intricate blue and white flowers',
+        population: 'Stable',
+        diet: 'Thrives in well-drained, fertile soil with balanced nutrients',
+        growthType: 'Perennial',
+        height: '3-9 m (as a vine)',
+        image: passiflora_caerulea  // Added image path here
       },
       {
         id: 6,
