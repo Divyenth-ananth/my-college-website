@@ -970,7 +970,410 @@ const taxonomy = [
     height: '5–15 cm',
     lifespan: '1 year',
     image: Coldenia
-  }
+  },
+      { 
+
+    id: 43, 
+
+    name: 'Cocos nucifera', 
+
+    commonName: 'Coconut Tree', 
+
+    class: 'Liliopsida', 
+
+    phylum: 'Tracheophyta', 
+
+    order: 'Arecales', 
+
+    family: 'Arecaceae', 
+
+    conservationStatus: 'Not Evaluated', 
+
+    habitat: 'Tropical coastal regions', 
+
+    description: 'Tall palm tree known for its large, edible fruit, the coconut.', 
+
+    age: '60-80 years', 
+
+    height: '20-30 meters', 
+
+    lifespan: '60-100 years', 
+
+    image: Coconut_Tree 
+
+} ,
+      { 
+
+    id: 44, 
+
+    name: 'Emblica officinale', 
+
+    commonName: 'Amla', 
+
+    class: 'Magnoliopsida', 
+
+    phylum: 'Tracheophyta', 
+
+    order: 'Malpighiales', 
+
+    family: 'Phyllanthaceae', 
+
+    conservationStatus: 'Least Concern', 
+
+    habitat: 'Tropical and subtropical regions', 
+
+    description: 'A small to medium-sized tree known for its sour, vitamin C-rich fruit.', 
+
+    age: '50-70 years', 
+
+    height: '8-18 meters', 
+
+    lifespan: '60-70 years', 
+
+    image: Amla 
+
+} ,
+      { 
+
+    id: 45, 
+
+    name: 'Annona squamosa Linn.', 
+
+    commonName: 'Custard Apple', 
+
+    class: 'Magnoliopsida', 
+
+    phylum: 'Tracheophyta', 
+
+    order: 'Magnoliales', 
+
+    family: 'Annonaceae', 
+
+    conservationStatus: 'Least Concern', 
+
+    habitat: 'Tropical and subtropical regions', 
+
+    description: 'A small tree known for its sweet, pulpy fruit with a scaly texture.', 
+
+    age: '20-25 years', 
+
+    height: '3-8 meters', 
+
+    lifespan: '20-30 years', 
+
+    image: Custard_Apple 
+
+} ,
+      { 
+
+    id: 46, 
+
+    name: 'Syzygium cumini', 
+
+    commonName: 'Jamun', 
+
+    class: 'Magnoliopsida', 
+
+    phylum: 'Tracheophyta', 
+
+    order: 'Myrtales', 
+
+    family: 'Myrtaceae', 
+
+    conservationStatus: 'Least Concern', 
+
+    habitat: 'Tropical and subtropical regions', 
+
+    description: 'An evergreen tree known for its dark purple, edible berries with a tangy flavor.', 
+
+    age: '100+ years', 
+
+    height: '10-30 meters', 
+
+    lifespan: '50-100 years', 
+
+    image: Jamun 
+
+} ,
+      { 
+
+    id: 47, 
+
+    name: 'Artocarpus heterophyllus', 
+
+    commonName: 'Jackfruit', 
+
+    class: 'Magnoliopsida', 
+
+    phylum: 'Tracheophyta', 
+
+    order: 'Rosales', 
+
+    family: 'Moraceae', 
+
+    conservationStatus: 'Least Concern', 
+
+    habitat: 'Tropical regions', 
+
+    description: 'A large, tropical tree known for producing the largest tree-borne fruit, with edible sweet bulbs.', 
+
+    age: '100+ years', 
+
+    height: '8-25 meters', 
+
+    lifespan: '60-70 years', 
+
+    image: Jackfruit 
+
+} ,
+      { 
+
+    id: 48, 
+
+    name: 'Citrus sinensis', 
+
+    commonName: 'Sweet Orange', 
+
+    class: 'Magnoliopsida', 
+
+    phylum: 'Tracheophyta', 
+
+    order: 'Sapindales', 
+
+    family: 'Rutaceae', 
+
+    conservationStatus: 'Not Evaluated', 
+
+    habitat: 'Tropical and subtropical regions', 
+
+    description: 'A small to medium-sized tree known for its sweet, juicy orange fruit.', 
+
+    age: '50-100 years', 
+
+    height: '7-15 meters', 
+
+    lifespan: '50-100 years', 
+
+    image: Sweet_Orange 
+
+} ,
+      { 
+
+    id: 49, 
+
+    name: 'Punica granatum', 
+
+    commonName: 'Pomegranate', 
+
+    class: 'Magnoliopsida', 
+
+    phylum: 'Tracheophyta', 
+
+    order: 'Myrtales', 
+
+    family: 'Lythraceae', 
+
+    conservationStatus: 'Least Concern', 
+
+    habitat: 'Tropical and subtropical regions', 
+
+    description: 'A deciduous shrub or small tree known for its large, red fruit filled with juicy seeds.', 
+
+    age: '200+ years', 
+
+    height: '5-10 meters', 
+
+    lifespan: '50-200 years', 
+
+    image: Pomegranate 
+
+} ,
+      { 
+
+    id: 50, 
+
+    name: 'Manilkara zapota', 
+
+    commonName: 'Sapota', 
+
+    class: 'Magnoliopsida', 
+
+    phylum: 'Tracheophyta', 
+
+    order: 'Ericales', 
+
+    family: 'Sapotaceae', 
+
+    conservationStatus: 'Least Concern', 
+
+    habitat: 'Tropical regions', 
+
+    description: 'An evergreen tree known for its sweet, brown, edible fruit with a grainy texture.', 
+
+    age: '50-100 years', 
+
+    height: '9-18 meters', 
+
+    lifespan: '60-100 years', 
+
+    image: Sapota 
+
+} ,
+      { 
+
+    id: 51, 
+
+    name: 'Ficus carica', 
+
+    commonName: 'Fig', 
+
+    class: 'Magnoliopsida', 
+
+    phylum: 'Tracheophyta', 
+
+    order: 'Rosales', 
+
+    family: 'Moraceae', 
+
+    conservationStatus: 'Least Concern', 
+
+    habitat: 'Subtropical and Mediterranean regions', 
+
+    description: 'A small deciduous tree or large shrub known for its edible fruit, the fig.', 
+
+    age: '50-100 years', 
+
+    height: '3-10 meters', 
+
+    lifespan: '50-75 years', 
+
+    image: Fig 
+
+} ,
+      { 
+
+    id: 52, 
+
+    name: 'Azadirachta indica', 
+
+    commonName: 'Neem', 
+
+    class: 'Magnoliopsida', 
+
+    phylum: 'Tracheophyta', 
+
+    order: 'Sapindales', 
+
+    family: 'Meliaceae', 
+
+    conservationStatus: 'Least Concern', 
+
+    habitat: 'Tropical and subtropical regions', 
+
+    description: 'A large, fast-growing evergreen tree known for its medicinal properties and bitter seeds.', 
+
+    age: '150-200 years', 
+
+    height: '15-30 meters', 
+
+    lifespan: '150-200 years', 
+
+    image: Neem 
+
+} ,
+      { 
+
+    id: 53, 
+
+    name: 'Aegle marmelos', 
+
+    commonName: 'Bael', 
+
+    class: 'Magnoliopsida', 
+
+    phylum: 'Tracheophyta', 
+
+    order: 'Sapindales', 
+
+    family: 'Rutaceae', 
+
+    conservationStatus: 'Least Concern', 
+
+    habitat: 'Tropical and subtropical regions', 
+
+    description: 'A medium-sized deciduous tree known for its fragrant flowers and edible, hard-shelled fruit.', 
+
+    age: '100+ years', 
+
+    height: '6-15 meters', 
+
+    lifespan: '60-100 years', 
+
+    image: Bael 
+
+},
+      { 
+
+    id: 54, 
+
+    name: 'Ficus religiosa', 
+
+    commonName: 'Peepal', 
+
+    class: 'Magnoliopsida', 
+
+    phylum: 'Tracheophyta', 
+
+    order: 'Rosales', 
+
+    family: 'Moraceae', 
+
+    conservationStatus: 'Least Concern', 
+
+    habitat: 'Tropical and subtropical regions', 
+
+    description: 'A large, long-living, sacred fig tree known for its heart-shaped leaves.', 
+
+    age: '200+ years', 
+
+    height: '20-30 meters', 
+
+    lifespan: 'Up to 1500 years', 
+
+    image: Peepal 
+
+} ,
+      { 
+
+    id: 55, 
+
+    name: 'Phoenix sylvestris', 
+
+    commonName: 'Wild Date', 
+
+    class: 'Liliopsida', 
+
+    phylum: 'Tracheophyta', 
+
+    order: 'Arecales', 
+
+    family: 'Arecaceae', 
+
+    conservationStatus: 'Least Concern', 
+
+    habitat: 'Tropical and subtropical regions, often near water sources', 
+
+    description: 'A tall palm tree known for its sweet, edible fruit similar to dates.', 
+
+    age: '100+ years', 
+
+    height: '10-15 meters', 
+
+    lifespan: '100-150 years', 
+
+    image: Wild_Date 
+
+} 
 
     ]
   }
