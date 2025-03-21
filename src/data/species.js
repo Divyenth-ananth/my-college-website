@@ -1,6 +1,8 @@
 import banyan_tree from '../assets/Images/banyan_tree.jpeg';
 import tigerImage from '../assets/Images/tiger.jpeg';
 import pavo_cristatus from '../assets/Images/pavo_cristatus.jpeg';
+import cyperus_alternifolius from '../assets/Images/cyperus_alternifolius.jpg';
+import mangifera_indica from '../assets/Images/Mangifera indica.jpg';
 const taxonomy = [
   {
     kingdom: 'Animalia',
@@ -76,7 +78,7 @@ const taxonomy = [
         age: '100+ years',
         height: '10-15 meters',
         lifespan: '100-150 years',
-        image: Mango_tree
+        image: mangifera_indica
       },
       {
         id: 5,
