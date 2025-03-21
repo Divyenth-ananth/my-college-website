@@ -3,7 +3,7 @@ const engine = new BABYLON.Engine(canvas, true);
 const scene = new BABYLON.Scene(engine);
 
 // Camera (First-Person)
-const camera = new BABYLON.UniversalCamera("camera", new BABYLON.Vector3(0, 7, 0), scene);
+const camera = new BABYLON.UniversalCamera("camera", new BABYLON.Vector3(-190, 10, 90), scene);
 camera.attachControl(canvas, true);
 camera.inertia = 0;
 camera.angularSensibility = 1000;
@@ -176,37 +176,36 @@ function loadEnvironment() {
         
         let building = meshes[0];  // Get the main building mesh
         building.position = new BABYLON.Vector3(0, 0, 2500);
-    
-    if (building.material) {
-        // Modify existing material
-        building.material.albedoColor = new BABYLON.Color3(0.2, 0.7, 0.2);  // Greenish color
-        building.material.metallic = 0.3; // Reduce metallic effect
-        building.material.roughness = 0.6; // Make it slightly rough
-    } else {
-        // Create a new material if none exist
-        let newMat = new BABYLON.PBRMaterial("buildingMat", scene);
-        newMat.albedoColor = new BABYLON.Color3(0.2, 0.7, 0.2);  // Greenish color
-        newMat.roughness = 0.6;
-        newMat.metallic = 0.3;
-        building.material = newMat;
-    }
-    
-    // Optional: Apply texture
-    let texture = new BABYLON.Texture("assets/textures/eco_texture.jpg", scene);
-    building.material.albedoTexture = texture;
+        //building.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5); // Adjust scale values as needed
+
+        let woodTexture = new BABYLON.StandardMaterial("woodMaterial", scene);
+        woodTexture.diffuseTexture = new BABYLON.Texture("assets/textures/eco_texture.jpg", scene); 
+
+        // Apply the texture to all child meshes of the cottage
+        meshes.forEach(mesh => {
+        mesh.material = woodTexture;
+        });
     });
 
     BABYLON.SceneLoader.ImportMesh("", "assets/environment/", "Cottage.glb", scene, function (meshes) {
         let cottage = meshes[0]; // The main mesh of the cottage
     
         // Position the cottage in the world
-        cottage.position = new BABYLON.Vector3(-48, 0, 78);  // Adjust coordinates as needed
+        cottage.position = new BABYLON.Vector3(-208, 0, 98);  // Adjust coordinates as needed
     
         // Scale the model if it's too big or small
-        cottage.scaling = new BABYLON.Vector3(0.01, 0.01, 0.01);  // Adjust scale if needed
+        cottage.scaling = new BABYLON.Vector3(0.05, 0.05, 0.05);  // Adjust scale if needed
     
         // Rotate it to face a direction if required
         cottage.rotation.y = BABYLON.Tools.ToRadians(180);  // Rotate by 180 degrees
+
+        let woodTexture = new BABYLON.StandardMaterial("woodMaterial", scene);
+        woodTexture.diffuseTexture = new BABYLON.Texture("assets/textures/eco_texture.jpg", scene); 
+
+        // Apply the texture to all child meshes of the cottage
+        meshes.forEach(mesh => {
+        mesh.material = woodTexture;
+        });
     
         console.log("Cottage loaded successfully!");
     });
