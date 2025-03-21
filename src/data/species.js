@@ -1,8 +1,8 @@
 import banyan_tree from '../assets/Images/banyan_tree.jpeg';
 import tigerImage from '../assets/Images/tiger.jpeg';
 import pavo_cristatus from '../assets/Images/pavo_cristatus.jpeg';
-import cyperus_alternifolius from '../assets/Images/cyperus_alternifolius.jpg';
-import mangifera_indica from '../assets/Images/Mangifera indica.jpg';
+import cyperus_alternifolius from '../assets/Images/cyperus alternifolius.jpg';
+import mangifera_indica from '../assets/Images/mangifera indica.jpg';
 const taxonomy = [
   {
     kingdom: 'Animalia',
@@ -43,7 +43,7 @@ const taxonomy = [
         image: tigerImage // Added image path here
       }
       
-      },
+      ,
         {
         id: 3,
         name: 'Castalius rosimon',
@@ -299,11 +299,11 @@ const taxonomy = [
         size: '80-100 mm wingspan',
         image: papilio_demoleus
     }
-);
-
-
-
     ]
+
+
+
+    
   },
   {
     kingdom: 'Plantae',
@@ -812,7 +812,7 @@ const taxonomy = [
     height: "2-3 meters",
     lifespan: "Several decades",
     image: Karonda
-  }
+  },
   {
     id: 33,
     name: 'Carissa spinarum L.',
@@ -825,7 +825,7 @@ const taxonomy = [
     habitat: 'Dry forests and scrublands.',
     description: 'A thorny shrub bearing small, edible black berries.',
     age: 'Perennial',
-    height: '1–3 meters',
+    height: '1 to 3 meters',
     lifespan: 'Several decades',
     image: Conkerberry
   },
