@@ -41,6 +41,8 @@ const taxonomy = [
         lifespan: '8-10 years (wild)',
         size: '270-310 cm (length)',
         image: tigerImage // Added image path here
+      }
+      
       },
         {
         id: 3,

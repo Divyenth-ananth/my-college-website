@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Trash Thrower - Waste Sorting Challenge</title>
+    <title>TRASHMASTER SAGA</title>
     <style>
         body {
             margin: 0;
@@ -30,17 +30,44 @@
             padding: 5px 15px;
             border-radius: 5px;
         }
+        #objective {
+            font-size: 20px;
+            margin: 5px;
+            color: #333;
+            text-shadow: 1px 1px 2px #fff;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 15px;
+            border-radius: 5px;
+        }
         #message {
             position: absolute;
-            top: 30%;
+            top: 50%; /* Centered vertically */
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 24px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            font-size: 28px; /* Slightly larger for emphasis */
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.4);
             display: none;
+            text-align: center;
+            font-weight: bold;
+            border: 2px solid #333;
+            opacity: 0; /* Start hidden for fade effect */
+            transition: opacity 0.3s ease-in-out; /* Smooth fade transition */
+        }
+        #playAgainButton {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #008000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #playAgainButton:hover {
+            background-color: #006600;
         }
         #powerMeter {
             position: absolute;
@@ -98,10 +125,15 @@
         #playButton:hover {
             background-color: #006600;
         }
+        #playButton:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
     <div id="scoreBoard">Score: 0 | Misses: 0 | Combo: 0x</div>
+    <div id="objective">Objective: Reach 50 points to win!</div>
     <div id="gameContainer">
         <canvas id="gameCanvas" width="800" height="600"></canvas>
         <div id="message"></div>
@@ -112,14 +144,14 @@
     <div id="howToPlayOverlay">
         <div id="howToPlayBox">
             <h2>How to Play</h2>
-            <p>Welcome to Trash Thrower! Sort waste into the correct bins to score points.</p>
+            <p>Welcome to TRASHMASTER SAGA! Sort waste into the correct bins to score points.</p>
             <p><strong>Controls:</strong></p>
             <p>- Use <strong>A</strong> and <strong>D</strong> keys to aim left or right (red line shows direction).</p>
-            <p>- Click and hold the <strong>mouse</strong> to charge power (green line shows trajectory), release to throw.</p>
+            <p>- Click and hold the <strong>mouse</strongBD to charge power (green line shows trajectory), release to throw.</p>
             <p><strong>Objective:</strong></p>
             <p>- Throw trash into the correct bin: Recycling (blue), Compost (green), or Waste (gray).</p>
-            <p>- Earn points for correct throws, build combos, and avoid misses!</p>
-            <button id="playButton">Play</button>
+            <p>- Reach 50 points to win the game!</p>
+            <button id="playButton" disabled>Loading images...</button>
         </div>
     </div>
 
@@ -127,6 +159,7 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreBoard = document.getElementById('scoreBoard');
+        const objectiveDisplay = document.getElementById('objective');
         const message = document.getElementById('message');
         const powerFill = document.getElementById('powerFill');
         const howToPlayOverlay = document.getElementById('howToPlayOverlay');
@@ -139,43 +172,133 @@
         let trash = null;
         let power = 0;
         let chargingPower = false;
-        let angle = 0; // Angle in radians, 0 = straight up, positive = right, negative = left
-        let directionLocked = false; // Flag to lock horizontal direction when charging starts
+        let angle = 0;
+        let directionLocked = false;
+        let gameOver = false;
+        const targetScore = 50;
+        let messageTimeout = null;
 
         const bins = [
-            { x: 200, y: 450, width: 100, height: 150, type: 'recycling', color: '#0000ff', lidAngle: 0, targetLidAngle: 0 },
-            { x: 350, y: 450, width: 100, height: 150, type: 'compost', color: '#008000', lidAngle: 0, targetLidAngle: 0 },
-            { x: 500, y: 450, width: 100, height: 150, type: 'waste', color: '#808080', lidAngle: 0, targetLidAngle: 0 }
+            { x: 200, y: 470, width: 100, height: 150, type: 'recycling', binImage: 'images/dustbin2.png', lidImage: 'images/dustbin2_lid.png', lidAngle: 0, targetLidAngle: 0 },
+            { x: 350, y: 470, width: 100, height: 150, type: 'compost', binImage: 'images/dustbin.png', lidImage: 'images/dustbin_lid.png', lidAngle: 0, targetLidAngle: 0 },
+            { x: 500, y: 465, width: 95, height: 145, type: 'waste', binImage: 'images/dustbin1.png', lidImage: 'images/dustbin1_lid.png', lidAngle: 0, targetLidAngle: 0 }
         ];
 
         const trashTypes = [
-            { name: 'plastic bottle', correctBin: 'recycling', size: 30, color: '#00b7eb', shape: 'bottle' },
-            { name: 'glass jar', correctBin: 'recycling', size: 35, color: '#aaaaaa', shape: 'jar' },
-            { name: 'aluminum can', correctBin: 'recycling', size: 25, color: '#cccccc', shape: 'can' },
-            { name: 'apple core', correctBin: 'compost', size: 20, color: '#8b4513', shape: 'organic' },
-            { name: 'banana peel', correctBin: 'compost', size: 30, color: '#ffff99', shape: 'peel' },
-            { name: 'coffee grounds', correctBin: 'compost', size: 25, color: '#4b2e2e', shape: 'grounds' },
-            { name: 'candy wrapper', correctBin: 'waste', size: 20, color: '#ff69b4', shape: 'wrapper' },
-            { name: 'used tissue', correctBin: 'waste', size: 15, color: '#f0f0f0', shape: 'tissue' },
-            { name: 'styrofoam cup', correctBin: 'waste', size: 30, color: '#ffffff', shape: 'cup' },
-            { name: 'golden trash', correctBin: 'recycling', size: 40, color: '#ffd700', shape: 'special', bonus: 5 }
+            { name: 'PLASTIC BOTTLE', correctBin: 'recycling', size: 100, image: 'images/plastic_bottle.png', bonus: 0 },
+            { name: 'GLASS JAR', correctBin: 'recycling', size: 100, image: 'images/glass_jar.png', bonus: 0 },
+            { name: 'ALUMINUM CAN', correctBin: 'recycling', size: 100, image: 'images/aluminum_can.png', bonus: 0 },
+            { name: 'APPLE CORE', correctBin: 'compost', size: 100, image: 'images/apple_core.png', bonus: 0 },
+            { name: 'BANANA PEEL', correctBin: 'compost', size: 100, image: 'images/banana_peel.png', bonus: 0 },
+            { name: 'COFFEE GROUNDS', correctBin: 'compost', size: 100, image: 'images/coffee_grounds.png', bonus: 0 },
+            { name: 'CANDY WRAPPER', correctBin: 'waste', size: 100, image: 'images/candy_wrapper.png', bonus: 0 },
+            { name: 'USED TISSUE', correctBin: 'waste', size: 100, image: 'images/used_tissue.png', bonus: 0 },
+            { name: 'STYROFOAM CUP', correctBin: 'waste', size: 100, image: 'images/styrofoam_cup.png', bonus: 0 }
         ];
 
         const gravity = 0.5;
         const friction = 0.98;
 
+        // Preload images (background, trash, bins, and lids)
+        const trashImages = {};
+        const binImages = {};
+        const lidImages = {};
+        let backgroundImage = new Image();
+        backgroundImage.src = 'images/background.jpg'; // Replace with your background image path
+        let imagesLoaded = 0;
+        const totalImages = trashTypes.length + bins.length * 2 + 1; // +1 for background
+
+        function preloadImages() {
+            backgroundImage.onload = () => {
+                imagesLoaded++;
+                if (imagesLoaded === totalImages) {
+                    playButton.disabled = false;
+                    playButton.textContent = 'Play';
+                }
+            };
+            backgroundImage.onerror = () => {
+                console.error('Failed to load background image');
+                imagesLoaded++;
+                if (imagesLoaded === totalImages) {
+                    playButton.disabled = false;
+                    playButton.textContent = 'Play';
+                }
+            };
+
+            trashTypes.forEach(trash => {
+                const img = new Image();
+                img.src = trash.image;
+                img.onload = () => {
+                    imagesLoaded++;
+                    if (imagesLoaded === totalImages) {
+                        playButton.disabled = false;
+                        playButton.textContent = 'Play';
+                    }
+                };
+                img.onerror = () => {
+                    console.error(`Failed to load image: ${trash.image}`);
+                    imagesLoaded++;
+                    if (imagesLoaded === totalImages) {
+                        playButton.disabled = false;
+                        playButton.textContent = 'Play';
+                    }
+                };
+                trashImages[trash.name] = img;
+            });
+
+            bins.forEach(bin => {
+                const binImg = new Image();
+                binImg.src = bin.binImage;
+                binImg.onload = () => {
+                    imagesLoaded++;
+                    if (imagesLoaded === totalImages) {
+                        playButton.disabled = false;
+                        playButton.textContent = 'Play';
+                    }
+                };
+                binImg.onerror = () => {
+                    console.error(`Failed to load image: ${bin.binImage}`);
+                    imagesLoaded++;
+                    if (imagesLoaded === totalImages) {
+                        playButton.disabled = false;
+                        playButton.textContent = 'Play';
+                    }
+                };
+                binImages[bin.type] = binImg;
+
+                const lidImg = new Image();
+                lidImg.src = bin.lidImage;
+                lidImg.onload = () => {
+                    imagesLoaded++;
+                    if (imagesLoaded === totalImages) {
+                        playButton.disabled = false;
+                        playButton.textContent = 'Play';
+                    }
+                };
+                lidImg.onerror = () => {
+                    console.error(`Failed to load image: ${bin.lidImage}`);
+                    imagesLoaded++;
+                    if (imagesLoaded === totalImages) {
+                        playButton.disabled = false;
+                        playButton.textContent = 'Play';
+                    }
+                };
+                lidImages[bin.type] = lidImg;
+            });
+        }
+        preloadImages();
+
         class Trash {
             constructor() {
                 const type = trashTypes[Math.floor(Math.random() * trashTypes.length)];
-                this.x = canvas.width / 2; // Start from center
+                this.x = canvas.width / 2;
                 this.y = canvas.height - 100;
                 this.vx = 0;
                 this.vy = 0;
                 this.type = type.name;
                 this.correctBin = type.correctBin;
                 this.size = type.size;
-                this.color = type.color;
-                this.shape = type.shape;
+                this.image = trashImages[type.name];
                 this.bonus = type.bonus || 0;
                 this.isThrown = false;
                 this.rotation = 0;
@@ -194,50 +317,21 @@
                 ctx.scale(this.shrink, this.shrink);
                 ctx.globalAlpha = this.opacity;
 
-                ctx.fillStyle = this.color;
-                ctx.strokeStyle = '#333';
-                ctx.lineWidth = 2;
-
-                switch(this.shape) {
-                    case 'bottle':
-                        ctx.beginPath();
-                        ctx.moveTo(-this.size * 0.3, -this.size);
-                        ctx.lineTo(this.size * 0.3, -this.size);
-                        ctx.lineTo(this.size * 0.4, this.size);
-                        ctx.lineTo(-this.size * 0.4, this.size);
-                        ctx.closePath();
-                        ctx.fill();
-                        ctx.stroke();
-                        break;
-                    case 'can':
-                        ctx.fillRect(-this.size * 0.5, -this.size, this.size, this.size * 2);
-                        ctx.strokeRect(-this.size * 0.5, -this.size, this.size, this.size * 2);
-                        break;
-                    case 'organic':
-                    case 'grounds':
-                        ctx.beginPath();
-                        ctx.arc(0, 0, this.size, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.stroke();
-                        break;
-                    case 'special':
-                        ctx.beginPath();
-                        ctx.moveTo(0, -this.size);
-                        ctx.lineTo(this.size * 0.87, this.size * 0.5);
-                        ctx.lineTo(-this.size * 0.87, this.size * 0.5);
-                        ctx.closePath();
-                        ctx.fill();
-                        ctx.stroke();
-                        break;
-                    default:
-                        ctx.fillRect(-this.size * 0.6, -this.size * 0.6, this.size * 1.2, this.size * 1.2);
-                        ctx.strokeRect(-this.size * 0.6, -this.size * 0.6, this.size * 1.2, this.size * 1.2);
+                if (this.image && this.image.complete) {
+                    const aspectRatio = this.image.width / this.image.height;
+                    let drawWidth = this.size;
+                    let drawHeight = this.size;
+                    if (aspectRatio > 1) {
+                        drawHeight = this.size / aspectRatio;
+                    } else {
+                        drawWidth = this.size * aspectRatio;
+                    }
+                    ctx.drawImage(this.image, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
+                } else {
+                    ctx.fillStyle = '#ccc';
+                    ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
                 }
 
-                ctx.fillStyle = '#000';
-                ctx.font = '12px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText(this.type, 0, 4);
                 ctx.restore();
 
                 if (!this.isThrown && !this.fallingIntoBin) {
@@ -250,28 +344,26 @@
                 let tx = this.x;
                 let ty = this.y;
 
-                // Horizontal trajectory (always shown)
                 ctx.beginPath();
-                ctx.strokeStyle = 'rgba(255,0,0,0.9)'; // Bright red, more visible
-                ctx.lineWidth = 3; // Thicker line
+                ctx.strokeStyle = 'rgba(255,0,0,0.9)';
+                ctx.lineWidth = 3;
                 ctx.moveTo(tx, ty);
-                const maxHorizontal = 300; // Fixed distance for preview
-                const hVel = 10 * Math.sin(angle); // Constant velocity for visibility
+                const maxHorizontal = 300;
+                const hVel = 10 * Math.sin(angle);
                 for (let i = 0; i < steps; i++) {
                     tx += hVel;
                     if (tx > canvas.width || tx < 0) break;
-                    ctx.lineTo(tx, ty); // Flat horizontal line
+                    ctx.lineTo(tx, ty);
                 }
                 ctx.stroke();
 
-                // Full trajectory (horizontal + vertical) when charging power
                 if (chargingPower) {
-                    tx = this.x; // Reset tx
-                    ty = this.y; // Reset ty
-                    let tvx = power * 0.4 * Math.sin(angle); // Horizontal based on locked angle
-                    let tvy = -power * 0.4; // Vertical based on power
+                    tx = this.x;
+                    ty = this.y;
+                    let tvx = power * 0.4 * Math.sin(angle);
+                    let tvy = -power * 0.4;
                     ctx.beginPath();
-                    ctx.strokeStyle = 'rgba(0,255,0,0.9)'; // Bright green
+                    ctx.strokeStyle = 'rgba(0,255,0,0.9)';
                     ctx.lineWidth = 3;
                     ctx.moveTo(tx, ty);
                     for (let i = 0; i < steps; i++) {
@@ -288,6 +380,8 @@
             }
 
             update() {
+                if (gameOver) return;
+
                 if (this.isThrown && !this.fallingIntoBin) {
                     this.vy += gravity;
                     this.x += this.vx;
@@ -310,7 +404,7 @@
                     bins.forEach(bin => {
                         if (this.x > bin.x + 10 && this.x < bin.x + bin.width - 10 &&
                             this.y > bin.y - this.size && this.y < bin.y + 20 &&
-                            this.vy > 0) { // Only catch when falling
+                            this.vy > 0) {
                             this.fallingIntoBin = true;
                             this.binX = bin.x + bin.width / 2;
                             this.binY = bin.y + bin.height - 10;
@@ -324,6 +418,12 @@
                                 score += points;
                                 showMessage(`Correct! +${points} points (Combo: ${combo}x)`);
                                 bin.targetLidAngle = Math.PI / 3;
+
+                                if (score >= targetScore) {
+                                    gameOver = true;
+                                    showWinMessage();
+                                    return;
+                                }
                             } else {
                                 misses++;
                                 combo = 0;
@@ -338,22 +438,62 @@
         }
 
         function drawBackground() {
-            ctx.fillStyle = '#7cfc00';
-            ctx.fillRect(0, canvas.height - 150, canvas.width, 150);
-            ctx.fillStyle = '#87ceeb';
-            ctx.fillRect(0, 0, canvas.width, canvas.height - 150);
-            
-            ctx.fillStyle = '#fff';
-            ctx.beginPath();
-            ctx.arc(150, 100, 30, 0, Math.PI * 2);
-            ctx.arc(180, 90, 40, 0, Math.PI * 2);
-            ctx.arc(210, 100, 30, 0, Math.PI * 2);
-            ctx.fill();
+            // Draw the background image if it loaded successfully
+            if (backgroundImage && backgroundImage.complete) {
+                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+            } else {
+                // Fallback: Enhanced 2D background
+                // Gradient sky
+                const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height - 150);
+                skyGradient.addColorStop(0, '#87ceeb');
+                skyGradient.addColorStop(1, '#e0f7fa');
+                ctx.fillStyle = skyGradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height - 150);
 
-            ctx.fillStyle = '#ffff00';
-            ctx.beginPath();
-            ctx.arc(700, 80, 40, 0, Math.PI * 2);
-            ctx.fill();
+                // Textured ground
+                const groundGradient = ctx.createLinearGradient(0, canvas.height - 150, 0, canvas.height);
+                groundGradient.addColorStop(0, '#4caf50');
+                groundGradient.addColorStop(1, '#388e3c');
+                ctx.fillStyle = groundGradient;
+                ctx.fillRect(0, canvas.height - 150, canvas.width, 150);
+
+                // More realistic clouds
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.beginPath();
+                ctx.arc(150, 100, 40, 0, Math.PI * 2);
+                ctx.arc(180, 90, 50, 0, Math.PI * 2);
+                ctx.arc(210, 100, 40, 0, Math.PI * 2);
+                ctx.arc(160, 120, 30, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.beginPath();
+                ctx.arc(500, 120, 50, 0, Math.PI * 2);
+                ctx.arc(530, 110, 60, 0, Math.PI * 2);
+                ctx.arc(560, 120, 50, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Sun with rays
+                ctx.fillStyle = '#ffeb3b';
+                ctx.beginPath();
+                ctx.arc(700, 80, 40, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.strokeStyle = 'rgba(255, 235, 59, 0.5)';
+                ctx.lineWidth = 2;
+                for (let i = 0; i < 12; i++) {
+                    const angle = (i / 12) * Math.PI * 2;
+                    const length = 60;
+                    const x1 = 700 + Math.cos(angle) * 40;
+                    const y1 = 80 + Math.sin(angle) * 40;
+                    const x2 = 700 + Math.cos(angle) * length;
+                    const y2 = 80 + Math.sin(angle) * length;
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                }
+            }
         }
 
         function drawBins() {
@@ -364,78 +504,146 @@
                 ctx.save();
                 ctx.translate(bin.x + bin.width / 2, bin.y);
 
-                ctx.shadowColor = 'rgba(0,0,0,0.3)';
-                ctx.shadowBlur = 10;
-                ctx.shadowOffsetY = 5;
-                const gradient = ctx.createLinearGradient(0, 0, 0, bin.height);
-                gradient.addColorStop(0, bin.color);
-                gradient.addColorStop(1, darkenColor(bin.color, 0.2));
-                ctx.fillStyle = gradient;
-                ctx.fillRect(-bin.width/2, -bin.height, bin.width, bin.height);
-                ctx.shadowBlur = 0;
-                ctx.shadowOffsetY = 0;
+                const binImg = binImages[bin.type];
+                if (binImg && binImg.complete) {
+                    ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                    ctx.shadowBlur = 10;
+                    ctx.shadowOffsetY = 5;
+                    ctx.drawImage(binImg, -bin.width / 2, -bin.height, bin.width, bin.height);
+                    ctx.shadowBlur = 0;
+                    ctx.shadowOffsetY = 0;
+                } else {
+                    ctx.fillStyle = '#808080';
+                    ctx.fillRect(-bin.width / 2, -bin.height, bin.width, bin.height);
+                }
 
-                ctx.save();
-                ctx.translate(0, -bin.height);
-                ctx.rotate(bin.lidAngle);
-                ctx.fillStyle = darkenColor(bin.color, 0.3);
-                ctx.fillRect(-bin.width/2, -15, bin.width, 15);
-                ctx.strokeStyle = '#333';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(-bin.width/2, -15, bin.width, 15);
-                ctx.restore();
+                const lidImg = lidImages[bin.type];
+                if (lidImg && lidImg.complete) {
+                    ctx.save();
+                    ctx.translate(0, -bin.height);
+                    ctx.rotate(bin.lidAngle);
+                    ctx.drawImage(lidImg, -bin.width / 2, -15, bin.width, 15);
+                    ctx.restore();
+                } else {
+                    ctx.save();
+                    ctx.translate(0, -bin.height);
+                    ctx.rotate(bin.lidAngle);
+                    ctx.fillStyle = '#666';
+                    ctx.fillRect(-bin.width / 2, -15, bin.width, 15);
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(-bin.width / 2, -15, bin.width, 15);
+                    ctx.restore();
+                }
 
-                // Draw text in the center of the bin
+                // Draw text above the bin
                 ctx.fillStyle = '#fff';
-                ctx.font = 'bold 16px Arial';
+                ctx.font = 'bold 14px Arial';
                 ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle'; // Vertically center the text
-                ctx.fillText(bin.type.toUpperCase(), 0, -bin.height / 2); // Centered vertically and horizontally
+                ctx.textBaseline = 'middle';
+                ctx.fillText(bin.type.toUpperCase(), 0, -bin.height - 20);
 
                 ctx.restore();
             });
         }
 
-        function darkenColor(color, percent) {
-            const num = parseInt(color.replace("#", ""), 16);
-            const r = Math.max(0, (num >> 16) * (1 - percent));
-            const g = Math.max(0, ((num >> 8) & 0xFF) * (1 - percent));
-            const b = Math.max(0, (num & 0xFF) * (1 - percent));
-            return `#${(0x1000000 + Math.round(r) * 0x10000 + Math.round(g) * 0x100 + Math.round(b)).toString(16).slice(1)}`;
-        }
-
         function spawnNewTrash() {
+            if (gameOver) return;
             trash = new Trash();
             power = 0;
             chargingPower = false;
             powerFill.style.width = '0%';
-            angle = 0; // Start straight up
-            directionLocked = false; // Reset direction lock
+            angle = 0;
+            directionLocked = false;
+            showTrashNamePopup(trash.type); // Show the name of the new trash
         }
 
         function showMessage(text) {
+            if (gameOver) return;
+            if (messageTimeout) {
+                clearTimeout(messageTimeout);
+            }
             message.textContent = text;
             message.style.display = 'block';
+            message.style.opacity = '1';
             message.style.color = text.includes('Correct') ? '#008000' : '#ff0000';
-            setTimeout(() => {
-                message.style.display = 'none';
+            messageTimeout = setTimeout(() => {
+                message.style.opacity = '0';
+                setTimeout(() => {
+                    if (!gameOver) {
+                        message.style.display = 'none';
+                    }
+                }, 300); // Match transition duration
             }, 1500);
         }
 
+        function showWinMessage() {
+            if (messageTimeout) {
+                clearTimeout(messageTimeout);
+            }
+            message.innerHTML = `Congratulations! You've won!<br>Final Score: ${score}<br><button id="playAgainButton">Play Again</button>`;
+            message.style.display = 'block';
+            message.style.opacity = '1';
+            message.style.color = '#008000';
+
+            const playAgainButton = document.getElementById('playAgainButton');
+            playAgainButton.addEventListener('click', resetGame);
+        }
+
+        function showTrashNamePopup(trashName) {
+            if (gameOver) return;
+            if (messageTimeout) {
+                clearTimeout(messageTimeout);
+            }
+            message.textContent = trashName;
+            message.style.display = 'block';
+            message.style.color = '#333';
+            message.style.opacity = '0'; // Start at 0 for fade-in
+            // Fade in
+            setTimeout(() => {
+                message.style.opacity = '1';
+            }, 10); // Small delay to trigger transition
+            // Fade out after 1 second
+            messageTimeout = setTimeout(() => {
+                message.style.opacity = '0';
+                setTimeout(() => {
+                    if (!gameOver) {
+                        message.style.display = 'none';
+                    }
+                }, 300); // Match transition duration
+            }, 1000);
+        }
+
+        function resetGame() {
+            score = 0;
+            misses = 0;
+            combo = 0;
+            trash = null;
+            power = 0;
+            chargingPower = false;
+            angle = 0;
+            directionLocked = false;
+            gameOver = false;
+            message.style.display = 'none';
+            powerFill.style.width = '0%';
+            spawnNewTrash();
+        }
+
         function updateMeters() {
+            if (gameOver) return;
             if (chargingPower && power < 100) {
                 power += 2;
                 powerFill.style.width = `${power}%`;
             }
         }
 
-        // Keyboard controls for horizontal direction with A and D
         const keys = {
             'a': false,
             'd': false
         };
 
         window.addEventListener('keydown', (e) => {
+            if (gameOver) return;
             if (trash && !trash.isThrown && !directionLocked && e.key.toLowerCase() in keys) {
                 e.preventDefault();
                 keys[e.key.toLowerCase()] = true;
@@ -450,32 +658,34 @@
         });
 
         function updateAngle() {
+            if (gameOver) return;
             if (trash && !trash.isThrown && !directionLocked) {
                 if (keys['a']) {
-                    angle -= 0.03; // Reduced sensitivity
+                    angle -= 0.03;
                 }
                 if (keys['d']) {
-                    angle += 0.03; // Reduced sensitivity
+                    angle += 0.03;
                 }
-                angle = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, angle)); // Limit to ±90°
+                angle = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, angle));
             }
         }
 
-        // Mouse controls for vertical force and throw
         canvas.addEventListener('mousedown', (e) => {
+            if (gameOver) return;
             if (trash && !trash.isThrown && e.button === 0) {
                 chargingPower = true;
-                directionLocked = true; // Lock horizontal direction when charging starts
+                directionLocked = true;
             }
         });
 
         canvas.addEventListener('mouseup', (e) => {
+            if (gameOver) return;
             if (trash && !trash.isThrown && e.button === 0 && chargingPower) {
                 chargingPower = false;
                 const throwPower = Math.max(power, 20);
                 trash.isThrown = true;
-                trash.vx = throwPower * 0.4 * Math.sin(angle); // Horizontal based on locked angle
-                trash.vy = -throwPower * 0.4; // Vertical force based on power
+                trash.vx = throwPower * 0.4 * Math.sin(angle);
+                trash.vy = -throwPower * 0.4;
                 trash.rotSpeed = throwPower * 0.005 * (Math.random() > 0.5 ? 1 : -1);
             }
         });
@@ -487,7 +697,7 @@
             if (trash) {
                 trash.update();
                 trash.draw();
-            } else {
+            } else if (!gameOver) {
                 spawnNewTrash();
             }
             updateMeters();
@@ -497,11 +707,10 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // Start game only when Play button is clicked
         playButton.addEventListener('click', () => {
-            howToPlayOverlay.style.display = 'none'; // Hide the overlay
-            spawnNewTrash(); // Initialize the first trash
-            gameLoop(); // Start the game loop
+            howToPlayOverlay.style.display = 'none';
+            spawnNewTrash();
+            gameLoop();
         });
     </script>
 </body>

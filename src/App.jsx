@@ -9,6 +9,7 @@ import "./App.css";
 import logo from "./assets/Images/Logo.svg";
 import Metaverse from "./pages/Metaverse";
 import Games from './pages/Games';
+import GamePage from './pages/GamePage';
 
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
           <Route path="/awards" element={<Awards />} />
           <Route path="/metaverse" element={<Metaverse />} />
           <Route path="/games" element={<Games />} />
+          <Route path="/games/:gameFile" element={<GamePage />} />
         </Routes>
 
         <footer className="footer">

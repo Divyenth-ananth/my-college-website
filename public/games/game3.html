@@ -3,438 +3,988 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Starlight Guardian: IIT Tirupati</title>
+    <title>Lights Out: The Night Sky Challenge</title>
     <style>
         body {
             margin: 0;
-            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(180deg, #000000 0%, #000033 100%);
+            color: #fff;
+            overflow: hidden;
             height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        body::before {
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000"><circle cx="500" cy="500" r="1" fill="white" opacity="0.8"/><circle cx="200" cy="300" r="1.5" fill="white" opacity="0.6"/><circle cx="800" cy="700" r="1" fill="white" opacity="0.7"/><circle cx="400" cy="100" r="2" fill="white" opacity="0.5"/><circle cx="600" cy="900" r="1.2" fill="white" opacity="0.9"/></svg>') repeat;
+            opacity: 0.6;
+        }
+        body::after {
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000"><circle cx="300" cy="200" r="1" fill="white" opacity="0.7"/><circle cx="700" cy="400" r="1.5" fill="white" opacity="0.5"/><circle cx="100" cy="800" r="1.2" fill="white" opacity="0.8"/><circle cx="500" cy="600" r="2" fill="white" opacity="0.6"/></svg>') repeat;
+            opacity: 0.4;
+        }
+        #game-container {
+            width: 900px;
+            height: 650px;
+            position: relative;
+            display: none;
+            background: rgba(0, 0, 51, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0, 204, 255, 0.3);
+            backdrop-filter: blur(5px);
+            z-index: 1;
+        }
+        #start-screen, #win-screen, #lose-screen, #instructions-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: radial-gradient(circle at center, #0d1b2a, #1b263b);
-            font-family: 'Orbitron', sans-serif;
-            overflow: hidden;
-        }
-        #gameContainer {
-            position: relative;
-            width: 800px;
-            height: 600px;
-            border-radius: 15px;
-            border: 2px solid #00ced1;
-        }
-        canvas {
-            background: #0d1b2a;
-            border-radius: 15px;
-        }
-        #ui {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e90ff;
-            padding: 10px 25px;
-            border-radius: 25px;
-            color: #fff;
-            display: flex;
-            gap: 30px;
-        }
-        #ui span {
-            font-size: 20px;
-        }
-        #energyBar {
-            position: absolute;
-            top: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 200px;
-            height: 20px;
-            background: #333;
-            border: 2px solid #fff;
-            border-radius: 10px;
-        }
-        #energyFill {
-            height: 100%;
-            background: #00ced1;
-            border-radius: 8px;
-            transition: width 0.3s;
-        }
-        #title {
-            position: absolute;
-            top: -60px;
-            width: 100%;
-            text-align: center;
-            font-size: 32px;
-            color: #00ced1;
-        }
-        #levelUp {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 48px;
-            color: #ffd700;
-            opacity: 0;
-            pointer-events: none;
-        }
-        #factBox {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #0d1b2a;
-            padding: 20px;
-            border-radius: 10px;
-            border: 2px solid #fffacd;
-            color: #fff;
-            font-size: 16px;
-            text-align: center;
-            max-width: 400px;
-            opacity: 0;
-            pointer-events: none;
+            background: rgba(0, 0, 51, 0.8);
+            z-index: 10;
+            border-radius: 20px;
             transition: opacity 0.5s;
         }
-        @keyframes fadeOut {
-            to { opacity: 0; }
+        #instructions-screen {
+            background: linear-gradient(135deg, rgba(0, 0, 51, 0.9), rgba(51, 51, 102, 0.9));
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 204, 255, 0.5);
+            overflow-y: auto;
+        }
+        #start-screen, #win-screen, #lose-screen {
+            display: none;
+        }
+        h1 {
+            font-size: 64px;
+            text-shadow: 0 0 15px #00ccff, 0 0 30px #0066ff;
+            margin: 0;
+        }
+        h3 {
+            font-size: 24px;
+            margin: 10px 0;
+            text-shadow: 0 0 10px #00ccff;
+        }
+        #countdown, #win-text, #lose-text {
+            font-size: 80px;
+            font-weight: bold;
+            text-shadow: 0 0 20px currentColor;
+        }
+        #countdown { color: #ff6666; }
+        #win-text { color: #00ff99; }
+        #lose-text { color: #ff3333; }
+        #instructions-text {
+            font-size: 18px;
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.5;
+            margin: 20px 0;
+            text-shadow: 0 0 5px #000;
+        }
+        #start-btn {
+            padding: 15px 40px;
+            font-size: 20px;
+            color: #fff;
+            background: linear-gradient(45deg, #00ccff, #0066ff);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 204, 255, 0.5);
+        }
+        #start-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 204, 255, 0.8);
+        }
+        #difficulty-container {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 300px;
+        }
+        #difficulty-label {
+            font-size: 22px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #00ccff;
+            color: #fff;
+        }
+        #difficulty {
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: 2px solid #00ccff;
+            width: 100%;
+            max-width: 250px;
+            box-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+            appearance: none;
+            cursor: pointer;
+            text-align: center;
+        }
+        #difficulty option {
+            background: rgba(0, 0, 51, 0.9);
+            color: #fff;
+            padding: 10px;
+        }
+        #difficulty:focus {
+            outline: none;
+            border-color: #00ff99;
+        }
+        #status-bar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            height: 60px;
+            background: linear-gradient(90deg, rgba(0, 0, 51, 0.9), rgba(51, 51, 102, 0.9));
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 4px 15px rgba(0, 204, 255, 0.3);
+            z-index: 5;
+        }
+        .status-item {
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 5px #000;
+        }
+        #clarity {
+            color: #00ff99;
+            text-shadow: 0 0 10px #00ff99, 0 0 5px #000;
+        }
+        .zones-container {
+            position: absolute;
+            top: 360px;
+            left: 60px;
+            right: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 5;
+        }
+        .zone {
+            width: 220px;
+            height: 120px;
+            border-radius: 15px;
+            text-align: center;
+            line-height: 120px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            z-index: 5;
+        }
+        .zone:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 204, 255, 0.7);
+        }
+        .selected {
+            border: 4px solid #00ccff;
+            box-shadow: 0 0 25px #00ccff;
+        }
+        #residential { 
+            background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=220&h=120&q=80'); 
+        }
+        #commercial { 
+            background-image: url('https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=220&h=120&q=80'); 
+        }
+        #park { 
+            background-image: url('https://images.unsplash.com/photo-1598251959652-189c2f8b6f57?q=80&w=220&h=120&auto=format&fit=crop'); 
+            background-color: transparent !important;
+        }
+        .zone span {
+            position: relative;
+            z-index: 1;
+            background: rgba(0, 0, 51, 0.7);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .button-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 5;
+        }
+        .solution-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 204, 255, 0.5);
+            background: linear-gradient(45deg, #00ccff, #0066ff);
+            position: relative;
+        }
+        .solution-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 204, 255, 0.8);
+        }
+        .solution-btn:hover::after {
+            content: attr(data-description);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 51, 0.9);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            white-space: nowrap;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(0, 204, 255, 0.5);
+            pointer-events: none;
+        }
+        #btn-led { background: linear-gradient(45deg, #0066ff, #33ccff); }
+        #btn-motion { background: linear-gradient(45deg, #00cc00, #66ff66); }
+        #btn-dim { background: linear-gradient(45deg, #ffcc00, #ffff66); }
+        .star {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            opacity: 0;
+            transition: opacity 0.8s ease, transform 0.5s ease;
+            z-index: 2;
+        }
+        .star.visible {
+            opacity: 1;
+            transform: scale(1.2);
+            animation: twinkle 2s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+        .star svg {
+            width: 100%;
+            height: 100%;
+            fill: #fff;
+            filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.8));
+        }
+        .star-label {
+            transition: opacity 0.5s ease;
+            text-shadow: 0 0 5px #00ff99;
+        }
+        #constellation-lines, #win-constellation-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            z-index: 3;
+            pointer-events: none;
+        }
+        #constellation-lines.visible, #win-constellation-lines.visible {
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+        #constellation-lines path, #win-constellation-lines path {
+            stroke: #00ff99;
+            stroke-width: 2;
+            stroke-dasharray: 500;
+            stroke-dashoffset: 500;
+            animation: drawLine 2s forwards, glow 1.5s infinite alternate;
+        }
+        @keyframes drawLine {
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes glow {
+            0% { stroke: #00ff99; filter: drop-shadow(0 0 2px #00ff99); }
+            100% { stroke: #33ffcc; filter: drop-shadow(0 0 5px #33ffcc); }
+        }
+        #event-message, #action-message {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #000;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 5;
+        }
+        #event-message { top: 80px; color: #ffcc00; }
+        #action-message { top: 120px; color: #ffffff; }
+        #zone-table {
+            width: 300px;
+            height: fit-content;
+            background: rgba(0, 0, 51, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0, 204, 255, 0.3);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            z-index: 5;
+            position: absolute;
+            right: 20px;
+            top: 80px;
+        }
+        #zone-table h2 {
+            font-size: 20px;
+            text-align: center;
+            margin: 0 0 10px 0;
+            text-shadow: 0 0 10px #00ccff;
+        }
+        #zone-table table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #fff;
+            font-size: 14px;
+        }
+        #zone-table th, #zone-table td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+        #zone-table th {
+            background: linear-gradient(90deg, rgba(0, 0, 51, 0.9), rgba(51, 51, 102, 0.9));
+            font-weight: bold;
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="gameContainer">
-        <div id="title">Starlight Guardian: IIT Tirupati</div>
-        <div id="ui">
-            <span id="stars">Stars: 0</span>
-            <span id="energy">Energy: 50</span>
-            <span id="level">Level: 1</span>
-            <span id="combo">Combo: 0x</span>
-            <span id="timer">Time: 60</span>
-            <span id="lamps">Lamps Off: 0/3</span>
+    <div id="instructions-screen">
+        <h1>How to Play</h1>
+        <div id="instructions-text">
+            Welcome to Lights Out! Your goal is to reduce light pollution to reveal a monthly constellation.<br><br>
+            1. Click a zone (Residential, Commercial, or Park) to select it.<br>
+            2. Choose a solution to reduce its light pollution, costing budget.<br>
+            3. Optimal solutions earn +$50—hover over buttons for details!<br>
+            4. Watch stars appear—reach the goal to see this month's constellation fully formed!<br><br>
+            Save the night sky before time runs out!
         </div>
-        <div id="energyBar"><div id="energyFill" style="width: 100%;"></div></div>
-        <div id="levelUp">Level Up!</div>
-        <div id="factBox"></div>
-        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div id="difficulty-container">
+            <label id="difficulty-label" for="difficulty">Select Difficulty:</label>
+            <select id="difficulty">
+                <option value="easy">Easy</option>
+                <option value="normal" selected>Normal</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
+        <button id="start-btn">Start</button>
+    </div>
+    <div id="start-screen">
+        <h1>Lights Out</h1>
+        <h3>The Night Sky Challenge</h3>
+        <div id="countdown"></div>
+    </div>
+    <div id="win-screen">
+        <h1>Victory!</h1>
+        <div id="win-text"></div>
+    </div>
+    <div id="lose-screen">
+        <h1>Time's Up!</h1>
+        <div id="lose-text">Sky Lost</div>
+    </div>
+    <div id="game-container">
+        <div id="status-bar">
+            <span id="budget" class="status-item">Budget: $1000</span>
+            <span id="timer" class="status-item">Time: 3:00</span>
+            <span id="clarity" class="status-item">Sky Clarity: 0/7 stars</span>
+        </div>
+        <div id="event-message"></div>
+        <div id="action-message"></div>
+        <svg id="constellation-lines"></svg>
+        <div class="zones-container">
+            <div id="residential" class="zone"><span>Residential</span></div>
+            <div id="commercial" class="zone"><span>Commercial</span></div>
+            <div id="park" class="zone"><span>Park</span></div>
+        </div>
+        <div class="button-container">
+            <button id="btn-led" class="solution-btn" data-description="Redirects light downward to reduce sky glow, ideal for homes.">Shielded LEDs ($200)</button>
+            <button id="btn-motion" class="solution-btn" data-description="Lights activate only when needed, perfect for busy areas.">Motion Sensors ($150)</button>
+            <button id="btn-dim" class="solution-btn" data-description="Lowers brightness to save energy, great for quiet spaces.">Dim Lights ($100)</button>
+        </div>
+    </div>
+    <div id="zone-table">
+        <h2>Light Pollution Status</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Zone</th>
+                    <th>Original Light</th>
+                    <th>Current Light</th>
+                    <th>% Reduced</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <tr>
+                    <td>Residential</td>
+                    <td>80</td>
+                    <td>80</td>
+                    <td>0%</td>
+                </tr>
+                <tr>
+                    <td>Commercial</td>
+                    <td>90</td>
+                    <td>90</td>
+                    <td>0%</td>
+                </tr>
+                <tr>
+                    <td>Park</td>
+                    <td>30</td>
+                    <td>30</td>
+                    <td>0%</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
+    <!-- Audio Elements -->
+    <audio id="click-sound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
+    <audio id="win-sound" src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3"></audio>
+    <audio id="event-sound" src="https://www.soundjay.com/misc/sounds/chime-01.mp3"></audio>
+
     <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const starsUI = document.getElementById('stars');
-        const energyUI = document.getElementById('energy');
-        const levelUI = document.getElementById('level');
-        const comboUI = document.getElementById('combo');
-        const timerUI = document.getElementById('timer');
-        const lampsUI = document.getElementById('lamps');
-        const levelUpText = document.getElementById('levelUp');
-        const factBox = document.getElementById('factBox');
-        const energyFill = document.getElementById('energyFill');
+        // DOM Elements
+        const gameContainer = document.getElementById('game-container');
+        const instructionsScreen = document.getElementById('instructions-screen');
+        const startScreen = document.getElementById('start-screen');
+        const winScreen = document.getElementById('win-screen');
+        const loseScreen = document.getElementById('lose-screen');
+        const countdownEl = document.getElementById('countdown');
+        const budgetEl = document.getElementById('budget');
+        const timerEl = document.getElementById('timer');
+        const clarityEl = document.getElementById('clarity');
+        const eventMessage = document.getElementById('event-message');
+        const actionMessage = document.getElementById('action-message');
+        const tableBody = document.getElementById('table-body');
+        const zoneTable = document.getElementById('zone-table');
+        const startBtn = document.getElementById('start-btn');
+        const constellationLines = document.getElementById('constellation-lines');
+        const clickSound = document.getElementById('click-sound');
+        const winSound = document.getElementById('win-sound');
+        const eventSound = document.getElementById('event-sound');
 
-        // Sound effects
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playSound(frequency, duration) {
-            const oscillator = audioCtx.createOscillator();
-            oscillator.type = 'sine';
-            oscillator.frequency.value = frequency;
-            oscillator.connect(audioCtx.destination);
-            oscillator.start();
-            setTimeout(() => oscillator.stop(), duration);
-        }
-
-        // Light pollution facts
-        const facts = [
-            "Light pollution hides 90% of stars in India’s cities.",
-            "Birds migrate off course due to bright urban lights.",
-            "Over 1 billion kWh could be saved yearly by dimming lights.",
-            "Turtles avoid nesting on brightly lit beaches."
-        ];
-        let lastFactEnergy = 50;
-
-        // Game state
-        let isPaused = true; // Start paused for intro
-        let timeLeft = 60; // 60 seconds
-        let lastTime = performance.now();
-
-        // Player (Guardian)
-        const player = {
-            x: 50,
-            y: 50,
-            width: 40,
-            height: 60,
-            speed: 6,
-            energy: 50,
-            starsSaved: 0,
-            level: 1,
-            lampsDimmed: 0,
-            lampsToNextLevel: 3, // 3 lamps per level
-            combo: 0,
-            comboTimer: 0,
-            animationFrame: 0
+        // Game Configuration
+        const difficultySettings = {
+            easy: { time: 240, budget: 1500, pollutionCreep: 5, creepInterval: 30000 },
+            normal: { time: 180, budget: 1000, pollutionCreep: 10, creepInterval: 30000 },
+            hard: { time: 120, budget: 800, pollutionCreep: 15, creepInterval: 20000 }
         };
 
-        // Light Pollution Sources (Lamps with traits)
-        const lampTypes = [
-            { color: '#ff4500', damage: 5, speed: 0 }, // Standard
-            { color: '#ff1493', damage: 7, speed: 1 }, // Fast Pink
-            { color: '#9400d3', damage: 10, speed: 0 } // Heavy Purple
-        ];
-        const lamps = [
-            { x: 700, y: 500, brightness: 50, type: lampTypes[0], animationFrame: 0, dx: 0, dy: 0 }
-        ];
+        const zones = {
+            residential: { el: document.getElementById('residential'), originalLight: 80, lightLevel: 80 },
+            commercial: { el: document.getElementById('commercial'), originalLight: 90, lightLevel: 90 },
+            park: { el: document.getElementById('park'), originalLight: 30, lightLevel: 30 }
+        };
 
-        // Stars
-        const stars = [
-            { x: Math.random() * 760, y: Math.random() * 560, size: 20, animationFrame: 0 }
-        ];
-
-        // Keyboard controls
-        const keys = {};
-        window.addEventListener('keydown', (e) => keys[e.key] = true);
-        window.addEventListener('keyup', (e) => keys[e.key] = false);
-
-        // Collision detection
-        function isColliding(a, b) {
-            return a.x < b.x + (b.width || 40) &&
-                   a.x + a.width > b.x &&
-                   a.y < b.y + (b.height || 40) &&
-                   a.y + a.height > b.y;
-        }
-
-        // Level up logic (based on lamps dimmed)
-        function levelUp() {
-            player.level++;
-            player.lampsDimmed = 0;
-            player.lampsToNextLevel += 2;
-            player.speed += 1;
-            const newLampType = lampTypes[Math.min(player.level - 1, lampTypes.length - 1)];
-            lamps.push({ 
-                x: Math.random() * 760, 
-                y: Math.random() * 560, 
-                brightness: 50 + player.level * 10, 
-                type: newLampType, 
-                animationFrame: 0, 
-                dx: newLampType.speed * (Math.random() > 0.5 ? 1 : -1), 
-                dy: newLampType.speed * (Math.random() > 0.5 ? 1 : -1) 
-            });
-            levelUpText.style.opacity = 1;
-            levelUpText.style.animation = 'fadeOut 1s forwards';
-            playSound(880, 300);
-            setTimeout(() => levelUpText.style.animation = '', 1000);
-        }
-
-        // Show fact and pause
-        function showFact() {
-            const energyThresholds = [37, 25, 12];
-            const currentEnergy = Math.floor(player.energy);
-            if (energyThresholds.includes(currentEnergy) && currentEnergy < lastFactEnergy) {
-                isPaused = true;
-                factBox.textContent = facts[Math.floor(Math.random() * facts.length)];
-                factBox.style.opacity = 1;
-                setTimeout(() => {
-                    factBox.style.opacity = 0;
-                    isPaused = false;
-                    lastFactEnergy = currentEnergy;
-                    requestAnimationFrame(gameLoop);
-                }, 5000);
+        const solutions = {
+            'btn-led': { 
+                cost: 200, 
+                effects: { residential: 40, commercial: 25, park: 20 }, 
+                name: 'Shielded LEDs',
+                optimalZone: 'residential',
+                description: 'Redirects light downward to reduce sky glow, ideal for homes.'
+            },
+            'btn-motion': { 
+                cost: 150, 
+                effects: { residential: 20, commercial: 25, park: 15 }, 
+                name: 'Motion Sensors',
+                optimalZone: 'commercial',
+                description: 'Lights activate only when needed, perfect for busy areas.'
+            },
+            'btn-dim': { 
+                cost: 100, 
+                effects: { residential: 10, commercial: 15, park: 25 }, 
+                name: 'Dim Lights',
+                optimalZone: 'park',
+                description: 'Lowers brightness to save energy, great for quiet spaces.'
             }
+        };
+
+        // Monthly Constellations with Connections
+        const monthlyConstellations = {
+            1: { 
+                name: 'Capricornus', 
+                stars: [
+                    { name: 'Deneb Algedi', x: 300, y: 150 }, { x: 350, y: 200 }, { x: 400, y: 180 }, { x: 370, y: 250 }, { x: 320, y: 230 }
+                ],
+                connections: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 0]]
+            },
+            2: { 
+                name: 'Aquarius', 
+                stars: [
+                    { name: 'Sadalmelik', x: 250, y: 120 }, { x: 300, y: 180 }, { x: 350, y: 160 }, { x: 320, y: 220 }, { x: 280, y: 200 }
+                ],
+                connections: [[0, 1], [1, 2], [2, 3], [3, 4]]
+            },
+            3: { 
+                name: 'Pisces', 
+                stars: [
+                    { name: 'Alrescha', x: 400, y: 150 }, // Knot of the fish
+                    { x: 450, y: 200 }, // V shape top right
+                    { x: 420, y: 250 }, // V shape bottom right
+                    { x: 380, y: 220 }, // V shape bottom left
+                    { x: 430, y: 180 }, // Cord start
+                    { x: 460, y: 230 }, // Cord middle
+                    { x: 390, y: 260 }  // Cord end
+                ],
+                connections: [
+                    [0, 1], [0, 2], [0, 3], // Alrescha to V shape
+                    [1, 2], [2, 3],         // V shape outline
+                    [0, 4], [4, 5], [5, 6]  // Cord from Alrescha
+                ]
+            },
+            4: { 
+                name: 'Aries', 
+                stars: [
+                    { name: 'Hamal', x: 200, y: 200 }, { x: 250, y: 220 }, { x: 230, y: 260 }
+                ],
+                connections: [[0, 1], [1, 2]]
+            },
+            5: { 
+                name: 'Taurus', 
+                stars: [
+                    { name: 'Aldebaran', x: 300, y: 180 }, { x: 340, y: 220 }, { x: 320, y: 260 }, { x: 360, y: 240 }, { x: 380, y: 200 }
+                ],
+                connections: [[0, 1], [1, 2], [2, 3], [3, 4]]
+            },
+            6: { 
+                name: 'Gemini', 
+                stars: [
+                    { name: 'Pollux', x: 400, y: 140 }, { x: 450, y: 160 }, { x: 420, y: 200 }, { x: 470, y: 180 }
+                ],
+                connections: [[0, 1], [1, 2], [2, 3]]
+            },
+            7: { 
+                name: 'Cancer', 
+                stars: [
+                    { name: 'Tarf', x: 350, y: 200 }, { x: 400, y: 220 }, { x: 370, y: 260 }, { x: 420, y: 240 }
+                ],
+                connections: [[0, 1], [1, 2], [2, 3]]
+            },
+            8: { 
+                name: 'Leo', 
+                stars: [
+                    { name: 'Regulus', x: 300, y: 160 }, { x: 350, y: 200 }, { x: 320, y: 240 }, { x: 380, y: 220 }, { x: 340, y: 180 }
+                ],
+                connections: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 0]]
+            },
+            9: { 
+                name: 'Virgo', 
+                stars: [
+                    { name: 'Spica', x: 400, y: 180 }, { x: 450, y: 210 }, { x: 420, y: 250 }, { x: 470, y: 230 }
+                ],
+                connections: [[0, 1], [1, 2], [2, 3]]
+            },
+            10: { 
+                name: 'Libra', 
+                stars: [
+                    { name: 'Zubenelgenubi', x: 350, y: 150 }, { x: 400, y: 180 }, { x: 370, y: 220 }, { x: 420, y: 200 }
+                ],
+                connections: [[0, 1], [1, 2], [2, 3]]
+            },
+            11: { 
+                name: 'Scorpio', 
+                stars: [
+                    { name: 'Antares', x: 300, y: 200 }, { x: 350, y: 230 }, { x: 320, y: 270 }, { x: 380, y: 250 }, { x: 340, y: 210 }
+                ],
+                connections: [[0, 1], [1, 2], [2, 3], [3, 4]]
+            },
+            12: { 
+                name: 'Sagittarius', 
+                stars: [
+                    { name: 'Kaus Australis', x: 400, y: 160 }, { x: 450, y: 200 }, { x: 420, y: 240 }, { x: 470, y: 220 }, { x: 430, y: 180 }
+                ],
+                connections: [[0, 1], [1, 2], [2, 3], [3, 4]]
+            }
+        };
+
+        // Game State
+        let budget, skyClarity = 0, totalPollutionReduced = 0, selectedZone = null, timeLeft, gameActive = false, score = 0;
+        let clarityGoal, pollutionCreep, creepInterval;
+        let currentConstellation = null;
+        const stars = [];
+        let gameTimerInterval, pollutionTimeout, eventTimeout;
+
+        // Audio Helper
+        function playSound(sound) {
+            try { sound.play(); } catch (e) { console.log("Audio failed:", e); }
         }
 
-        // Game over (energy or time)
-        function gameOver() {
-            isPaused = true;
-            alert(`Times Up! Stars Saved: ${player.starsSaved}, Level: ${player.level}`);
-            player.energy = 50;
-            player.starsSaved = 0;
-            player.level = 1;
-            player.lampsDimmed = 0;
-            player.lampsToNextLevel = 3;
-            player.speed = 6;
-            player.combo = 0;
-            timeLeft = 60;
-            lamps.length = 1;
-            lamps[0] = { x: 700, y: 500, brightness: 50, type: lampTypes[0], animationFrame: 0, dx: 0, dy: 0 };
-            lastFactEnergy = 50;
-            isPaused = false;
-            requestAnimationFrame(gameLoop);
+        // Initialize Game
+        function initGame() {
+            const difficulty = document.getElementById('difficulty').value;
+            timeLeft = difficultySettings[difficulty].time;
+            budget = difficultySettings[difficulty].budget;
+            pollutionCreep = difficultySettings[difficulty].pollutionCreep;
+            creepInterval = difficultySettings[difficulty].creepInterval;
+            skyClarity = 0;
+            totalPollutionReduced = 0;
+            score = 0;
+
+            // Set constellation based on current month (March 2025 = 3)
+            const currentMonth = new Date().getMonth() + 1;
+            currentConstellation = monthlyConstellations[currentMonth];
+            clarityGoal = currentConstellation.stars.length;
+
+            budgetEl.textContent = `Budget: $${budget}`;
+            timerEl.textContent = `Time: ${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`;
+            clarityEl.textContent = `Sky Clarity: ${skyClarity}/${clarityGoal} stars`;
+
+            Object.keys(zones).forEach(zone => {
+                zones[zone].lightLevel = difficulty === 'hard' ? zones[zone].originalLight + 20 : zones[zone].originalLight;
+                zones[zone].originalLight = zones[zone].lightLevel;
+                zones[zone].el.style.opacity = 1;
+            });
+            stars.forEach((star, i) => star.classList.toggle('visible', i < skyClarity));
+            updateTable();
+            zoneTable.style.display = 'block';
+            gameContainer.style.display = 'block';
+            constellationLines.style.opacity = '0';
+            constellationLines.innerHTML = '';
         }
 
-        // Game loop
-        function update() {
-            if (isPaused) return;
+        // Generate Stars
+        function generateStars() {
+            stars.forEach(star => star.remove());
+            stars.length = 0;
+            currentConstellation.stars.forEach((pos, i) => {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = 10 + Math.random() * 4;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.innerHTML = <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>;
+                star.style.left = `${pos.x}px`;
+                star.style.top = `${pos.y}px`;
+                star.dataset.index = i;
+                if (pos.name) {
+                    const label = document.createElement('span');
+                    label.textContent = pos.name;
+                    label.style.position = 'absolute';
+                    label.style.color = '#00ff99';
+                    label.style.fontSize = '12px';
+                    label.style.left = `${size + 5}px`;
+                    label.style.top = '-5px';
+                    label.style.opacity = '0';
+                    label.className = 'star-label';
+                    star.appendChild(label);
+                }
+                if (i < skyClarity) star.classList.add('visible');
+                gameContainer.appendChild(star);
+                stars.push(star);
+            });
+        }
 
-            // Update timer
-            const currentTime = performance.now();
-            const deltaTime = (currentTime - lastTime) / 1000;
-            lastTime = currentTime;
-            timeLeft -= deltaTime;
-            timerUI.textContent = `Time: ${Math.max(0, Math.floor(timeLeft))}`;
-            if (timeLeft <= 0) {
-                gameOver();
+        // Draw Constellation Lines
+        function drawConstellation() {
+            if (skyClarity < clarityGoal) return;
+            constellationLines.innerHTML = '';
+            const { connections } = currentConstellation;
+            if (connections) {
+                connections.forEach(([startIdx, endIdx]) => {
+                    const start = currentConstellation.stars[startIdx];
+                    const end = currentConstellation.stars[endIdx];
+                    constellationLines.innerHTML += `
+                        <path d="M${start.x},${start.y} L${end.x},${end.y}" />
+                    `;
+                });
+            } else {
+                for (let i = 0; i < currentConstellation.stars.length - 1; i++) {
+                    constellationLines.innerHTML += `
+                        <path d="M${currentConstellation.stars[i].x},${currentConstellation.stars[i].y} L${currentConstellation.stars[i + 1].x},${currentConstellation.stars[i + 1].y}" />
+                    `;
+                }
+            }
+            constellationLines.classList.add('visible');
+            stars.forEach(star => {
+                const label = star.querySelector('.star-label');
+                if (label) label.style.opacity = '1';
+            });
+        }
+
+        // Start Button
+        startBtn.addEventListener('click', () => {
+            playSound(clickSound);
+            initGame();
+            generateStars();
+            instructionsScreen.style.opacity = '0';
+            setTimeout(() => {
+                instructionsScreen.style.display = 'none';
+                startScreen.style.display = 'flex';
+                startScreen.style.opacity = '1';
+                startCountdown();
+            }, 500);
+        });
+
+        // Start Countdown
+        function startCountdown() {
+            let count = 3;
+            countdownEl.textContent = count;
+            const countdown = setInterval(() => {
+                count--;
+                countdownEl.textContent = count;
+                if (count < 0) {
+                    clearInterval(countdown);
+                    startScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        startScreen.style.display = 'none';
+                        gameContainer.style.opacity = '1';
+                        zoneTable.style.display = 'block';
+                        gameActive = true;
+                        startGameTimer();
+                        triggerRandomEvent();
+                        increasePollution();
+                    }, 500);
+                }
+            }, 1000);
+        }
+
+        // Game Timer
+        function startGameTimer() {
+            gameTimerInterval = setInterval(() => {
+                if (!gameActive) return;
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerEl.textContent = `Time: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                if (timeLeft <= 0) endGame(false);
+            }, 1000);
+        }
+
+        // Zone Selection
+        Object.keys(zones).forEach(zone => {
+            zones[zone].el.addEventListener('click', () => {
+                if (!gameActive) return;
+                if (selectedZone) selectedZone.el.classList.remove('selected');
+                selectedZone = zones[zone];
+                selectedZone.el.classList.add('selected');
+                playSound(clickSound);
+            });
+        });
+
+        // Solution Buttons
+        function applySolution(btnId) {
+            if (!gameActive || !selectedZone) return;
+            const solution = solutions[btnId];
+            if (budget < solution.cost) {
+                showMessage('action', `Not enough budget! Need $${solution.cost}, have $${budget}.`, '#ff3333');
                 return;
             }
+            const zoneKey = Object.keys(zones).find(key => zones[key] === selectedZone);
+            const pollutionReduced = Math.min(selectedZone.lightLevel, solution.effects[zoneKey]);
+            selectedZone.lightLevel = Math.max(0, selectedZone.lightLevel - pollutionReduced);
+            budget -= solution.cost;
+            let bonus = 0;
+            const isOptimal = solution.optimalZone === zoneKey;
+            if (isOptimal) {
+                bonus = 50;
+                budget += bonus;
+                showMessage('action', `Optimal choice! ${solution.name} fits ${selectedZone.el.textContent} perfectly. +$${bonus} bonus!, '#00ff99'`);
+            }
+            skyClarity = Math.min(clarityGoal, skyClarity + Math.floor(pollutionReduced / 10));
+            totalPollutionReduced += pollutionReduced;
 
-            player.animationFrame = (player.animationFrame + 0.1) % (Math.PI * 2);
-            lamps.forEach(lamp => lamp.animationFrame = (lamp.animationFrame + 0.05) % (Math.PI * 2));
-            stars.forEach(star => star.animationFrame = (star.animationFrame + 0.15) % (Math.PI * 2));
+            const percentReduced = Math.round(((selectedZone.originalLight - selectedZone.lightLevel) / selectedZone.originalLight) * 100);
+            budgetEl.textContent = `Budget: $${budget}`;
+            clarityEl.textContent = `Sky Clarity: ${skyClarity}/${clarityGoal} stars`;
+            stars.forEach((star, i) => star.classList.toggle('visible', i < skyClarity));
+            updateTable();
+            updateZoneVisuals();
 
-            // Player movement
-            if (keys['ArrowUp'] && player.y > 0) player.y -= player.speed;
-            if (keys['ArrowDown'] && player.y < canvas.height - player.height) player.y += player.speed;
-            if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
-            if (keys['ArrowRight'] && player.x < canvas.width - player.width) player.x += player.speed;
+            if (!isOptimal && pollutionReduced > 0) {
+                showMessage('action', `${solution.name} applied to ${selectedZone.el.textContent}: -${pollutionReduced} light (${percentReduced}%), -$${solution.cost}, '#ffffff'`);
+            }
+            if (skyClarity >= clarityGoal) {
+                drawConstellation();
+                endGame(true);
+            }
+        }
 
-            // Lamp movement
-            lamps.forEach(lamp => {
-                if (lamp.type.speed > 0) {
-                    lamp.x += lamp.dx;
-                    lamp.y += lamp.dy;
-                    if (lamp.x < 0 || lamp.x > canvas.width - 40) lamp.dx *= -1;
-                    if (lamp.y < 0 || lamp.y > canvas.height - 40) lamp.dy *= -1;
-                }
+        Object.keys(solutions).forEach(btnId => {
+            document.getElementById(btnId).addEventListener('click', () => {
+                if (!gameActive) return;
+                playSound(clickSound);
+                applySolution(btnId);
             });
+        });
 
-            // Collision with lamps
-            lamps.forEach(lamp => {
-                if (isColliding(player, lamp) && lamp.brightness > 0) {
-                    player.energy -= lamp.type.damage / 60;
-                    lamp.brightness -= 2;
-                    if (lamp.brightness <= 0) {
-                        lamp.x = Math.random() * 760;
-                        lamp.y = Math.random() * 560;
-                        lamp.brightness = 50 + player.level * 10;
-                        lamp.dx = lamp.type.speed * (Math.random() > 0.5 ? 1 : -1);
-                        lamp.dy = lamp.type.speed * (Math.random() > 0.5 ? 1 : -1);
-                        player.lampsDimmed++;
-                        playSound(440, 100);
-                        if (player.lampsDimmed >= player.lampsToNextLevel) levelUp();
+        // Update UI
+        function updateTable() {
+            tableBody.innerHTML = '';
+            Object.keys(zones).forEach(zone => {
+                const percentReduced = Math.round(((zones[zone].originalLight - zones[zone].lightLevel) / zones[zone].originalLight) * 100);
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${zones[zone].el.textContent}</td>
+                        <td>${zones[zone].originalLight}</td>
+                        <td>${zones[zone].lightLevel}</td>
+                        <td>${percentReduced}%</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updateZoneVisuals() {
+            Object.keys(zones).forEach(zone => {
+                const opacity = zones[zone].lightLevel / zones[zone].originalLight;
+                zones[zone].el.style.opacity = 0.3 + (0.7 * opacity);
+            });
+        }
+
+        // Pollution Increase
+        function increasePollution() {
+            if (!gameActive) return;
+            const zoneKeys = Object.keys(zones);
+            const randomZone = zones[zoneKeys[Math.floor(Math.random() * zoneKeys.length)]];
+            if (randomZone.lightLevel < randomZone.originalLight * 1.5) {
+                randomZone.lightLevel = Math.min(randomZone.originalLight * 1.5, randomZone.lightLevel + pollutionCreep);
+                showMessage('action', `${randomZone.el.textContent} pollution increased by ${pollutionCreep}!, '#ff3333'`);
+                updateTable();
+                updateZoneVisuals();
+            }
+            pollutionTimeout = setTimeout(increasePollution, creepInterval);
+        }
+
+        // Random Events
+        const events = [
+            { 
+                text: "Business backlash! Lose $100.", 
+                warning: "Warning: Businesses might resist soon, costing $100!",
+                effect: () => {
+                    budget -= 100;
+                    budgetEl.textContent = `Budget: $${budget}`;
+                    showMessage('action', "Business backlash: -$100", '#ff3333');
+                }
+            },
+            { 
+                text: "Stargazing event! +1 clarity if Park < 20.", 
+                effect: () => {
+                    if (zones.park.lightLevel < 20) {
+                        skyClarity = Math.min(clarityGoal, skyClarity + 1);
+                        clarityEl.textContent = Sky Clarity: ${skyClarity}/${clarityGoal} stars;
+                        stars.forEach((star, i) => star.classList.toggle('visible', i < skyClarity));
+                        showMessage('action', "Stargazing event: +1 clarity", '#00ff99');
+                        if (skyClarity >= clarityGoal) {
+                            drawConstellation();
+                            endGame(true);
+                        }
                     }
-                    if (player.energy <= 0) gameOver();
-                    showFact();
                 }
-            });
-
-            // Collision with stars (combo system, score only)
-            stars.forEach((star, index) => {
-                if (isColliding(player, star)) {
-                    player.comboTimer = 120;
-                    player.combo++;
-                    player.starsSaved += player.combo;
-                    stars.splice(index, 1);
-                    stars.push({ x: Math.random() * 760, y: Math.random() * 560, size: 20, animationFrame: 0 });
-                    playSound(660, 150);
+            },
+            { 
+                text: "Eco grant! Gain $200.", 
+                warning: "Good news: An eco grant of $200 might be coming!",
+                effect: () => {
+                    budget += 200;
+                    budgetEl.textContent = Budget: $${budget};
+                    showMessage('action', "Eco grant: +$200", '#00ff99');
                 }
-            });
-            if (player.comboTimer > 0) player.comboTimer--;
-            else player.combo = 0;
-
-            // Update UI
-            starsUI.textContent = `Stars: ${player.starsSaved}`;
-            energyUI.textContent = `Energy: ${Math.floor(player.energy)}`;
-            levelUI.textContent = `Level: ${player.level}`;
-            comboUI.textContent = `Combo: ${player.combo}x`;
-            lampsUI.textContent = `Lamps Off: ${player.lampsDimmed}/${player.lampsToNextLevel}`;
-            energyFill.style.width = `${(player.energy / 50) * 100}%`;
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw starry background
-            for (let i = 0; i < 50; i++) {
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(Math.random() * 800, Math.random() * 600, Math.random() * 2, 0, Math.PI * 2);
-                ctx.fill();
             }
+        ];
 
-            // Draw player (Guardian)
-            ctx.save();
-            ctx.translate(player.x + 20, player.y + 30);
-            ctx.fillStyle = '#00ced1';
-            ctx.fillRect(-15, -30, 30, 40);
-            ctx.fillStyle = '#1e90ff';
-            ctx.beginPath();
-            ctx.arc(0, -40, 12, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#4682b4';
-            ctx.beginPath();
-            ctx.moveTo(-15, -10);
-            ctx.lineTo(0, -20 + Math.sin(player.animationFrame) * 5);
-            ctx.lineTo(15, -10);
-            ctx.fill();
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(-5, -25, 10, 5);
-            ctx.restore();
-
-            // Draw lamps
-            lamps.forEach(lamp => {
-                if (lamp.brightness > 0) {
-                    ctx.save();
-                    ctx.translate(lamp.x + 20, lamp.y + 20);
-                    ctx.fillStyle = '#8b4513';
-                    ctx.fillRect(-10, 10, 20, 30);
-                    ctx.fillStyle = lamp.type.color;
-                    ctx.beginPath();
-                    ctx.moveTo(-15, 0);
-                    ctx.lineTo(0, -15 + Math.sin(lamp.animationFrame) * 3);
-                    ctx.lineTo(15, 0);
-                    ctx.fill();
-                    ctx.fillStyle = '#ffa500';
-                    ctx.fillRect(-5, -10, 10, 5);
-                    ctx.restore();
-                }
-            });
-
-            // Draw stars (classic five-pointed star)
-            stars.forEach(star => {
-                ctx.save();
-                ctx.translate(star.x + star.size / 2, star.y + star.size / 2);
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                const outerRadius = star.size;
-                const innerRadius = star.size / 2.5; // Adjusted for sharper points
-                for (let i = 0; i < 5; i++) {
-                    const angle = (Math.PI * 2 / 5) * i - Math.PI / 2;
-                    // Outer point
-                    ctx.lineTo(
-                        Math.cos(angle) * outerRadius,
-                        Math.sin(angle) * outerRadius
-                    );
-                    // Inner point
-                    const innerAngle = angle + (Math.PI / 5);
-                    ctx.lineTo(
-                        Math.cos(innerAngle) * innerRadius * (1 + Math.sin(star.animationFrame) * 0.1),
-                        Math.sin(innerAngle) * innerRadius * (1 + Math.sin(star.animationFrame) * 0.1)
-                    );
-                }
-                ctx.closePath();
-                ctx.fill();
-                ctx.restore();
-            });
-
-            // Draw labels
-            ctx.fillStyle = '#fff';
-            ctx.font = '14px Orbitron';
-            ctx.fillText(Guardian, player.x, player.y - 50);
-            lamps.forEach(lamp => {
-                if (lamp.brightness > 0) ctx.fillText(`Lamp: ${lamp.brightness}, lamp.x, lamp.y - 20`);
-            });
-        }
-
-        function gameLoop() {
-            if (!isPaused) {
-                update();
-                draw();
+        function triggerRandomEvent() {
+            if (!gameActive) return;
+            const event = events[Math.floor(Math.random() * events.length)];
+            playSound(eventSound);
+            if (event.warning) {
+                eventMessage.textContent = event.warning;
+                eventMessage.style.opacity = 1;
+                setTimeout(() => eventMessage.style.opacity = 0, 3000);
+                setTimeout(() => {
+                    if (!gameActive) return;
+                    eventMessage.textContent = event.text;
+                    eventMessage.style.opacity = 1;
+                    event.effect();
+                    setTimeout(() => eventMessage.style.opacity = 0, 3000);
+                }, 5000);
+            } else {
+                eventMessage.textContent = event.text;
+                eventMessage.style.opacity = 1;
+                event.effect();
+                setTimeout(() => eventMessage.style.opacity = 0, 3000);
             }
-            requestAnimationFrame(gameLoop);
+            eventTimeout = setTimeout(triggerRandomEvent, Math.random() * 20000 + 10000);
         }
 
-        // Start the game with instructions
-        alert('Welcome to Starlight Guardian at IIT Tirupati!\n\nYour Mission (60 seconds):\n- Use arrow keys to move the Guardian.\n- Dim 3 lamps by touching them to level up (more per level).\n- Collect stars quickly for combo points to boost your score.\n- Watch your energy—don’t let it hit zero!\n\nProtect the night sky—start now!');
-        isPaused = false;
-        lastTime = performance.now();
-        gameLoop();
+        // Show Message
+        function showMessage(type, text, color, duration = 3000) {
+            const el = document.getElementById(${type}-message);
+            el.textContent = text;
+            el.style.color = color;
+            el.style.opacity = 1;
+            setTimeout(() => el.style.opacity = 0, duration);
+        }
+
+        // End Game
+        function endGame(won) {
+            gameActive = false;
+            clearInterval(gameTimerInterval);
+            clearTimeout(pollutionTimeout);
+            clearTimeout(eventTimeout);
+            score = totalPollutionReduced + budget + timeLeft * 10;
+            const summary = `
+                <p>Stars Revealed: ${skyClarity}/${clarityGoal}</p>
+                <p>Total Pollution Reduced: ${totalPollutionReduced}</p>
+                <p>Budget Left: $${budget}</p>
+                <p>Time Bonus: ${timeLeft} seconds</p>
+                <p>Score: ${score}</p>
+            `;
+            if (won) {
+                winScreen.innerHTML = `
+                    <h1>Victory!</h1>
+                    <div id="win-text">${currentConstellation.name} Revealed!</div>
+                    ${summary}
+                    <svg id="win-constellation-lines" style="position: absolute; width: 100%; height: 100%;"></svg>
+                `;
+                const winLines = winScreen.querySelector('#win-constellation-lines');
+                winLines.innerHTML = constellationLines.innerHTML;
+                winLines.classList.add('visible');
+                stars.forEach(star => winScreen.appendChild(star));
+                winScreen.style.display = 'flex';
+                winScreen.style.opacity = '1';
+                playSound(winSound);
+            } else {
+                loseScreen.innerHTML = `
+                    <h1>Time's Up!</h1>
+                    <div id="lose-text">Sky Lost</div>
+                    ${summary}
+                `;
+                loseScreen.style.display = 'flex';
+                loseScreen.style.opacity = '1';
+            }
+            zoneTable.style.display = 'none';
+        }
+
+        // Responsive Stars (disabled for fixed constellation)
+        window.addEventListener('resize', () => {
+            // No repositioning for fixed constellation
+        });
     </script>
 </body>
 </html>

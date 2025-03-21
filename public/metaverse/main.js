@@ -104,19 +104,19 @@ function updateQuestLog() {
 }
 
 // Load NPCs
-npcs.forEach(npc => {
-    BABYLON.SceneLoader.ImportMesh("", "assets/characters/", npc.model, scene, (meshes) => {
-        npc.mesh = meshes[0];
-        npc.mesh.position = npc.position;
-        scaleMesh(npc.mesh,4);
+// npcs.forEach(npc => {
+//     BABYLON.SceneLoader.ImportMesh("", "assets/characters/", npc.model, scene, (meshes) => {
+//         npc.mesh = meshes[0];
+//         npc.mesh.position = npc.position;
+//         scaleMesh(npc.mesh,4);
 
-        scene.onBeforeRenderObservable.add(() => {
-            if (camera.position.subtract(npc.mesh.position).length() < 3) {
-                showDialogue(npc);
-            }
-        });
-    });
-});
+//         scene.onBeforeRenderObservable.add(() => {
+//             if (camera.position.subtract(npc.mesh.position).length() < 3) {
+//                 showDialogue(npc);
+//             }
+//         });
+//     });
+// });
 
 // Show Dialogue
 function showDialogue(npc) {
@@ -173,10 +173,47 @@ function loadEnvironment() {
     });
 
     BABYLON.SceneLoader.ImportMesh("", "assets/environment/", "building.glb", scene, (meshes) => {
-        meshes[0].position = new BABYLON.Vector3(0, 0, 2500);
+        
+        let building = meshes[0];  // Get the main building mesh
+        building.position = new BABYLON.Vector3(0, 0, 2500);
+    
+    if (building.material) {
+        // Modify existing material
+        building.material.albedoColor = new BABYLON.Color3(0.2, 0.7, 0.2);  // Greenish color
+        building.material.metallic = 0.3; // Reduce metallic effect
+        building.material.roughness = 0.6; // Make it slightly rough
+    } else {
+        // Create a new material if none exist
+        let newMat = new BABYLON.PBRMaterial("buildingMat", scene);
+        newMat.albedoColor = new BABYLON.Color3(0.2, 0.7, 0.2);  // Greenish color
+        newMat.roughness = 0.6;
+        newMat.metallic = 0.3;
+        building.material = newMat;
+    }
+    
+    // Optional: Apply texture
+    let texture = new BABYLON.Texture("assets/textures/eco_texture.jpg", scene);
+    building.material.albedoTexture = texture;
     });
+
+    BABYLON.SceneLoader.ImportMesh("", "assets/environment/", "Cottage.glb", scene, function (meshes) {
+        let cottage = meshes[0]; // The main mesh of the cottage
+    
+        // Position the cottage in the world
+        cottage.position = new BABYLON.Vector3(-48, 0, 78);  // Adjust coordinates as needed
+    
+        // Scale the model if it's too big or small
+        cottage.scaling = new BABYLON.Vector3(0.01, 0.01, 0.01);  // Adjust scale if needed
+    
+        // Rotate it to face a direction if required
+        cottage.rotation.y = BABYLON.Tools.ToRadians(180);  // Rotate by 180 degrees
+    
+        console.log("Cottage loaded successfully!");
+    });
+    
 }
 loadEnvironment();
+
 
 // Movement - Relative to Camera Direction (FPS-like)
 let inputMap = {};
