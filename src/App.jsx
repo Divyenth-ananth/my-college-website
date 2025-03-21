@@ -11,6 +11,18 @@ import Metaverse from "./pages/Metaverse";
 import Games from './pages/Games';
 import GamePage from './pages/GamePage';
 
+const Layout = ({ children }) => {
+  const location = useLocation();
+  const isGamePage = location.pathname.startsWith('/game/');  // Detect if in game page
+
+  return (
+    <div>
+      {!isGamePage && <Navbar />}  {/* Hide Navbar when playing a game */}
+      {children}
+    </div>
+  );
+};
+
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);

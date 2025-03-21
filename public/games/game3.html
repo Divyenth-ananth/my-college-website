@@ -8,7 +8,7 @@
         body {
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(180deg, #000000 0%, #000033 100%);
+            background: linear-gradient(135deg, #001f3f, #000000);
             color: #fff;
             overflow: hidden;
             height: 100vh;
@@ -17,22 +17,164 @@
             align-items: center;
             position: relative;
         }
-        body::before, body::after {
-            content: '';
+        .starfield {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            background: transparent;
+            z-index: -1;
             pointer-events: none;
         }
-        body::before {
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000"><circle cx="500" cy="500" r="1" fill="white" opacity="0.8"/><circle cx="200" cy="300" r="1.5" fill="white" opacity="0.6"/><circle cx="800" cy="700" r="1" fill="white" opacity="0.7"/><circle cx="400" cy="100" r="2" fill="white" opacity="0.5"/><circle cx="600" cy="900" r="1.2" fill="white" opacity="0.9"/></svg>') repeat;
-            opacity: 0.6;
+        .starfield::before {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 
+                100px 150px 0 0 #fff, 200px 300px 0 0 #fff, 300px 100px 0 1px #fff,
+                400px 250px 0 0 #fff, 500px 200px 0 1px #fff, 600px 350px 0 0 #fff,
+                700px 120px 0 1px #fff, 800px 280px 0 0 #fff, 150px 400px 0 1px #fff,
+                250px 50px 0 0 #fff, 350px 320px 0 1px #fff, 450px 180px 0 0 #fff;
+            animation: twinkle 3s infinite alternate;
         }
-        body::after {
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000"><circle cx="300" cy="200" r="1" fill="white" opacity="0.7"/><circle cx="700" cy="400" r="1.5" fill="white" opacity="0.5"/><circle cx="100" cy="800" r="1.2" fill="white" opacity="0.8"/><circle cx="500" cy="600" r="2" fill="white" opacity="0.6"/></svg>') repeat;
-            opacity: 0.4;
+        .starfield::after {
+            content: "";
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 
+                50px 200px 0 0 #fff, 150px 350px 0 1px #fff, 250px 120px 0 0 #fff,
+                350px 280px 0 1px #fff, 450px 100px 0 0 #fff, 550px 300px 0 1px #fff,
+                650px 150px 0 0 #fff, 750px 250px 0 1px #fff, 850px 180px 0 0 #fff;
+            animation: twinkle 4s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .dialogue-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(0, 0, 51, 0.9), rgba(51, 51, 102, 0.9));
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 204, 255, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            padding: 20px;
+            transition: opacity 0.5s;
+        }
+        #home-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(0, 0, 51, 0.9), rgba(51, 51, 102, 0.9));
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 204, 255, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 15;
+            padding: 20px;
+            transition: opacity 0.5s;
+        }
+        #home-screen h1 {
+            font-size: 48px;
+            text-shadow: 0 0 15px #00ccff, 0 0 30px #0066ff;
+            margin: 0;
+            text-align: center;
+        }
+        .tagline {
+            font-size: 20px;
+            color: #00ff99;
+            text-shadow: 0 0 10px #00ff99, 0 0 20px #00cc66;
+            margin: 10px 0 30px 0;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 1s ease-in forwards 0.5s;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        .home-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .start-button-container {
+            margin-top: 30px;
+        }
+        .home-btn {
+            padding: 12px 30px;
+            font-size: 18px;
+            color: #fff;
+            background: linear-gradient(45deg, #00ccff, #0066ff);
+            border: 2px solid #00ff99;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 204, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .start-btn {
+            padding: 15px 40px;
+            font-size: 22px;
+            color: #fff;
+            background: linear-gradient(45deg, #ff3333, #ff6666);
+            border: 2px solid #ffcc00;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 51, 51, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+        .home-btn::before, .start-btn::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+        .home-btn:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+        .start-btn:hover::before {
+            width: 250px;
+            height: 250px;
+        }
+        .home-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 204, 255, 0.8);
+            background: linear-gradient(45deg, #33ddff, #0099ff);
+        }
+        .start-btn:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 30px rgba(255, 51, 51, 0.9);
+            background: linear-gradient(45deg, #ff6666, #ff9999);
         }
         #game-container {
             width: 900px;
@@ -45,7 +187,7 @@
             backdrop-filter: blur(5px);
             z-index: 1;
         }
-        #start-screen, #win-screen, #lose-screen, #instructions-screen {
+        #start-screen {
             position: absolute;
             top: 0;
             left: 0;
@@ -59,15 +201,79 @@
             z-index: 10;
             border-radius: 20px;
             transition: opacity 0.5s;
-        }
-        #instructions-screen {
-            background: linear-gradient(135deg, rgba(0, 0, 51, 0.9), rgba(51, 51, 102, 0.9));
-            padding: 20px;
-            box-shadow: 0 0 30px rgba(0, 204, 255, 0.5);
-            overflow-y: auto;
-        }
-        #start-screen, #win-screen, #lose-screen {
             display: none;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #start-screen h1 {
+            font-size: 72px;
+            text-shadow: 0 0 20px #00ccff, 0 0 40px #0066ff;
+            margin-bottom: 10px;
+        }
+        #start-screen h3 {
+            font-size: 28px;
+            text-shadow: 0 0 15px #00ccff;
+            margin-bottom: 30px;
+        }
+        #countdown {
+            font-size: 100px;
+            font-weight: bold;
+            text-shadow: 0 0 25px #ff6666, 0 0 50px #ff3333;
+            color: #ff6666;
+            animation: pulse 1s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+        #dialogue-content, #end-dialogue-content, #about-content {
+            text-align: center;
+            color: #fff;
+        }
+        #dialogue-title, #end-dialogue-title, #about-title {
+            font-size: 48px;
+            text-shadow: 0 0 15px #00ccff, 0 0 30px #0066ff;
+            margin-bottom: 20px;
+        }
+        #dialogue-text, #end-dialogue-text, #about-text {
+            font-size: 20px;
+            line-height: 1.6;
+            text-shadow: 0 0 5px #000;
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+        .dialogue-btn {
+            padding: 12px 30px;
+            font-size: 18px;
+            color: #fff;
+            background: linear-gradient(45deg, #00ccff, #0066ff);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 204, 255, 0.5);
+            margin: 5px;
+        }
+        .dialogue-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 204, 255, 0.8);
+        }
+        #start-game-btn {
+            padding: 12px 30px;
+            font-size: 18px;
+            color: #fff;
+            background: linear-gradient(45deg, #ff3333, #ff6666);
+            border: 2px solid #ffcc00;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 51, 51, 0.7);
+            margin: 5px;
+        }
+        #start-game-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 51, 51, 0.9);
+            background: linear-gradient(45deg, #ff6666, #ff9999);
         }
         h1 {
             font-size: 64px;
@@ -79,40 +285,11 @@
             margin: 10px 0;
             text-shadow: 0 0 10px #00ccff;
         }
-        #countdown, #win-text, #lose-text {
-            font-size: 80px;
-            font-weight: bold;
-            text-shadow: 0 0 20px currentColor;
-        }
-        #countdown { color: #ff6666; }
-        #win-text { color: #00ff99; }
-        #lose-text { color: #ff3333; }
-        #instructions-text {
-            font-size: 18px;
-            text-align: center;
-            max-width: 600px;
-            line-height: 1.5;
-            margin: 20px 0;
-            text-shadow: 0 0 5px #000;
-        }
-        #start-btn {
-            padding: 15px 40px;
-            font-size: 20px;
-            color: #fff;
-            background: linear-gradient(45deg, #00ccff, #0066ff);
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 204, 255, 0.5);
-        }
-        #start-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 204, 255, 0.8);
-        }
         #difficulty-container {
-            margin: 20px 0;
-            display: flex;
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            z-index: 11;
             flex-direction: column;
             align-items: center;
             width: 100%;
@@ -203,19 +380,17 @@
             transform: scale(1.05);
             box-shadow: 0 8px 25px rgba(0, 204, 255, 0.7);
         }
-        .selected {
-            border: 4px solid #00ccff;
-            box-shadow: 0 0 25px #00ccff;
-        }
+        .selected { border: 4px solid #00ccff; box-shadow: 0 0 25px #00ccff; }
         #residential { 
             background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=220&h=120&q=80'); 
         }
         #commercial { 
-            background-image: url('https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=220&h=120&q=80'); 
+            background-image: url('https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=220&h=120&q=80'); 
         }
-        #park { 
-            background-image: url('https://images.unsplash.com/photo-1598251959652-189c2f8b6f57?q=80&w=220&h=120&auto=format&fit=crop'); 
-            background-color: transparent !important;
+        #park {
+            background-image: url('images/park.jpg');
+            background-size: cover;
+            background-position: center;
         }
         .zone span {
             position: relative;
@@ -230,8 +405,25 @@
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 20px;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
             z-index: 5;
+        }
+        .solution-title {
+            font-size: 22px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ccff;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        .solution-buttons {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            justify-content: center;
+            width: 100%;
+            max-width: 800px;
         }
         .solution-btn {
             padding: 15px 30px;
@@ -244,6 +436,8 @@
             box-shadow: 0 4px 15px rgba(0, 204, 255, 0.5);
             background: linear-gradient(45deg, #00ccff, #0066ff);
             position: relative;
+            flex: 1;
+            max-width: 200px;
         }
         .solution-btn:hover {
             transform: translateY(-5px);
@@ -268,6 +462,10 @@
         #btn-led { background: linear-gradient(45deg, #0066ff, #33ccff); }
         #btn-motion { background: linear-gradient(45deg, #00cc00, #66ff66); }
         #btn-dim { background: linear-gradient(45deg, #ffcc00, #ffff66); }
+        .solution-btn.upgraded {
+            border: 2px solid #ffcc00;
+            box-shadow: 0 0 15px #ffcc00;
+        }
         .star {
             position: absolute;
             width: 12px;
@@ -281,9 +479,10 @@
             transform: scale(1.2);
             animation: twinkle 2s infinite alternate;
         }
-        @keyframes twinkle {
-            0% { opacity: 0.8; }
-            100% { opacity: 1; }
+        .star.scattered {
+            opacity: 0.5;
+            transform: scale(0.8);
+            animation: twinkle 3s infinite alternate;
         }
         .star svg {
             width: 100%;
@@ -295,7 +494,7 @@
             transition: opacity 0.5s ease;
             text-shadow: 0 0 5px #00ff99;
         }
-        #constellation-lines, #win-constellation-lines {
+        #constellation-lines {
             position: absolute;
             top: 0;
             left: 0;
@@ -305,11 +504,11 @@
             z-index: 3;
             pointer-events: none;
         }
-        #constellation-lines.visible, #win-constellation-lines.visible {
+        #constellation-lines.visible {
             opacity: 1;
             transition: opacity 1s ease;
         }
-        #constellation-lines path, #win-constellation-lines path {
+        #constellation-lines path {
             stroke: #00ff99;
             stroke-width: 2;
             stroke-dasharray: 500;
@@ -376,44 +575,80 @@
     </style>
 </head>
 <body>
-    <div id="instructions-screen">
-        <h1>How to Play</h1>
-        <div id="instructions-text">
-            Welcome to Lights Out! Your goal is to reduce light pollution to reveal a monthly constellation.<br><br>
-            1. Click a zone (Residential, Commercial, or Park) to select it.<br>
-            2. Choose a solution to reduce its light pollution, costing budget.<br>
-            3. Optimal solutions earn +$50—hover over buttons for details!<br>
-            4. Watch stars appear—reach the goal to see this month's constellation fully formed!<br><br>
-            Save the night sky before time runs out!
+
+    <div class="starfield"></div>
+    <div id="home-screen" class="dialogue-box">
+        <h1>Lights Out: The Night Sky Challenge</h1>
+        <p class="tagline">Save the Stars from Light Pollution!</p>
+        <div class="home-buttons">
+            <button id="about-btn" class="home-btn">About the Game</button>
+            <button id="how-to-play-btn" class="home-btn">How to Play</button>
         </div>
-        <div id="difficulty-container">
-            <label id="difficulty-label" for="difficulty">Select Difficulty:</label>
-            <select id="difficulty">
-                <option value="easy">Easy</option>
-                <option value="normal" selected>Normal</option>
-                <option value="hard">Hard</option>
-            </select>
+        <div class="start-button-container">
+            <button id="start-btn" class="start-btn">Start Game</button>
         </div>
-        <button id="start-btn">Start</button>
     </div>
+
+    <div id="about-dialogue" class="dialogue-box" style="display: none;">
+        <div id="about-content">
+            <h1 id="about-title">About the Game</h1>
+            <p id="about-text">
+                Lights Out: The Night Sky Challenge is an interactive game where you combat light pollution to reveal stunning constellations. Manage your budget, choose smart lighting solutions, and save the night sky in this cosmic adventure. Created to raise awareness about light pollution’s impact, it’s a fun blend of strategy and stargazing!
+            </p>
+            <button id="about-back-btn" class="dialogue-btn">Back to Main Page</button>
+        </div>
+    </div>
+
+    <div id="instructions-dialogue" class="dialogue-box" style="display: none;">
+        <div id="dialogue-content">
+            <h1 id="dialogue-title">How to Play</h1>
+            <p id="dialogue-text"></p>
+            <div>
+                <button id="dialogue-back-btn" class="dialogue-btn" style="display: none;">Back</button>
+                <button id="dialogue-next-btn" class="dialogue-btn">Next</button>
+                <button id="instructions-back-btn" class="dialogue-btn" style="display: none;">Back to Main Page</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="start-dialogue" class="dialogue-box" style="display: none;">
+        <div id="dialogue-content">
+            <h1 id="dialogue-title">Start Game</h1>
+            <p id="dialogue-text">Select your difficulty and begin!</p>
+            <div id="difficulty-container">
+                <label id="difficulty-label" for="difficulty">Select Difficulty:</label>
+                <select id="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            <div>
+                <button id="start-game-btn">Start</button>
+                <button id="start-back-btn" class="dialogue-btn">Back to Main Page</button>
+            </div>
+        </div>
+    </div>
+
     <div id="start-screen">
         <h1>Lights Out</h1>
         <h3>The Night Sky Challenge</h3>
         <div id="countdown"></div>
     </div>
-    <div id="win-screen">
-        <h1>Victory!</h1>
-        <div id="win-text"></div>
+
+    <div id="end-dialogue" class="dialogue-box" style="display: none;">
+        <div id="end-dialogue-content">
+            <h1 id="end-dialogue-title"></h1>
+            <p id="end-dialogue-text"></p>
+            <button id="end-dialogue-btn" class="dialogue-btn">Back to Main Page</button>
+        </div>
     </div>
-    <div id="lose-screen">
-        <h1>Time's Up!</h1>
-        <div id="lose-text">Sky Lost</div>
-    </div>
+
     <div id="game-container">
         <div id="status-bar">
             <span id="budget" class="status-item">Budget: $1000</span>
-            <span id="timer" class="status-item">Time: 3:00</span>
-            <span id="clarity" class="status-item">Sky Clarity: 0/7 stars</span>
+            <span id="timer" class="status-item">Time: 4:00</span>
+            <span id="clarity" class="status-item">Stars: 0</span>
         </div>
         <div id="event-message"></div>
         <div id="action-message"></div>
@@ -424,11 +659,15 @@
             <div id="park" class="zone"><span>Park</span></div>
         </div>
         <div class="button-container">
-            <button id="btn-led" class="solution-btn" data-description="Redirects light downward to reduce sky glow, ideal for homes.">Shielded LEDs ($200)</button>
-            <button id="btn-motion" class="solution-btn" data-description="Lights activate only when needed, perfect for busy areas.">Motion Sensors ($150)</button>
-            <button id="btn-dim" class="solution-btn" data-description="Lowers brightness to save energy, great for quiet spaces.">Dim Lights ($100)</button>
+            <div class="solution-title">Select a Lighting Solution</div>
+            <div class="solution-buttons">
+                <button id="btn-led" class="solution-btn" data-description="Redirects light downward to reduce sky glow, ideal for homes.">Shielded LEDs ($200)</button>
+                <button id="btn-motion" class="solution-btn" data-description="Lights activate only when needed, perfect for busy areas.">Motion Sensors ($150)</button>
+                <button id="btn-dim" class="solution-btn" data-description="Lowers brightness to save energy, great for quiet spaces.">Dim Lights ($100)</button>
+            </div>
         </div>
     </div>
+
     <div id="zone-table">
         <h2>Light Pollution Status</h2>
         <table>
@@ -463,18 +702,176 @@
         </table>
     </div>
 
-    <!-- Audio Elements -->
-    <audio id="click-sound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
-    <audio id="win-sound" src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3"></audio>
-    <audio id="event-sound" src="https://www.soundjay.com/misc/sounds/chime-01.mp3"></audio>
-
     <script>
-        // DOM Elements
+        const homeScreen = document.getElementById('home-screen');
+        const startBtn = document.getElementById('start-btn');
+        const aboutBtn = document.getElementById('about-btn');
+        const howToPlayBtn = document.getElementById('how-to-play-btn');
+        const aboutDialogue = document.getElementById('about-dialogue');
+        const aboutBackBtn = document.getElementById('about-back-btn');
+        const instructionsDialogue = document.getElementById('instructions-dialogue');
+        const startDialogue = document.getElementById('start-dialogue');
+        const dialogueText = document.getElementById('dialogue-text');
+        const dialogueNextBtn = document.getElementById('dialogue-next-btn');
+        const dialogueBackBtn = document.getElementById('dialogue-back-btn');
+        const instructionsBackBtn = document.getElementById('instructions-back-btn');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const startBackBtn = document.getElementById('start-back-btn');
+
+        const dialogueSteps = [
+            "Greetings, sky warrior! In Lights Out, you’ll battle light pollution to reclaim the stars. It’s like a galactic rescue mission—no dish soap required!",
+            "Step 1: Click a zone—Residential, Commercial, or Park. It’s like picking which neighbor to annoy first. Don’t worry, they’ll thank you later when they see Orion’s abs!",
+            "Step 2: Pick a solution—Shielded LEDs, Motion Sensors, or Dim Lights. Each costs budget, so don’t blow it all on fancy lights like it’s a disco apocalypse!",
+            "Step 3: Match the right solution to the zone for a sweet $50 bonus. Hint: LEDs love homes, Motion Sensors dig busy streets, and Dim Lights are park chillers. Hover over buttons to snoop the deets!",
+            "Step 4: Right-click a zone after a solution to upgrade it—once per trick, fancy pants! Costs more, but it’s like giving your lights a superhero cape!",
+            "Step 5: Reduce pollution to reveal a constellation (ooh, shiny!). Then zap ALL pollution to zero to win. Time’s ticking—don’t let the sky ghost you!",
+            "Ready, champ? Click 'Start Game' on the main screen to pick your difficulty and begin!"
+        ];
+
+        let dialogueIndex = 0;
+
+        function showHowToPlay() {
+            dialogueText.textContent = dialogueSteps[dialogueIndex];
+            dialogueNextBtn.style.display = dialogueIndex < dialogueSteps.length - 1 ? 'inline-block' : 'none';
+            dialogueBackBtn.style.display = dialogueIndex > 0 ? 'inline-block' : 'none';
+            instructionsBackBtn.style.display = dialogueIndex === dialogueSteps.length - 1 ? 'inline-block' : 'none';
+        }
+
+        function nextDialogue() {
+            if (dialogueIndex < dialogueSteps.length - 1) {
+                dialogueIndex++;
+                showHowToPlay();
+            }
+        }
+
+        function prevDialogue() {
+            if (dialogueIndex > 0) {
+                dialogueIndex--;
+                showHowToPlay();
+            }
+        }
+
+        function startGame() {
+            playSound(clickSound);
+            initGame();
+            generateStars();
+            startDialogue.style.opacity = '0';
+            setTimeout(() => {
+                startDialogue.style.display = 'none';
+                startScreen.style.display = 'flex';
+                startScreen.style.opacity = '1';
+                startCountdown();
+            }, 500);
+        }
+
+        homeScreen.style.opacity = '1';
+        homeScreen.style.display = 'flex';
+
+        startBtn.addEventListener('click', () => {
+            homeScreen.style.opacity = '0';
+            setTimeout(() => {
+                homeScreen.style.display = 'none';
+                startDialogue.style.display = 'flex';
+                startDialogue.style.opacity = '0';
+                setTimeout(() => {
+                    startDialogue.style.opacity = '1';
+                    document.getElementById('difficulty-container').style.display = 'flex';
+                }, 10);
+            }, 500);
+        });
+
+        startGameBtn.addEventListener('click', startGame);
+
+        startBackBtn.addEventListener('click', () => {
+            startDialogue.style.opacity = '0';
+            setTimeout(() => {
+                startDialogue.style.display = 'none';
+                homeScreen.style.display = 'flex';
+                homeScreen.style.opacity = '0';
+                setTimeout(() => homeScreen.style.opacity = '1', 10);
+            }, 500);
+        });
+
+        aboutBtn.addEventListener('click', () => {
+            homeScreen.style.opacity = '0';
+            setTimeout(() => {
+                homeScreen.style.display = 'none';
+                aboutDialogue.style.display = 'flex';
+                aboutDialogue.style.opacity = '0';
+                setTimeout(() => aboutDialogue.style.opacity = '1', 10);
+            }, 500);
+        });
+
+        aboutBackBtn.addEventListener('click', () => {
+            aboutDialogue.style.opacity = '0';
+            setTimeout(() => {
+                aboutDialogue.style.display = 'none';
+                homeScreen.style.display = 'flex';
+                homeScreen.style.opacity = '0';
+                setTimeout(() => homeScreen.style.opacity = '1', 10);
+            }, 500);
+        });
+
+        howToPlayBtn.addEventListener('click', () => {
+            homeScreen.style.opacity = '0';
+            setTimeout(() => {
+                homeScreen.style.display = 'none';
+                instructionsDialogue.style.display = 'flex';
+                instructionsDialogue.style.opacity = '0';
+                setTimeout(() => {
+                    instructionsDialogue.style.opacity = '1';
+                    dialogueIndex = 0;
+                    showHowToPlay();
+                }, 10);
+            }, 500);
+        });
+
+        dialogueNextBtn.addEventListener('click', nextDialogue);
+        dialogueBackBtn.addEventListener('click', prevDialogue);
+
+        instructionsBackBtn.addEventListener('click', () => {
+            instructionsDialogue.style.opacity = '0';
+            setTimeout(() => {
+                instructionsDialogue.style.display = 'none';
+                homeScreen.style.display = 'flex';
+                homeScreen.style.opacity = '0';
+                setTimeout(() => homeScreen.style.opacity = '1', 10);
+            }, 500);
+        });
+
+        const endDialogue = document.getElementById('end-dialogue');
+        const endDialogueTitle = document.getElementById('end-dialogue-title');
+        const endDialogueText = document.getElementById('end-dialogue-text');
+        const endDialogueBtn = document.getElementById('end-dialogue-btn');
+
+        function showEndDialogue(won) {
+            gameContainer.style.display = 'none';
+            zoneTable.style.display = 'none';
+            endDialogue.style.display = 'flex';
+            endDialogue.style.opacity = '1';
+            if (won) {
+                endDialogueTitle.textContent = "Victory!";
+                endDialogueTitle.style.color = '#00ff99';
+                endDialogueText.innerHTML = `Night Sky Restored!<br>${currentConstellation.name} Shines!<br><br>Stars Revealed: ${skyClarity}/${clarityGoal}<br>Pollution Reduced: ${totalPollutionReduced}<br>Budget Left: $${budget}<br>Time Bonus: ${timeLeft}s x 10 = ${timeLeft * 10}<br>Final Score: ${score}`;
+                playSound(winSound);
+            } else {
+                endDialogueTitle.textContent = "Time's Up!";
+                endDialogueTitle.style.color = '#ff3333';
+                endDialogueText.innerHTML = `Sky Faded!<br><br>Stars Revealed: ${skyClarity}/${clarityGoal}<br>Pollution Reduced: ${totalPollutionReduced}<br>Budget Left: $${budget}<br>Time Bonus: ${timeLeft}s x 10 = ${timeLeft * 10}<br>Final Score: ${score}`;
+            }
+            endDialogueBtn.onclick = () => {
+                endDialogue.style.opacity = '0';
+                setTimeout(() => {
+                    endDialogue.style.display = 'none';
+                    homeScreen.style.display = 'flex';
+                    homeScreen.style.opacity = '0';
+                    setTimeout(() => homeScreen.style.opacity = '1', 10);
+                }, 500);
+            };
+        }
+
         const gameContainer = document.getElementById('game-container');
-        const instructionsScreen = document.getElementById('instructions-screen');
         const startScreen = document.getElementById('start-screen');
-        const winScreen = document.getElementById('win-screen');
-        const loseScreen = document.getElementById('lose-screen');
         const countdownEl = document.getElementById('countdown');
         const budgetEl = document.getElementById('budget');
         const timerEl = document.getElementById('timer');
@@ -483,17 +880,15 @@
         const actionMessage = document.getElementById('action-message');
         const tableBody = document.getElementById('table-body');
         const zoneTable = document.getElementById('zone-table');
-        const startBtn = document.getElementById('start-btn');
         const constellationLines = document.getElementById('constellation-lines');
-        const clickSound = document.getElementById('click-sound');
-        const winSound = document.getElementById('win-sound');
-        const eventSound = document.getElementById('event-sound');
+        const clickSound = document.getElementById('click-sound') || { play: () => {} }; // Fallback for missing audio
+        const winSound = document.getElementById('win-sound') || { play: () => {} };
+        const eventSound = document.getElementById('event-sound') || { play: () => {} };
 
-        // Game Configuration
         const difficultySettings = {
-            easy: { time: 240, budget: 1500, pollutionCreep: 5, creepInterval: 30000 },
-            normal: { time: 180, budget: 1000, pollutionCreep: 10, creepInterval: 30000 },
-            hard: { time: 120, budget: 800, pollutionCreep: 15, creepInterval: 20000 }
+            easy: { time: 300, budget: 1500, pollutionCreep: 5, creepInterval: 30000 },
+            normal: { time: 240, budget: 1000, pollutionCreep: 10, creepInterval: 30000 },
+            hard: { time: 180, budget: 800, pollutionCreep: 15, creepInterval: 20000 }
         };
 
         const zones = {
@@ -508,6 +903,9 @@
                 effects: { residential: 40, commercial: 25, park: 20 }, 
                 name: 'Shielded LEDs',
                 optimalZone: 'residential',
+                upgradeCost: 300,
+                upgraded: false,
+                upgradedEffects: { residential: 50, commercial: 30, park: 25 },
                 description: 'Redirects light downward to reduce sky glow, ideal for homes.'
             },
             'btn-motion': { 
@@ -515,6 +913,9 @@
                 effects: { residential: 20, commercial: 25, park: 15 }, 
                 name: 'Motion Sensors',
                 optimalZone: 'commercial',
+                upgradeCost: 250,
+                upgraded: false,
+                upgradedEffects: { residential: 25, commercial: 35, park: 20 },
                 description: 'Lights activate only when needed, perfect for busy areas.'
             },
             'btn-dim': { 
@@ -522,121 +923,105 @@
                 effects: { residential: 10, commercial: 15, park: 25 }, 
                 name: 'Dim Lights',
                 optimalZone: 'park',
+                upgradeCost: 200,
+                upgraded: false,
+                upgradedEffects: { residential: 15, commercial: 20, park: 35 },
                 description: 'Lowers brightness to save energy, great for quiet spaces.'
             }
         };
 
-        // Monthly Constellations with Connections
-        const monthlyConstellations = {
+        const properConstellations = {
             1: { 
-                name: 'Capricornus', 
+                name: 'Orion', 
                 stars: [
-                    { name: 'Deneb Algedi', x: 300, y: 150 }, { x: 350, y: 200 }, { x: 400, y: 180 }, { x: 370, y: 250 }, { x: 320, y: 230 }
-                ],
-                connections: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 0]]
-            },
-            2: { 
-                name: 'Aquarius', 
-                stars: [
-                    { name: 'Sadalmelik', x: 250, y: 120 }, { x: 300, y: 180 }, { x: 350, y: 160 }, { x: 320, y: 220 }, { x: 280, y: 200 }
-                ],
-                connections: [[0, 1], [1, 2], [2, 3], [3, 4]]
-            },
-            3: { 
-                name: 'Pisces', 
-                stars: [
-                    { name: 'Alrescha', x: 400, y: 150 }, // Knot of the fish
-                    { x: 450, y: 200 }, // V shape top right
-                    { x: 420, y: 250 }, // V shape bottom right
-                    { x: 380, y: 220 }, // V shape bottom left
-                    { x: 430, y: 180 }, // Cord start
-                    { x: 460, y: 230 }, // Cord middle
-                    { x: 390, y: 260 }  // Cord end
+                    { name: 'Betelgeuse', x: 300, y: 120 },
+                    { name: 'Bellatrix', x: 400, y: 130 },
+                    { name: 'Rigel', x: 320, y: 280 },
+                    { name: 'Saiph', x: 380, y: 290 },
+                    { name: 'Alnitak', x: 340, y: 200 },
+                    { name: 'Alnilam', x: 360, y: 210 },
+                    { name: 'Mintaka', x: 380, y: 220 }
                 ],
                 connections: [
-                    [0, 1], [0, 2], [0, 3], // Alrescha to V shape
-                    [1, 2], [2, 3],         // V shape outline
-                    [0, 4], [4, 5], [5, 6]  // Cord from Alrescha
+                    [0, 4], [1, 6],
+                    [4, 5], [5, 6],
+                    [4, 2], [6, 3]
+                ]
+            },
+            2: { 
+                name: 'Ursa Major', 
+                stars: [
+                    { name: 'Dubhe', x: 300, y: 130 },
+                    { name: 'Merak', x: 340, y: 180 },
+                    { name: 'Phecda', x: 380, y: 200 },
+                    { name: 'Megrez', x: 420, y: 150 },
+                    { name: 'Alioth', x: 460, y: 160 },
+                    { name: 'Mizar', x: 500, y: 140 },
+                    { name: 'Alkaid', x: 540, y: 120 }
+                ],
+                connections: [
+                    [0, 1], [1, 2], [2, 3], [3, 0],
+                    [3, 4], [4, 5], [5, 6]
+                ]
+            },
+            3: { 
+                name: 'Cassiopeia', 
+                stars: [
+                    { name: 'Schedar', x: 300, y: 160 },
+                    { name: 'Caph', x: 350, y: 120 },
+                    { name: 'Gamma Cas', x: 400, y: 150 },
+                    { name: 'Ruchbah', x: 450, y: 130 },
+                    { name: 'Epsilon Cas', x: 500, y: 170 }
+                ],
+                connections: [
+                    [0, 1], [1, 2], [2, 3], [3, 4]
                 ]
             },
             4: { 
-                name: 'Aries', 
+                name: 'Scorpius', 
                 stars: [
-                    { name: 'Hamal', x: 200, y: 200 }, { x: 250, y: 220 }, { x: 230, y: 260 }
+                    { name: 'Graffias', x: 300, y: 120 },
+                    { name: 'Dschubba', x: 340, y: 130 },
+                    { name: 'Pi Sco', x: 280, y: 150 },
+                    { name: 'Antares', x: 350, y: 180 },
+                    { name: 'Sigma Sco', x: 370, y: 210 },
+                    { name: 'Tau Sco', x: 390, y: 240 },
+                    { name: 'Shaula', x: 420, y: 270 },
+                    { name: 'Kappa Sco', x: 450, y: 290 }
                 ],
-                connections: [[0, 1], [1, 2]]
+                connections: [
+                    [0, 1], [1, 2], [1, 3],
+                    [3, 4], [4, 5], [5, 6], [6, 7]
+                ]
             },
             5: { 
-                name: 'Taurus', 
+                name: 'Cygnus', 
                 stars: [
-                    { name: 'Aldebaran', x: 300, y: 180 }, { x: 340, y: 220 }, { x: 320, y: 260 }, { x: 360, y: 240 }, { x: 380, y: 200 }
+                    { name: 'Deneb', x: 400, y: 100 },
+                    { name: 'Sadr', x: 400, y: 180 },
+                    { name: 'Gienah', x: 340, y: 220 },
+                    { name: 'Delta Cyg', x: 460, y: 220 },
+                    { name: 'Albireo', x: 400, y: 280 }
                 ],
-                connections: [[0, 1], [1, 2], [2, 3], [3, 4]]
-            },
-            6: { 
-                name: 'Gemini', 
-                stars: [
-                    { name: 'Pollux', x: 400, y: 140 }, { x: 450, y: 160 }, { x: 420, y: 200 }, { x: 470, y: 180 }
-                ],
-                connections: [[0, 1], [1, 2], [2, 3]]
-            },
-            7: { 
-                name: 'Cancer', 
-                stars: [
-                    { name: 'Tarf', x: 350, y: 200 }, { x: 400, y: 220 }, { x: 370, y: 260 }, { x: 420, y: 240 }
-                ],
-                connections: [[0, 1], [1, 2], [2, 3]]
-            },
-            8: { 
-                name: 'Leo', 
-                stars: [
-                    { name: 'Regulus', x: 300, y: 160 }, { x: 350, y: 200 }, { x: 320, y: 240 }, { x: 380, y: 220 }, { x: 340, y: 180 }
-                ],
-                connections: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 0]]
-            },
-            9: { 
-                name: 'Virgo', 
-                stars: [
-                    { name: 'Spica', x: 400, y: 180 }, { x: 450, y: 210 }, { x: 420, y: 250 }, { x: 470, y: 230 }
-                ],
-                connections: [[0, 1], [1, 2], [2, 3]]
-            },
-            10: { 
-                name: 'Libra', 
-                stars: [
-                    { name: 'Zubenelgenubi', x: 350, y: 150 }, { x: 400, y: 180 }, { x: 370, y: 220 }, { x: 420, y: 200 }
-                ],
-                connections: [[0, 1], [1, 2], [2, 3]]
-            },
-            11: { 
-                name: 'Scorpio', 
-                stars: [
-                    { name: 'Antares', x: 300, y: 200 }, { x: 350, y: 230 }, { x: 320, y: 270 }, { x: 380, y: 250 }, { x: 340, y: 210 }
-                ],
-                connections: [[0, 1], [1, 2], [2, 3], [3, 4]]
-            },
-            12: { 
-                name: 'Sagittarius', 
-                stars: [
-                    { name: 'Kaus Australis', x: 400, y: 160 }, { x: 450, y: 200 }, { x: 420, y: 240 }, { x: 470, y: 220 }, { x: 430, y: 180 }
-                ],
-                connections: [[0, 1], [1, 2], [2, 3], [3, 4]]
+                connections: [
+                    [0, 1], [1, 2], [1, 3], [1, 4]
+                ]
             }
         };
 
-        // Game State
         let budget, skyClarity = 0, totalPollutionReduced = 0, selectedZone = null, timeLeft, gameActive = false, score = 0;
         let clarityGoal, pollutionCreep, creepInterval;
         let currentConstellation = null;
         const stars = [];
+        let scatteredStars = [];
+        const MAX_STARS = 50;
+        let totalStarsCollected = 0;
         let gameTimerInterval, pollutionTimeout, eventTimeout;
 
-        // Audio Helper
         function playSound(sound) {
             try { sound.play(); } catch (e) { console.log("Audio failed:", e); }
         }
 
-        // Initialize Game
         function initGame() {
             const difficulty = document.getElementById('difficulty').value;
             timeLeft = difficultySettings[difficulty].time;
@@ -645,41 +1030,45 @@
             creepInterval = difficultySettings[difficulty].creepInterval;
             skyClarity = 0;
             totalPollutionReduced = 0;
+            totalStarsCollected = 0;
             score = 0;
+            Object.values(solutions).forEach(sol => {
+                sol.upgraded = false;
+                document.getElementById(Object.keys(solutions).find(key => solutions[key] === sol)).classList.remove('upgraded');
+            });
 
-            // Set constellation based on current month (March 2025 = 3)
-            const currentMonth = new Date().getMonth() + 1;
-            currentConstellation = monthlyConstellations[currentMonth];
+            const constellationKeys = Object.keys(properConstellations);
+            const randomKey = constellationKeys[Math.floor(Math.random() * constellationKeys.length)];
+            currentConstellation = properConstellations[randomKey];
             clarityGoal = currentConstellation.stars.length;
 
             budgetEl.textContent = `Budget: $${budget}`;
             timerEl.textContent = `Time: ${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`;
-            clarityEl.textContent = `Sky Clarity: ${skyClarity}/${clarityGoal} stars`;
-
+            clarityEl.textContent = `Stars: ${skyClarity}`;
             Object.keys(zones).forEach(zone => {
                 zones[zone].lightLevel = difficulty === 'hard' ? zones[zone].originalLight + 20 : zones[zone].originalLight;
                 zones[zone].originalLight = zones[zone].lightLevel;
                 zones[zone].el.style.opacity = 1;
             });
-            stars.forEach((star, i) => star.classList.toggle('visible', i < skyClarity));
             updateTable();
-            zoneTable.style.display = 'block';
             gameContainer.style.display = 'block';
-            constellationLines.style.opacity = '0';
             constellationLines.innerHTML = '';
+            constellationLines.style.opacity = '0';
         }
 
-        // Generate Stars
         function generateStars() {
             stars.forEach(star => star.remove());
             stars.length = 0;
+            scatteredStars.forEach(star => star.remove());
+            scatteredStars.length = 0;
+
             currentConstellation.stars.forEach((pos, i) => {
                 const star = document.createElement('div');
                 star.className = 'star';
                 const size = 10 + Math.random() * 4;
                 star.style.width = `${size}px`;
                 star.style.height = `${size}px`;
-                star.innerHTML = <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>;
+                star.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
                 star.style.left = `${pos.x}px`;
                 star.style.top = `${pos.y}px`;
                 star.dataset.index = i;
@@ -691,70 +1080,77 @@
                     label.style.fontSize = '12px';
                     label.style.left = `${size + 5}px`;
                     label.style.top = '-5px';
-                    label.style.opacity = '0';
+                    label.style.opacity = i < skyClarity ? '1' : '0';
                     label.className = 'star-label';
                     star.appendChild(label);
                 }
-                if (i < skyClarity) star.classList.add('visible');
+                star.classList.toggle('visible', i < skyClarity);
                 gameContainer.appendChild(star);
                 stars.push(star);
             });
+
+            const extraStars = MAX_STARS - clarityGoal;
+            for (let i = 0; i < extraStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star scattered';
+                const size = 8 + Math.random() * 4;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+                let x, y;
+                do {
+                    x = Math.random() * 850;
+                    y = Math.random() * 600;
+                } while (x > 250 && x < 550 && y > 100 && y < 310);
+                star.style.left = `${x}px`;
+                star.style.top = `${y}px`;
+                star.classList.remove('visible');
+                gameContainer.appendChild(star);
+                scatteredStars.push(star);
+            }
         }
 
-        // Draw Constellation Lines
+        function updateScatteredStars() {
+            const extraStars = MAX_STARS - clarityGoal;
+            const starsBeyondConstellation = Math.max(0, totalStarsCollected - clarityGoal);
+            scatteredStars.forEach((star, i) => {
+                star.classList.toggle('visible', i < starsBeyondConstellation);
+            });
+            clarityEl.textContent = `Stars: ${skyClarity}`;
+        }
+
         function drawConstellation() {
-            if (skyClarity < clarityGoal) return;
             constellationLines.innerHTML = '';
             const { connections } = currentConstellation;
-            if (connections) {
+            if (connections && skyClarity > 1) {
                 connections.forEach(([startIdx, endIdx]) => {
-                    const start = currentConstellation.stars[startIdx];
-                    const end = currentConstellation.stars[endIdx];
-                    constellationLines.innerHTML += `
-                        <path d="M${start.x},${start.y} L${end.x},${end.y}" />
-                    `;
+                    if (startIdx < skyClarity && endIdx < skyClarity) {
+                        const start = currentConstellation.stars[startIdx];
+                        const end = currentConstellation.stars[endIdx];
+                        constellationLines.innerHTML += `
+                            <path d="M${start.x},${start.y} L${end.x},${end.y}" />
+                        `;
+                    }
                 });
+                constellationLines.style.opacity = '1';
             } else {
-                for (let i = 0; i < currentConstellation.stars.length - 1; i++) {
-                    constellationLines.innerHTML += `
-                        <path d="M${currentConstellation.stars[i].x},${currentConstellation.stars[i].y} L${currentConstellation.stars[i + 1].x},${currentConstellation.stars[i + 1].y}" />
-                    `;
-                }
+                constellationLines.style.opacity = '0';
             }
-            constellationLines.classList.add('visible');
-            stars.forEach(star => {
-                const label = star.querySelector('.star-label');
-                if (label) label.style.opacity = '1';
-            });
         }
 
-        // Start Button
-        startBtn.addEventListener('click', () => {
-            playSound(clickSound);
-            initGame();
-            generateStars();
-            instructionsScreen.style.opacity = '0';
-            setTimeout(() => {
-                instructionsScreen.style.display = 'none';
-                startScreen.style.display = 'flex';
-                startScreen.style.opacity = '1';
-                startCountdown();
-            }, 500);
-        });
-
-        // Start Countdown
         function startCountdown() {
             let count = 3;
             countdownEl.textContent = count;
             const countdown = setInterval(() => {
                 count--;
                 countdownEl.textContent = count;
-                if (count < 0) {
+                if (count <= 0) {
                     clearInterval(countdown);
                     startScreen.style.opacity = '0';
                     setTimeout(() => {
                         startScreen.style.display = 'none';
                         gameContainer.style.opacity = '1';
+                        gameContainer.style.display = 'block';
                         zoneTable.style.display = 'block';
                         gameActive = true;
                         startGameTimer();
@@ -765,19 +1161,20 @@
             }, 1000);
         }
 
-        // Game Timer
         function startGameTimer() {
             gameTimerInterval = setInterval(() => {
                 if (!gameActive) return;
                 timeLeft--;
                 const minutes = Math.floor(timeLeft / 60);
                 const seconds = timeLeft % 60;
-                timerEl.textContent = `Time: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                if (timeLeft <= 0) endGame(false);
+                timerEl.textContent = `Time: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                if (timeLeft <= 0) {
+                    timeLeft = 0; // Ensure time doesn't go below 0
+                    endGame(false);
+                }
             }, 1000);
         }
 
-        // Zone Selection
         Object.keys(zones).forEach(zone => {
             zones[zone].el.addEventListener('click', () => {
                 if (!gameActive) return;
@@ -786,43 +1183,79 @@
                 selectedZone.el.classList.add('selected');
                 playSound(clickSound);
             });
+            zones[zone].el.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                if (!gameActive || selectedZone !== zones[zone]) return;
+                upgradeSolution();
+            });
         });
 
-        // Solution Buttons
+        function upgradeSolution() {
+            const lastAppliedBtn = Object.keys(solutions).find(btn => 
+                document.getElementById(btn).lastClickTime && Date.now() - document.getElementById(btn).lastClickTime < 5000
+            );
+            if (!lastAppliedBtn) {
+                showMessage('action', 'Apply a solution first to upgrade it!', '#ff3333');
+                return;
+            }
+            const solution = solutions[lastAppliedBtn];
+            if (solution.upgraded) {
+                showMessage('action', `${solution.name} already upgraded!`, '#ff3333');
+                return;
+            }
+            if (budget < solution.upgradeCost) {
+                showMessage('action', `Need $${solution.upgradeCost} to upgrade ${solution.name}!`, '#ff3333');
+                return;
+            }
+            budget -= solution.upgradeCost;
+            solution.upgraded = true;
+            document.getElementById(lastAppliedBtn).classList.add('upgraded');
+            budgetEl.textContent = `Budget: $${budget}`;
+            showMessage('action', `${solution.name} upgraded! Enhanced effects applied.`, '#ffcc00');
+        }
+
         function applySolution(btnId) {
             if (!gameActive || !selectedZone) return;
             const solution = solutions[btnId];
+            const effects = solution.upgraded ? solution.upgradedEffects : solution.effects;
             if (budget < solution.cost) {
                 showMessage('action', `Not enough budget! Need $${solution.cost}, have $${budget}.`, '#ff3333');
                 return;
             }
             const zoneKey = Object.keys(zones).find(key => zones[key] === selectedZone);
-            const pollutionReduced = Math.min(selectedZone.lightLevel, solution.effects[zoneKey]);
-            selectedZone.lightLevel = Math.max(0, selectedZone.lightLevel - pollutionReduced);
-            budget -= solution.cost;
-            let bonus = 0;
-            const isOptimal = solution.optimalZone === zoneKey;
-            if (isOptimal) {
-                bonus = 50;
-                budget += bonus;
-                showMessage('action', `Optimal choice! ${solution.name} fits ${selectedZone.el.textContent} perfectly. +$${bonus} bonus!, '#00ff99'`);
-            }
-            skyClarity = Math.min(clarityGoal, skyClarity + Math.floor(pollutionReduced / 10));
-            totalPollutionReduced += pollutionReduced;
+            document.getElementById(btnId).lastClickTime = Date.now();
 
-            const percentReduced = Math.round(((selectedZone.originalLight - selectedZone.lightLevel) / selectedZone.originalLight) * 100);
+            const reduced = Math.min(selectedZone.lightLevel, effects[zoneKey]);
+            selectedZone.lightLevel = Math.max(0, selectedZone.lightLevel - reduced);
+            budget -= solution.cost;
+            totalPollutionReduced += reduced;
+            let bonus = solution.optimalZone === zoneKey ? 50 : 0;
+            if (bonus) budget += bonus;
+            showMessage('action', bonus ? `Optimal! ${solution.name}: -${reduced} light, +$${bonus}` : `${solution.name}: -${reduced} light`, bonus ? '#00ff99' : '#ffffff');
+
+            totalStarsCollected = Math.min(MAX_STARS, totalStarsCollected + Math.floor(totalPollutionReduced / 10));
+            skyClarity = Math.min(clarityGoal, totalStarsCollected);
             budgetEl.textContent = `Budget: $${budget}`;
-            clarityEl.textContent = `Sky Clarity: ${skyClarity}/${clarityGoal} stars`;
-            stars.forEach((star, i) => star.classList.toggle('visible', i < skyClarity));
+            updateUI();
+
+            const totalLight = Object.values(zones).reduce((sum, zone) => sum + zone.lightLevel, 0);
+            if (totalLight === 0) endGame(true);
+        }
+
+        function updateUI() {
+            clarityEl.textContent = `Stars: ${skyClarity}`;
+            stars.forEach((star, i) => {
+                star.classList.toggle('visible', i < skyClarity);
+                const label = star.querySelector('.star-label');
+                if (label) label.style.opacity = i < skyClarity ? '1' : '0';
+            });
+            drawConstellation();
+            updateScatteredStars();
             updateTable();
             updateZoneVisuals();
-
-            if (!isOptimal && pollutionReduced > 0) {
-                showMessage('action', `${solution.name} applied to ${selectedZone.el.textContent}: -${pollutionReduced} light (${percentReduced}%), -$${solution.cost}, '#ffffff'`);
-            }
-            if (skyClarity >= clarityGoal) {
-                drawConstellation();
-                endGame(true);
+            if (totalStarsCollected >= clarityGoal && skyClarity === clarityGoal) {
+                showMessage('event', `${currentConstellation.name} revealed! Clear all pollution to win!`, '#00ff99', 5000);
+                playSound(winSound);
             }
         }
 
@@ -834,7 +1267,6 @@
             });
         });
 
-        // Update UI
         function updateTable() {
             tableBody.innerHTML = '';
             Object.keys(zones).forEach(zone => {
@@ -852,58 +1284,64 @@
 
         function updateZoneVisuals() {
             Object.keys(zones).forEach(zone => {
-                const opacity = zones[zone].lightLevel / zones[zone].originalLight;
+                const ratio = zones[zone].lightLevel / zones[zone].originalLight;
+                const opacity = Math.min(1, Math.max(0, ratio));
                 zones[zone].el.style.opacity = 0.3 + (0.7 * opacity);
             });
         }
 
-        // Pollution Increase
         function increasePollution() {
             if (!gameActive) return;
+            const totalLight = Object.values(zones).reduce((sum, zone) => sum + zone.lightLevel, 0);
+            if (totalLight <= 30) {
+                pollutionTimeout = setTimeout(increasePollution, creepInterval);
+                return;
+            }
             const zoneKeys = Object.keys(zones);
             const randomZone = zones[zoneKeys[Math.floor(Math.random() * zoneKeys.length)]];
             if (randomZone.lightLevel < randomZone.originalLight * 1.5) {
-                randomZone.lightLevel = Math.min(randomZone.originalLight * 1.5, randomZone.lightLevel + pollutionCreep);
-                showMessage('action', `${randomZone.el.textContent} pollution increased by ${pollutionCreep}!, '#ff3333'`);
+                const increase = pollutionCreep;
+                randomZone.lightLevel = Math.min(randomZone.originalLight * 1.5, randomZone.lightLevel + increase);
+                showMessage('action', `${randomZone.el.textContent} pollution +${increase}!`, '#ff3333');
                 updateTable();
                 updateZoneVisuals();
             }
             pollutionTimeout = setTimeout(increasePollution, creepInterval);
         }
 
-        // Random Events
         const events = [
             { 
-                text: "Business backlash! Lose $100.", 
-                warning: "Warning: Businesses might resist soon, costing $100!",
+                text: "Residential protest! +20 pollution unless Dim Lights used next.", 
                 effect: () => {
-                    budget -= 100;
-                    budgetEl.textContent = `Budget: $${budget}`;
-                    showMessage('action', "Business backlash: -$100", '#ff3333');
+                    setTimeout(() => {
+                        if (!document.getElementById('btn-dim').lastClickTime || Date.now() - document.getElementById('btn-dim').lastClickTime > 5000) {
+                            zones.residential.lightLevel = Math.min(zones.residential.originalLight * 1.5, zones.residential.lightLevel + 20);
+                            showMessage('action', "Residential protest: +20 pollution", '#ff3333');
+                            updateTable();
+                            updateZoneVisuals();
+                        }
+                    }, 5000);
                 }
             },
             { 
-                text: "Stargazing event! +1 clarity if Park < 20.", 
+                text: "Commercial boom! +$100 if Motion Sensors used.", 
                 effect: () => {
-                    if (zones.park.lightLevel < 20) {
-                        skyClarity = Math.min(clarityGoal, skyClarity + 1);
-                        clarityEl.textContent = Sky Clarity: ${skyClarity}/${clarityGoal} stars;
-                        stars.forEach((star, i) => star.classList.toggle('visible', i < skyClarity));
-                        showMessage('action', "Stargazing event: +1 clarity", '#00ff99');
-                        if (skyClarity >= clarityGoal) {
-                            drawConstellation();
-                            endGame(true);
-                        }
+                    if (document.getElementById('btn-motion').lastClickTime && Date.now() - document.getElementById('btn-motion').lastClickTime < 5000) {
+                        budget += 100;
+                        budgetEl.textContent = `Budget: $${budget}`;
+                        showMessage('action', "Commercial boom: +$100", '#00ff99');
                     }
                 }
             },
             { 
-                text: "Eco grant! Gain $200.", 
-                warning: "Good news: An eco grant of $200 might be coming!",
+                text: "Park stargazing! +2 stars if pollution < 10.", 
                 effect: () => {
-                    budget += 200;
-                    budgetEl.textContent = Budget: $${budget};
-                    showMessage('action', "Eco grant: +$200", '#00ff99');
+                    if (zones.park.lightLevel < 10) {
+                        totalStarsCollected = Math.min(MAX_STARS, totalStarsCollected + 2);
+                        skyClarity = Math.min(clarityGoal, totalStarsCollected);
+                        updateUI();
+                        showMessage('action', "Park stargazing: +2 stars", '#00ff99');
+                    }
                 }
             }
         ];
@@ -912,79 +1350,29 @@
             if (!gameActive) return;
             const event = events[Math.floor(Math.random() * events.length)];
             playSound(eventSound);
-            if (event.warning) {
-                eventMessage.textContent = event.warning;
-                eventMessage.style.opacity = 1;
-                setTimeout(() => eventMessage.style.opacity = 0, 3000);
-                setTimeout(() => {
-                    if (!gameActive) return;
-                    eventMessage.textContent = event.text;
-                    eventMessage.style.opacity = 1;
-                    event.effect();
-                    setTimeout(() => eventMessage.style.opacity = 0, 3000);
-                }, 5000);
-            } else {
-                eventMessage.textContent = event.text;
-                eventMessage.style.opacity = 1;
-                event.effect();
-                setTimeout(() => eventMessage.style.opacity = 0, 3000);
-            }
+            eventMessage.textContent = event.text;
+            eventMessage.style.opacity = 1;
+            event.effect();
+            setTimeout(() => eventMessage.style.opacity = 0, 3000);
             eventTimeout = setTimeout(triggerRandomEvent, Math.random() * 20000 + 10000);
         }
 
-        // Show Message
         function showMessage(type, text, color, duration = 3000) {
-            const el = document.getElementById(${type}-message);
+            const el = document.getElementById(`${type}-message`);
             el.textContent = text;
             el.style.color = color;
             el.style.opacity = 1;
             setTimeout(() => el.style.opacity = 0, duration);
         }
 
-        // End Game
         function endGame(won) {
             gameActive = false;
             clearInterval(gameTimerInterval);
             clearTimeout(pollutionTimeout);
             clearTimeout(eventTimeout);
             score = totalPollutionReduced + budget + timeLeft * 10;
-            const summary = `
-                <p>Stars Revealed: ${skyClarity}/${clarityGoal}</p>
-                <p>Total Pollution Reduced: ${totalPollutionReduced}</p>
-                <p>Budget Left: $${budget}</p>
-                <p>Time Bonus: ${timeLeft} seconds</p>
-                <p>Score: ${score}</p>
-            `;
-            if (won) {
-                winScreen.innerHTML = `
-                    <h1>Victory!</h1>
-                    <div id="win-text">${currentConstellation.name} Revealed!</div>
-                    ${summary}
-                    <svg id="win-constellation-lines" style="position: absolute; width: 100%; height: 100%;"></svg>
-                `;
-                const winLines = winScreen.querySelector('#win-constellation-lines');
-                winLines.innerHTML = constellationLines.innerHTML;
-                winLines.classList.add('visible');
-                stars.forEach(star => winScreen.appendChild(star));
-                winScreen.style.display = 'flex';
-                winScreen.style.opacity = '1';
-                playSound(winSound);
-            } else {
-                loseScreen.innerHTML = `
-                    <h1>Time's Up!</h1>
-                    <div id="lose-text">Sky Lost</div>
-                    ${summary}
-                `;
-                loseScreen.style.display = 'flex';
-                loseScreen.style.opacity = '1';
-            }
-            zoneTable.style.display = 'none';
+            showEndDialogue(won);
         }
-
-        // Responsive Stars (disabled for fixed constellation)
-        window.addEventListener('resize', () => {
-            // No repositioning for fixed constellation
-        });
     </script>
 </body>
 </html>

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Eco City Planner - Tirupati</title>
+    <title>EcoVerse: Tirupati's Green Quest</title>
     <style>
         body {
             font-family: 'Quicksand', Arial, sans-serif;
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            background: linear-gradient(135deg, #D1E8F7 0%, #C3E6CB 70%, #2A9D8F 100%);
+            background: linear-gradient(135deg, #A3D8F4 0%, #B8E4C9 70%, #1A7F71 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -22,49 +22,51 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDBweCIgdmlld0JveD0iMCAwIDE5MjAgMTAwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxwYXRoIGQ9Ik0wLDEwMEw2NDAsODBMMTI4MCwxMDBMMTkyMCw3MFYzMDAwSDBWMTAwWiIgZmlsbD0iIzJBOUQ4RiIgb3BhY2l0eT0iMC4yIi8+PC9zdmc+') repeat;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDBweCIgdmlld0JveD0iMCAwIDE5MjAvMTAwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxwYXRoIGQ9Ik0wLDEwMEw2NDAsODBMMTI4MCwxMDBMMTkyMCw3MFYzMDAwSDBWMTAwWiIgZmlsbD0iIzJBOUQ4RiIgb3BhY2l0eT0iMC4yIi8+PC9zdmc+') repeat;
             z-index: 0;
             pointer-events: none;
         }
         .city-planner {
             width: 100%;
-            max-width: 1200px;
-            height: 750px;
+            max-width: 1250px;
+            height: 780px;
             display: flex;
             flex-direction: column;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
             overflow: hidden;
             position: relative;
             z-index: 1;
         }
         .header {
-            background: linear-gradient(90deg, #2A9D8F, #4ABFAB);
-            color: #F5F5F5;
-            padding: 20px;
+            background: linear-gradient(90deg, #1A7F71, #3AB8A2);
+            color: #FFFFFF;
+            padding: 25px;
             text-align: center;
-            font-size: 2.3em;
-            font-weight: 600;
-            border-bottom: 4px solid #C3E6CB;
+            font-size: 2.8em;
+            font-weight: 700;
+            border-bottom: 5px solid #B8E4C9;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(26, 127, 113, 0.6);
         }
         .main-area {
             display: flex;
             flex: 1;
-            padding: 20px;
-            gap: 20px;
+            padding: 25px;
+            gap: 25px;
         }
         #canvas-container {
             flex: 3;
-            border: 3px solid #C3E6CB;
-            border-radius: 10px;
-            background: linear-gradient(180deg, #D1E8F7 0%, #F5F5F5 100%);
+            border: 4px solid #B8E4C9;
+            border-radius: 12px;
+            background: linear-gradient(180deg, #A3D8F4 0%, #F7F7F7 100%);
             overflow: hidden;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
         }
         #city-canvas {
             max-width: 100%;
@@ -74,18 +76,18 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: rgba(245, 245, 245, 0.8);
-            border-radius: 10px;
-            padding: 20px;
-            gap: 15px;
-            z-index: 1;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            background: rgba(240, 240, 240, 0.95);
+            border-radius: 12px;
+            padding: 25px;
+            gap: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+            position: relative;
         }
         .resource {
             background: #FFFFFF;
-            padding: 12px;
-            border-radius: 8px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             cursor: grab;
             display: flex;
             align-items: center;
@@ -94,51 +96,76 @@
             -webkit-user-drag: element;
         }
         .resource:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
         }
         .resource:active {
             cursor: grabbing;
         }
         .resource img {
-            width: 35px;
-            height: 35px;
-            margin-right: 10px;
+            width: 45px;
+            height: 45px;
+            margin-right: 15px;
         }
         .resource span {
-            font-weight: 500;
-            color: #2A9D8F;
-            font-size: 1em;
+            font-weight: 600;
+            color: #1A7F71;
+            font-size: 1.2em;
         }
         .controls {
-            background: rgba(195, 230, 203, 0.8);
-            padding: 15px;
+            background: rgba(184, 228, 201, 0.95);
+            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 4px solid #2A9D8F;
+            border-top: 5px solid #1A7F71;
+            z-index: 5;
         }
-        #year-display, #stats-display {
-            font-size: 1.1em;
-            color: #2A9D8F;
-            font-weight: 500;
+        .control-item {
+            font-size: 1.2em;
+            color: #1A7F71;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .control-item img {
+            width: 24px;
+            height: 24px;
         }
         #next-year {
-            padding: 10px 25px;
-            background: #2A9D8F;
-            color: #F5F5F5;
+            padding: 12px 30px;
+            background: #1A7F71;
+            color: #FFFFFF;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 1.1em;
+            font-size: 1.2em;
             transition: background 0.3s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         #next-year:hover {
-            background: #4ABFAB;
-            transform: translateY(-2px);
+            background: #3AB8A2;
+            transform: translateY(-3px);
         }
         #next-year:active {
             transform: translateY(0);
+        }
+        #back-button {
+            padding: 12px 20px;
+            background: #B8E4C9;
+            color: #1A7F71;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        #back-button:hover {
+            background: #A3D8F4;
+            transform: translateY(-3px);
         }
         #result {
             display: none;
@@ -146,33 +173,36 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(245, 245, 245, 0.95);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background: rgba(240, 240, 240, 0.98);
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
             text-align: center;
             max-width: 90%;
-            width: 500px;
+            width: 550px;
             z-index: 10;
-            border: 2px solid #C3E6CB;
+            border: 3px solid #B8E4C9;
             animation: fadeIn 0.5s ease;
         }
-        #intro-dialog {
+        #initial-dialog, #section-dialog {
             display: block;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(245, 245, 245, 0.95);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #F0F7F0, #FFFFFF);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
             text-align: center;
             max-width: 90%;
-            width: 500px;
+            width: 400px; /* Narrowed from 600px */
             z-index: 20;
-            border: 2px solid #2A9D8F;
+            border: 4px solid #1A7F71;
             animation: fadeIn 0.5s ease;
+        }
+        #section-dialog {
+            display: none;
         }
         #intro-overlay {
             display: block;
@@ -181,154 +211,96 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             z-index: 15;
         }
-        #intro-dialog h2 {
-            color: #2A9D8F;
+        #initial-dialog h2, #section-dialog h2 {
+            color: #1A7F71;
             margin-top: 0;
-            font-size: 2em;
-            font-weight: 600;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        #intro-dialog p {
-            font-size: 1.1em;
-            color: #2A9D8F;
-            line-height: 1.5;
-        }
-        #intro-dialog .interactive {
+        #initial-dialog p, #section-dialog p {
+            font-size: 1.2em;
+            color: #1A7F71;
+            line-height: 1.6;
             margin: 15px 0;
-            color: #666;
         }
-        #intro-dialog button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            background: #2A9D8F;
-            color: #F5F5F5;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1.1em;
-            transition: background 0.3s ease, transform 0.2s ease;
-        }
-        #intro-dialog button:hover {
-            background: #4ABFAB;
-            transform: translateY(-2px);
-        }
-        #intro-response {
-            margin-top: 10px;
-            font-style: italic;
-            color: #2A9D8F;
-            font-size: 1em;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -60%); }
-            to { opacity: 1; transform: translate(-50%, -50%); }
-        }
-        #result h2 {
-            color: #2A9D8F;
-            margin-top: 0;
-            font-size: 2em;
-            font-weight: 600;
-        }
-        #result p {
-            font-size: 1em;
-            color: #2A9D8F;
-        }
-        #result button {
-            margin-top: 20px;
-            padding: 10px 30px;
-            background: #2A9D8F;
-            color: #F5F5F5;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1em;
-            transition: background 0.3s ease, transform 0.2s ease;
-        }
-        #result button:hover {
-            background: #4ABFAB;
-            transform: translateY(-2px);
-        }
-        #suggestions {
-            font-style: italic;
-            color: #666;
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-        #music-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 8px 15px;
-            background: #2A9D8F;
-            color: #F5F5F5;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background 0.3s ease;
-        }
-        #music-toggle:hover {
-            background: #4ABFAB;
-        }
-        /* Updated Eco Avatar Styles */
-        #chatbot-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 250px; /* Reduced width */
-            height: 150px; /* Reduced height */
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 10px; /* Slightly smaller radius */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            z-index: 10;
+        #initial-dialog .buttons {
+            margin: 25px 0;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            border: 2px solid #C3E6CB;
+            justify-content: center;
+            gap: 20px;
         }
-        #chatbot-header {
-            background: linear-gradient(90deg, #2A9D8F, #4ABFAB);
-            color: #F5F5F5;
-            padding: 8px; /* Reduced padding */
-            text-align: center;
-            font-size: 1em; /* Smaller font */
-            font-weight: 600;
+        #initial-dialog button, #section-dialog button {
+            padding: 12px 25px;
+            background: #1A7F71;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        #initial-dialog button:hover, #section-dialog button:hover {
+            background: #3AB8A2;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        #chatbot-dialog {
+            display: none;
+            width: 100%;
+            background: linear-gradient(135deg, #F0F7F0, #FFFFFF);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border: 2px solid #1A7F71;
+            padding: 15px;
+            text-align: left;
+            animation: fadeIn 0.5s ease;
+            margin-top: 20px;
         }
         #chatbot-avatar {
-            width: 40px; /* Reduced size */
+            width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: url('https://img.icons8.com/color/96/000000/user.png') no-repeat center;
-            background-size: cover;
-            margin: 5px auto; /* Reduced margin */
-            transition: transform 0.3s ease;
+            margin-right: 10px;
+            vertical-align: middle;
         }
-        #chatbot-avatar.active {
-            animation: bounce 0.5s ease infinite;
+        #chatbot-dialog-message {
+            font-size: 1em;
+            color: #1A7F71;
+            line-height: 1.5;
+            display: inline-block;
+            vertical-align: middle;
+            max-width: calc(100% - 60px);
         }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); } /* Adjusted bounce height */
-        }
-        #chatbot-messages {
-            flex: 1;
-            padding: 5px; /* Reduced padding */
-            overflow-y: auto;
-            background: rgba(245, 245, 245, 0.8);
-            font-size: 0.8em; /* Smaller font */
-            color: #2A9D8F;
-        }
-        .chat-message {
-            margin: 3px 0; /* Reduced margin */
-            padding: 5px 8px; /* Reduced padding */
+        #chatbot-close {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: #1A7F71;
+            color: #FFFFFF;
+            border: none;
             border-radius: 6px;
-            max-width: 90%;
-            word-wrap: break-word;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s ease, transform 0.2s ease;
+            display: block;
+            margin-left: auto;
         }
-        .chat-message.bot {
-            background: #C3E6CB;
-            color: #2A9D8F;
+        #chatbot-close:hover {
+            background: #3AB8A2;
+            transform: translateY(-2px);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
         }
         @media (max-width: 900px) {
             .city-planner {
@@ -344,80 +316,78 @@
                 justify-content: center;
             }
             .resource {
-                flex: 1 1 40%;
+                flex: 1 1 45%;
                 margin: 10px;
             }
             .controls {
                 flex-direction: column;
-                gap: 10px;
+                gap: 15px;
             }
             #city-canvas {
                 width: 100%;
                 height: auto;
             }
-            #music-toggle {
-                top: 10px;
-                right: 10px;
-            }
-            #intro-dialog {
+            #initial-dialog, #section-dialog {
                 width: 90%;
-                padding: 15px;
+                padding: 20px;
             }
-            #intro-dialog h2 {
-                font-size: 1.5em;
-            }
-            #intro-dialog p {
-                font-size: 0.9em;
-            }
-            #intro-dialog .interactive {
-                font-size: 0.9em;
-            }
-            #chatbot-container {
-                width: 200px; /* Smaller for mobile */
-                height: 120px;
-                bottom: 10px;
-                right: 10px;
-            }
-            #chatbot-header {
-                font-size: 0.9em;
-            }
-            #chatbot-avatar {
-                width: 30px;
-                height: 30px;
+            #chatbot-dialog {
+                width: 100%;
+                margin: 10px 0 0 0;
             }
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="city-planner">
-        <div class="header">Eco City Planner - Tirupati</div>
+    <div class="city-planner" id="game-container" style="display: none;">
+        <div class="header">EcoVerse: Tirupati's Green Quest</div>
         <div class="main-area">
             <div id="canvas-container">
                 <canvas id="city-canvas" width="900" height="500"></canvas>
             </div>
             <div class="sidebar">
-                <div class="resource" draggable="true" data-type="solar">
+                <div class="resource" draggable="true" data-type="solar" data-cost="2000">
                     <img src="https://img.icons8.com/color/96/000000/solar-panel.png" alt="Solar Plant">
-                    Solar Plant (<span id="energy">150</span> MW)
+                    Solar Plant (<span id="solar-cost">2000</span>$)
                 </div>
-                <div class="resource" draggable="true" data-type="water">
+                <div class="resource" draggable="true" data-type="water" data-cost="1500">
                     <img src="https://img.icons8.com/color/96/000000/water-tower.png" alt="Water Tower">
-                    Water Tower (<span id="water">150</span> units)
+                    Water Tower (<span id="water-cost">1500</span>$)
                 </div>
-                <div class="resource" draggable="true" data-type="factory">
-                    <img src="https://img.icons8.com/color/96/000000/factory.png" alt="Factory">
-                    Factory (<span id="co2">300</span> tons CO2)
+                <div class="resource" draggable="true" data-type="factory" data-cost="3000">
+                    <img src="https://img.icons8.com/fluency/96/000000/factory.png" alt="Factory">
+                    Factory (<span id="factory-cost">3000</span>$)
+                </div>
+                <div id="chatbot-dialog">
+                    <img id="chatbot-avatar" src="https://img.icons8.com/color/96/000000/bot.png" alt="Chatbot Avatar">
+                    <span id="chatbot-dialog-message"></span>
+                    <button id="chatbot-close" onclick="hideChatbotDialog()">Close</button>
                 </div>
             </div>
         </div>
         <div class="controls">
-            <div id="year-display">Year: <span id="years">0</span>/5</div>
-            <div id="stats-display">
-                Sustainability: <span id="sustainability">50</span>% | 
+            <div class="control-item">
+                <img src="https://img.icons8.com/fluency/48/000000/calendar.png" alt="Year">
+                Year: <span id="years">0</span>/5
+            </div>
+            <div class="control-item">
+                <img src="https://img.icons8.com/fluency/48/000000/money-bag.png" alt="Funds">
+                Funds Left: $<span id="funds">10000</span>
+            </div>
+            <div class="control-item">
+                <img src="https://img.icons8.com/fluency/48/000000/leaf.png" alt="Sustainability">
+                Sustainability: <span id="sustainability">50</span>%
+            </div>
+            <div class="control-item">
+                <img src="https://img.icons8.com/color/48/000000/smoke.png" alt="Pollution">
                 Pollution: <span id="pollution">0</span>%
             </div>
-            <button id="next-year" onclick="nextYear()">Next Year</button>
+            <button id="next-year" onclick="nextYear()">
+                <img src="https://img.icons8.com/fluency/48/000000/fast-forward.png" alt="Next" style="width: 24px; vertical-align: middle;">
+                Next Year
+            </button>
+            <button id="back-button" onclick="showInitialDialog()">Back</button>
         </div>
         <div id="result">
             <h2>Game Over!</h2>
@@ -427,40 +397,31 @@
         </div>
     </div>
     <div id="intro-overlay"></div>
-    <div id="intro-dialog">
-        <h2>Tirupati Needs You!</h2>
-        <p>Hey, Tirupati’s Savior! You’ve got 5 years to keep this city holy—not a pollution dump! Drop some solar plants, water towers, or factories, but don’t mess up the vibes, okay? Ready to be a legend—or just here to watch it burn?</p>
-        <div class="interactive">
-            Are you a planning genius or a total disaster? <br>
-            <label><input type="radio" name="confidence" value="genius"> I’m a genius!</label><br>
-            <label><input type="radio" name="confidence" value="disaster"> Disaster’s my middle name!</label>
+    <div id="initial-dialog">
+        <h2>EcoVerse: Tirupati's Green Quest</h2>
+        <p>Welcome, Eco Warrior! Transform Tirupati into a sustainable paradise.</p>
+        <div class="buttons">
+            <button onclick="startGame()">Start Game</button>
+            <button onclick="showSection('how-to')">How to Play the Game</button>
+            <button onclick="showSection('about')">About the Game</button>
         </div>
-        <button onclick="startGame()">Let’s Do This!</button>
-        <p id="intro-response"></p>
     </div>
-    <button id="music-toggle" onclick="toggleMusic()">Play Music</button>
-    <audio id="background-music" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-    <div id="chatbot-container">
-        <div id="chatbot-header">Eco Avatar</div>
-        <div id="chatbot-avatar" class="avatar"></div>
-        <div id="chatbot-messages"></div>
+    <div id="section-dialog">
+        <h2 id="section-title"></h2>
+        <p id="section-content"></p>
+        <button onclick="showInitialDialog()">Back</button>
     </div>
 
     <script>
         const canvas = document.getElementById("city-canvas");
         const ctx = canvas.getContext("2d");
-        let resources = { water: 150, energy: 150, co2: 300 };
+        let funds = 10000;
         let sustainability = 50;
         let pollution = 0;
         let years = 0;
         let buildings = [];
         let pollutionParticles = [];
-        let clouds = [];
 
-        // Track building counts for varied responses
         let buildingCounts = { solar: 0, water: 0, factory: 0 };
 
         const images = {
@@ -469,6 +430,7 @@
             factory: new Image(),
             house: new Image(),
             temple: new Image(),
+            isckon: new Image(),
             railway: new Image(),
             tree: new Image(),
             collegeIIT: new Image(),
@@ -476,21 +438,21 @@
         };
         images.solar.src = 'https://img.icons8.com/color/96/000000/solar-panel.png';
         images.water.src = 'https://img.icons8.com/color/96/000000/water-tower.png';
-        images.factory.src = 'https://img.icons8.com/color/96/000000/factory.png';
+        images.factory.src = 'https://img.icons8.com/fluency/96/000000/factory.png';
         images.house.src = 'https://img.icons8.com/color/96/000000/home.png';
-        images.temple.src = 'https://img.icons8.com/color/96/000000/temple.png';
+        images.temple.src = 'https://img.icons8.com/color/96/000000/pagoda.png';
+        images.isckon.src = 'https://img.icons8.com/color/96/000000/pagoda.png';
         images.railway.src = 'https://img.icons8.com/color/96/000000/train-station.png';
         images.tree.src = 'https://img.icons8.com/color/96/000000/forest.png';
-        images.collegeIIT.src = 'https://static.thenounproject.com/png/2932878-200.png';
+        images.collegeIIT.src = 'https://img.icons8.com/color/96/000000/university.png';
         images.collegeIISER.src = 'https://img.icons8.com/color/96/000000/university.png';
 
         let imagesLoaded = 0;
-        const totalImages = 9;
+        const totalImages = 10;
 
         function handleImageLoad() {
             imagesLoaded++;
             if (imagesLoaded === totalImages) {
-                initializeClouds();
                 drawCity();
                 setupDragEvents();
             }
@@ -500,69 +462,54 @@
             console.error(`Image failed to load: ${event.target.src}`);
             imagesLoaded++;
             if (imagesLoaded === totalImages) {
-                initializeClouds();
                 drawCity();
                 setupDragEvents();
             }
         }
 
-        images.solar.onload = handleImageLoad;
-        images.water.onload = handleImageLoad;
-        images.factory.onload = handleImageLoad;
-        images.house.onload = handleImageLoad;
-        images.temple.onload = handleImageLoad;
-        images.railway.onload = handleImageLoad;
-        images.tree.onload = handleImageLoad;
-        images.collegeIIT.onload = handleImageLoad;
-        images.collegeIISER.onload = handleImageLoad;
-        images.solar.onerror = handleImageError;
-        images.water.onerror = handleImageError;
-        images.factory.onerror = handleImageError;
-        images.house.onerror = handleImageError;
-        images.temple.onerror = handleImageError;
-        images.railway.onerror = handleImageError;
-        images.tree.onerror = handleImageError;
-        images.collegeIIT.onerror = handleImageError;
-        images.collegeIISER.onerror = handleImageError;
+        for (let key in images) {
+            images[key].onload = handleImageLoad;
+            images[key].onerror = handleImageError;
+        }
 
         setTimeout(() => {
             if (imagesLoaded < totalImages) {
                 console.warn("Images took too long, forcing draw");
-                initializeClouds();
                 drawCity();
                 setupDragEvents();
             }
         }, 5000);
 
-        function initializeClouds() {
-            for (let i = 0; i < 5; i++) {
-                clouds.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * 100,
-                    size: Math.random() * 50 + 30,
-                    speed: Math.random() * 0.5 + 0.2
-                });
-            }
+        function startGame() {
+            document.getElementById("initial-dialog").style.display = "none";
+            document.getElementById("section-dialog").style.display = "none";
+            document.getElementById("intro-overlay").style.display = "none";
+            document.getElementById("game-container").style.display = "flex";
+            showChatbotDialog("default");
         }
 
-        function startGame() {
-            console.log("Game started!");
-            const confidence = document.querySelector('input[name="confidence"]:checked');
-            let response = "";
-            if (confidence) {
-                if (confidence.value === "genius") {
-                    response = "Nice confidence—let’s see if you’re all talk!";
-                } else {
-                    response = "Oh boy, Tirupati’s in for a wild ride!";
-                }
-            } else {
-                response = "No answer? Guess you’re too cool for this!";
+        function showInitialDialog() {
+            document.getElementById("game-container").style.display = "none";
+            document.getElementById("section-dialog").style.display = "none";
+            document.getElementById("initial-dialog").style.display = "block";
+            document.getElementById("intro-overlay").style.display = "block";
+        }
+
+        function showSection(section) {
+            document.getElementById("initial-dialog").style.display = "none";
+            document.getElementById("section-dialog").style.display = "block";
+            const title = document.getElementById("section-title");
+            const content = document.getElementById("section-content");
+            switch (section) {
+                case "about":
+                    title.textContent = "About the Game";
+                    content.textContent = "EcoVerse raises awareness about sustainability by simulating Tirupati’s urban planning. Players balance economic growth with environmental health, learning how solar plants reduce pollution, water towers sustain life, and factories pose risks—mirroring real-world eco-challenges.";
+                    break;
+                case "how-to":
+                    title.textContent = "How to Play the Game";
+                    content.textContent = "1. Drag solar plants ($2000), water towers ($1500), or factories ($3000) onto the canvas. 2. Place factories away from homes to avoid pollution penalties. 3. Click 'Next Year' to advance time (5 years total). 4. Keep pollution below 90% and boost sustainability to win!";
+                    break;
             }
-            document.getElementById("intro-response").textContent = response;
-            setTimeout(() => {
-                document.getElementById("intro-dialog").style.display = "none";
-                document.getElementById("intro-overlay").style.display = "none";
-            }, 1000);
         }
 
         function setupDragEvents() {
@@ -570,102 +517,81 @@
             resources.forEach(resource => {
                 resource.addEventListener('dragstart', (event) => {
                     const type = resource.getAttribute('data-type');
-                    event.dataTransfer.setData('text/plain', type);
+                    const cost = parseInt(resource.getAttribute('data-cost'));
+                    event.dataTransfer.setData('text/plain', JSON.stringify({ type, cost }));
                 });
             });
 
-            canvas.addEventListener('dragover', (event) => {
-                event.preventDefault();
-            });
+            canvas.addEventListener('dragover', (event) => event.preventDefault());
 
             canvas.addEventListener('drop', (event) => {
                 event.preventDefault();
-                const type = event.dataTransfer.getData('text/plain');
+                const data = JSON.parse(event.dataTransfer.getData('text/plain'));
+                const { type, cost } = data;
                 const rect = canvas.getBoundingClientRect();
                 const x = event.clientX - rect.left;
                 const y = event.clientY - rect.top;
 
-                if (canPlaceBuilding(type)) {
+                if (canPlaceBuilding(type, cost, x, y)) {
                     placeBuilding(type, x, y);
-                    updateResources(type);
+                    updateFunds(cost);
                     updateStats(type);
+                    showChatbotDialog(type);
                     drawCity();
                 } else {
-                    console.log(`Cannot place ${type}: Resources - Energy: ${resources.energy}, Water: ${resources.water}, CO2: ${resources.co2}, Sustainability: ${sustainability}`);
+                    showChatbotDialog(type === "factory" ? "factory_restricted" : "error");
                 }
             });
         }
 
-        function canPlaceBuilding(type) {
-            if (years >= 5 || pollution >= 90) return false;
-            if (type === "solar" && resources.energy >= 20) return true;
-            if (type === "water" && resources.water >= 20) return true;
-            if (type === "factory" && resources.co2 >= 40 && sustainability > 20) return true;
-            return false;
+        const residentialBuildings = [
+            { x: 230, y: 420 }, { x: 340, y: 430 },
+            { x: 280, y: 200 }, { x: 340, y: 170 }
+        ];
+
+        function canPlaceBuilding(type, cost, x, y) {
+            if (years >= 5 || pollution >= 90 || funds < cost) return false;
+            if (type === "factory") {
+                for (let house of residentialBuildings) {
+                    if (Math.hypot(x - house.x, y - house.y) < 100) return false;
+                }
+            }
+            return true;
         }
 
-        // Varied response arrays with real-life pollution facts
         const solarMessages = [
-            "Great move! Solar power keeps Tirupati clean—unlike Delhi’s 2016 smog crisis!",
-            "Another solar plant? You’re cutting pollution long-term—smart move!",
-            "More solar! In Germany, solar cut CO2 by 35M tons since 2000—nice trend!",
-            "Solar’s piling up—unlike factories, this keeps the air holy!"
+            "Great move! Solar power keeps Tirupati clean. In 2011, Fukushima’s nuclear disaster showed renewables’ safety—solar avoids such risks!",
+            "Another solar plant? Smart! Germany’s solar boom cut CO2 by 35M tons since 2000, proving long-term pollution reduction.",
+            "More solar! Unlike Chernobyl’s 1986 meltdown, solar keeps the air holy and safe for generations.",
+            "Solar’s piling up! No Three Mile Island 1979 here—clean energy keeps Tirupati thriving."
         ];
         const waterMessages = [
-            "Nice! Water towers ensure a healthy society—think Flint’s water crisis avoided!",
-            "Another water tower? Steady supply beats Chennai’s 2019 water shortage!",
-            "Water’s flowing! This supports life—unlike polluted rivers in India’s cities.",
-            "More water towers mean thriving crops—way better than smoggy skies!"
+            "Nice! Water towers ensure health. Flint, Michigan’s 2014 crisis poisoned 100,000—clean water prevents that!",
+            "Another water tower? Chennai’s 2019 drought left millions dry—steady supply avoids such chaos!",
+            "Water’s flowing! India’s 1970s Ganges pollution killed ecosystems—towers keep Tirupati’s rivers alive.",
+            "More water towers! No 2004 Asian tsunami chaos here—reliable water supports life and crops."
         ];
         const factoryMessages = [
-            "Factories boost jobs, but beware—Bhopal 1984 showed pollution’s deadly cost!",
-            "Another factory? Jobs now, but LA’s smog in the 1940s lasted decades!",
-            "Factories again? China’s 2013 haze cut life expectancy—solar could help!",
-            "More factories pile on CO2—London’s 1952 smog killed 4,000 in weeks!"
-        ];
-        const yearMessagesHighPollution = [
-            "Pollution’s rising! Like Beijing 2015, this could choke Tirupati long-term!",
-            "High pollution! Mexico City’s 1990s smog shows society suffers—act fast!",
-            "Factories dominate! Kanpur’s tanneries still pollute the Ganges—scary stuff!"
-        ];
-        const yearMessagesHighSustainability = [
-            "Wow, you’re a star! Tirupati’s thriving—like Copenhagen’s green model!",
-            "Sustainability’s soaring! Think Costa Rica—90% renewable energy!",
-            "Society’s loving this—solar mimics Bhutan’s carbon-negative success!"
-        ];
-        const yearMessagesMidway = [
-            "Halfway there! Society loves your green choices—keep it up!",
-            "Year 3 and clean? Like Freiburg, Germany, you’re building a green future!",
-            "Mid-game strong! Solar’s winning—unlike Gary, Indiana’s steel smog!"
+            "Factories boost jobs, but beware! Bhopal 1984 leaked gas, killing 3,000 instantly—pollution’s deadly cost!",
+            "Another factory? LA’s 1940s smog sickened thousands—decades of haze followed unchecked industry!",
+            "Factories again? China’s 2013 haze cut life expectancy by 5 years—solar could offset this!",
+            "More factories! London’s 1952 smog killed 4,000 in weeks—CO2 piles up fast without balance!"
         ];
 
         function placeBuilding(type, x, y) {
             buildings.push({ type, x, y, pollutionLevel: type === "factory" ? 1 : 0 });
             buildingCounts[type]++;
-            let messageIndex = Math.min(buildingCounts[type] - 1, 3); // Cap at 4th message
-            if (type === "solar") {
-                showAvatarMessage(solarMessages[messageIndex]);
-            } else if (type === "water") {
-                showAvatarMessage(waterMessages[messageIndex]);
-            } else if (type === "factory") {
-                showAvatarMessage(factoryMessages[messageIndex]);
-            }
         }
 
-        function updateResources(type) {
-            if (type === "solar") resources.energy -= 20;
-            if (type === "water") resources.water -= 20;
-            if (type === "factory") resources.co2 -= 40;
-
-            document.getElementById("energy").textContent = Math.max(0, resources.energy);
-            document.getElementById("water").textContent = Math.max(0, resources.water);
-            document.getElementById("co2").textContent = Math.max(0, resources.co2);
+        function updateFunds(cost) {
+            funds -= cost;
+            document.getElementById("funds").textContent = funds;
         }
 
         function updateStats(type) {
             if (type === "solar") sustainability = Math.min(100, sustainability + 10);
-            if (type === "water") sustainability = Math.min(100, sustainability + 5);
-            if (type === "factory") {
+            else if (type === "water") sustainability = Math.min(100, sustainability + 5);
+            else if (type === "factory") {
                 sustainability = Math.max(0, sustainability - 15);
                 pollution = Math.min(100, pollution + 10);
             }
@@ -677,7 +603,7 @@
             return {
                 x,
                 y,
-                size: Math.random() * 5 + 2,
+                size: Math.random() * 3 + 1,
                 vx: (Math.random() - 0.5) * 2,
                 vy: (Math.random() - 0.5) * 2 - 1,
                 life: 60 + Math.random() * 40,
@@ -688,48 +614,12 @@
         function drawCity() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            clouds.forEach(cloud => {
-                ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-                ctx.beginPath();
-                ctx.arc(cloud.x, cloud.y, cloud.size, 0, Math.PI * 2);
-                ctx.fill();
-                cloud.x += cloud.speed;
-                if (cloud.x > canvas.width + cloud.size) {
-                    cloud.x = -cloud.size;
-                    cloud.y = Math.random() * 100;
-                }
-            });
-
-            ctx.fillStyle = "#2A9D8F";
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.lineTo(150, 70);
-            ctx.lineTo(300, 40);
-            ctx.lineTo(450, 80);
-            ctx.lineTo(600, 50);
-            ctx.lineTo(750, 90);
-            ctx.lineTo(900, 60);
-            ctx.lineTo(900, 0);
-            ctx.lineTo(0, 0);
-            ctx.fill();
-            ctx.fillStyle = "rgba(42, 157, 143, 0.3)";
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.lineTo(150, 70);
-            ctx.lineTo(300, 40);
-            ctx.lineTo(450, 80);
-            ctx.lineTo(600, 50);
-            ctx.lineTo(750, 90);
-            ctx.lineTo(900, 60);
-            ctx.lineTo(900, 0);
-            ctx.lineTo(0, 0);
-            ctx.fill();
-
-            const groundColor = `hsl(90, 20%, ${90 - pollution / 2}%)`;
-            ctx.fillStyle = groundColor;
+            // Base ground
+            ctx.fillStyle = "#D2B48C"; // Sandy base color
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = "#C3E6CB";
+            // Grass layer
+            ctx.fillStyle = "#B8E4C9";
             ctx.beginPath();
             ctx.moveTo(0, 500);
             ctx.quadraticCurveTo(300, 400, 450, 500);
@@ -738,88 +628,143 @@
             ctx.lineTo(0, 500);
             ctx.fill();
 
-            ctx.fillStyle = "#4A4A4A";
+            // Hills
+            ctx.fillStyle = "#1A7F71";
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(150, 70);
+            ctx.lineTo(300, 40);
+            ctx.lineTo(450, 80);
+            ctx.lineTo(600, 50);
+            ctx.lineTo(750, 90);
+            ctx.lineTo(900, 60);
+            ctx.lineTo(900, 0);
+            ctx.lineTo(0, 0);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(400, 500);
+            ctx.quadraticCurveTo(460, 400, 520, 500);
+            ctx.fillStyle = "linear-gradient(to top, #4A704A, #B8E4C9)";
+            ctx.fill();
+            ctx.fillStyle = "#1A7F71";
+            ctx.font = "10px Quicksand";
+            ctx.fillText("Alipiri Hills", 450, 470);
+
+            // Improved Roads
+            const roadBaseGradient = ctx.createLinearGradient(0, 50, 0, 500);
+            roadBaseGradient.addColorStop(0, "#2F2F2F"); // Darker asphalt
+            roadBaseGradient.addColorStop(0.5, "#4A4A4A"); // Mid-tone
+            roadBaseGradient.addColorStop(1, "#606060"); // Lighter asphalt
+
+            // Main Road - Natural and less sharp near Tirumala
+            ctx.fillStyle = roadBaseGradient;
+            ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+            ctx.shadowBlur = 15;
+            ctx.shadowOffsetY = 6;
+            ctx.beginPath();
+            ctx.moveTo(400, 500);
+            ctx.quadraticCurveTo(400, 350, 420, 200); // Smoother curve
+            ctx.quadraticCurveTo(430, 120, 440, 100); // Gentle near Tirumala
+            ctx.lineTo(480, 100);
+            ctx.quadraticCurveTo(490, 120, 500, 200);
+            ctx.quadraticCurveTo(520, 350, 520, 500);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+
+            // Road borders (sidewalks)
+            ctx.strokeStyle = "#B0B0B0";
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.moveTo(400, 500);
+            ctx.quadraticCurveTo(400, 350, 420, 200);
+            ctx.quadraticCurveTo(430, 120, 440, 100);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(480, 100);
+            ctx.quadraticCurveTo(490, 120, 500, 200);
+            ctx.quadraticCurveTo(520, 350, 520, 500);
+            ctx.stroke();
+
+            // Centerline (yellow)
+            ctx.strokeStyle = "#FFD700";
+            ctx.lineWidth = 3;
+            ctx.setLineDash([15, 10]);
             ctx.beginPath();
             ctx.moveTo(450, 500);
-            ctx.quadraticCurveTo(400, 350, 450, 200);
-            ctx.quadraticCurveTo(500, 50, 450, 50);
-            ctx.lineTo(470, 50);
-            ctx.quadraticCurveTo(520, 50, 470, 200);
-            ctx.quadraticCurveTo(420, 350, 470, 500);
-            ctx.lineTo(450, 500);
-            ctx.fill();
-            ctx.strokeStyle = "#FFFFFF";
-            ctx.lineWidth = 2;
-            ctx.setLineDash([10, 10]);
-            ctx.beginPath();
-            ctx.moveTo(460, 500);
-            ctx.quadraticCurveTo(410, 350, 460, 200);
-            ctx.quadraticCurveTo(510, 50, 460, 50);
-            ctx.stroke();
-            ctx.setLineDash([]);
-            ctx.strokeStyle = "#FFFF00";
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(450, 500);
-            ctx.quadraticCurveTo(400, 350, 450, 200);
-            ctx.quadraticCurveTo(500, 50, 450, 50);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(470, 500);
-            ctx.quadraticCurveTo(420, 350, 470, 200);
-            ctx.quadraticCurveTo(520, 50, 470, 50);
-            ctx.stroke();
-
-            ctx.fillStyle = "#4A4A4A";
-            ctx.beginPath();
-            ctx.moveTo(450, 300);
-            ctx.lineTo(750, 350);
-            ctx.lineTo(850, 150);
-            ctx.lineTo(830, 170);
-            ctx.lineTo(730, 370);
-            ctx.lineTo(430, 320);
-            ctx.lineTo(450, 300);
-            ctx.fill();
-            ctx.strokeStyle = "#FFFFFF";
-            ctx.lineWidth = 2;
-            ctx.setLineDash([8, 8]);
-            ctx.beginPath();
-            ctx.moveTo(450, 310);
-            ctx.lineTo(740, 360);
-            ctx.lineTo(840, 160);
+            ctx.quadraticCurveTo(450, 350, 460, 200);
+            ctx.quadraticCurveTo(465, 120, 470, 100);
             ctx.stroke();
             ctx.setLineDash([]);
 
-            ctx.fillStyle = "#4A4A4A";
+            // Side Road Right
+            ctx.fillStyle = roadBaseGradient;
+            ctx.shadowBlur = 15;
+            ctx.shadowOffsetY = 5;
             ctx.beginPath();
-            ctx.moveTo(450, 300);
-            ctx.lineTo(400, 350);
-            ctx.lineTo(400, 370);
-            ctx.lineTo(470, 320);
-            ctx.lineTo(450, 300);
+            ctx.moveTo(520, 300);
+            ctx.quadraticCurveTo(650, 320, 780, 300);
+            ctx.lineTo(800, 300);
+            ctx.quadraticCurveTo(670, 320, 540, 300);
             ctx.fill();
-            ctx.strokeStyle = "#FFFFFF";
-            ctx.lineWidth = 2;
-            ctx.setLineDash([8, 8]);
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+            ctx.strokeStyle = "#B0B0B0";
+            ctx.lineWidth = 8;
             ctx.beginPath();
-            ctx.moveTo(450, 310);
-            ctx.lineTo(410, 360);
+            ctx.moveTo(520, 300);
+            ctx.quadraticCurveTo(650, 320, 780, 300);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(800, 300);
+            ctx.quadraticCurveTo(670, 320, 540, 300);
+            ctx.stroke();
+            ctx.strokeStyle = "#FFD700";
+            ctx.lineWidth = 3;
+            ctx.setLineDash([15, 10]);
+            ctx.beginPath();
+            ctx.moveTo(530, 300);
+            ctx.quadraticCurveTo(660, 320, 790, 300);
             ctx.stroke();
             ctx.setLineDash([]);
 
-            ctx.fillStyle = "#87CEFA";
+            // Side Road Left
+            ctx.fillStyle = roadBaseGradient;
+            ctx.shadowBlur = 15;
+            ctx.shadowOffsetY = 5;
             ctx.beginPath();
-            ctx.moveTo(550, 150);
-            ctx.quadraticCurveTo(600, 200, 650, 250);
-            ctx.lineTo(670, 250);
-            ctx.quadraticCurveTo(620, 200, 570, 150);
-            ctx.lineTo(550, 150);
+            ctx.moveTo(400, 300);
+            ctx.quadraticCurveTo(320, 320, 240, 300);
+            ctx.lineTo(220, 300);
+            ctx.quadraticCurveTo(300, 320, 380, 300);
             ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+            ctx.strokeStyle = "#B0B0B0";
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.moveTo(400, 300);
+            ctx.quadraticCurveTo(320, 320, 240, 300);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(220, 300);
+            ctx.quadraticCurveTo(300, 320, 380, 300);
+            ctx.stroke();
+            ctx.strokeStyle = "#FFD700";
+            ctx.lineWidth = 3;
+            ctx.setLineDash([15, 10]);
+            ctx.beginPath();
+            ctx.moveTo(390, 300);
+            ctx.quadraticCurveTo(310, 320, 230, 300);
+            ctx.stroke();
+            ctx.setLineDash([]);
 
+            // Static icons (trees adjusted to avoid roads)
             const trees = [
-                { x: 220, y: 380 }, { x: 250, y: 450 }, { x: 340, y: 430 },
-                { x: 500, y: 180 }, { x: 580, y: 120 }, { x: 620, y: 170 },
-                { x: 380, y: 100 }, { x: 450, y: 100 }, { x: 200, y: 200 },
+                { x: 150, y: 450 }, { x: 200, y: 400 }, { x: 600, y: 450 },
+                { x: 550, y: 200 }, { x: 650, y: 150 }, { x: 700, y: 200 },
+                { x: 300, y: 100 }, { x: 500, y: 100 }, { x: 100, y: 200 }
             ];
             trees.forEach(tree => {
                 if (images.tree.complete && images.tree.naturalWidth !== 0) {
@@ -827,59 +772,43 @@
                 }
             });
 
+            // Tirumala Temple left of the road
             if (images.temple.complete && images.temple.naturalWidth !== 0) {
-                ctx.drawImage(images.temple, 430, 30, 40, 40);
-            } else {
-                ctx.fillStyle = '#FFD700';
-                ctx.beginPath();
-                ctx.moveTo(430, 30);
-                ctx.lineTo(450, 30);
-                ctx.lineTo(450, 50);
-                ctx.lineTo(440, 50);
-                ctx.lineTo(440, 60);
-                ctx.lineTo(450, 60);
-                ctx.lineTo(450, 70);
-                ctx.lineTo(435, 70);
-                ctx.lineTo(435, 80);
-                ctx.lineTo(450, 80);
-                ctx.lineTo(450, 90);
-                ctx.lineTo(440, 90);
-                ctx.lineTo(440, 70);
-                ctx.lineTo(425, 70);
-                ctx.lineTo(425, 50);
-                ctx.lineTo(435, 50);
-                ctx.lineTo(435, 30);
-                ctx.closePath();
-                ctx.fill();
-                ctx.strokeStyle = '#8B4513';
-                ctx.lineWidth = 2;
-                ctx.stroke();
+                ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+                ctx.shadowBlur = 5;
+                ctx.drawImage(images.temple, 330, 50, 50, 50);
+                ctx.shadowBlur = 0;
             }
-            ctx.fillStyle = "#2A9D8F";
+            ctx.fillStyle = "#1A7F71";
             ctx.font = "12px Quicksand";
-            ctx.fillText("Tirumala Temple", 410, 80);
+            ctx.fillText("Tirumala Temple", 310, 110);
 
-            ctx.fillStyle = "#C3E6CB";
-            ctx.beginPath();
-            ctx.arc(460, 480, 20, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = "#2A9D8F";
-            ctx.font = "10px Quicksand";
-            ctx.fillText("Alipiri", 450, 510);
+            if (images.isckon.complete && images.isckon.naturalWidth !== 0) {
+                ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+                ctx.shadowBlur = 5;
+                ctx.drawImage(images.isckon, 300, 350, 50, 50);
+                ctx.shadowBlur = 0;
+            }
+            ctx.fillStyle = "#1A7F71";
+            ctx.font = "12px Quicksand";
+            ctx.fillText("ISKCON Temple", 290, 410);
 
             if (images.collegeIIT.complete && images.collegeIIT.naturalWidth !== 0) {
-                ctx.drawImage(images.collegeIIT, 710, 330, 40, 40);
+                ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+                ctx.shadowBlur = 5;
+                ctx.drawImage(images.collegeIIT, 750, 400, 50, 50);
+                ctx.shadowBlur = 0;
             }
-            ctx.fillStyle = "#2A9D8F";
+            ctx.fillStyle = "#1A7F71";
             ctx.font = "10px Quicksand";
-            ctx.fillText("IIT Tirupati", 700, 380);
+            ctx.fillText("IIT Tirupati", 740, 450);
 
             if (images.collegeIISER.complete && images.collegeIISER.naturalWidth !== 0) {
-                ctx.drawImage(images.collegeIISER, 640, 90, 40, 40);
+                ctx.drawImage(images.collegeIISER, 600, 380, 40, 40);
             }
-            ctx.fillStyle = "#2A9D8F";
+            ctx.fillStyle = "#1A7F71";
             ctx.font = "10px Quicksand";
-            ctx.fillText("IISER Tirupati", 630, 140);
+            ctx.fillText("IISER Tirupati", 590, 430);
 
             const pondScale = 1 - pollution / 200;
             ctx.save();
@@ -897,22 +826,18 @@
             ctx.lineWidth = 2;
             ctx.stroke();
             ctx.restore();
-            ctx.fillStyle = "#2A9D8F";
+            ctx.fillStyle = "#1A7F71";
             ctx.font = "10px Quicksand";
             ctx.fillText("Kapila Theertham", 550, 190);
 
+            // Adjusted Railway Station to avoid road overlap
             if (images.railway.complete && images.railway.naturalWidth !== 0) {
-                ctx.drawImage(images.railway, 380, 340, 40, 40);
+                ctx.drawImage(images.railway, 350, 360, 40, 40);
             }
-            ctx.fillStyle = "#2A9D8F";
+            ctx.fillStyle = "#1A7F71";
             ctx.font = "10px Quicksand";
-            ctx.fillText("Tirupati Railway Stn", 370, 390);
+            ctx.fillText("Tirupati Railway Stn", 340, 410);
 
-            const residentialBuildings = [
-                { x: 250, y: 400 }, { x: 290, y: 380 }, { x: 320, y: 410 },
-                { x: 280, y: 200 }, { x: 310, y: 160 }, { x: 340, y: 170 },
-                { x: 260, y: 190 }, { x: 300, y: 220 }
-            ];
             residentialBuildings.forEach(pos => {
                 if (images.house.complete && images.house.naturalWidth !== 0) {
                     ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
@@ -926,6 +851,13 @@
                 }
             });
 
+            // Pollution overlay
+            if (pollution > 0) {
+                ctx.fillStyle = `rgba(105, 105, 105, ${pollution / 200})`;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            // Pollution particles and dynamic buildings
             buildings.forEach(b => {
                 if (b.type === "factory") {
                     const nearbySolar = buildings.filter(s => 
@@ -992,12 +924,12 @@
                         }
                     }
                     if (b.type === "solar") {
-                        resources.energy += 10;
+                        funds += 500;
                         sustainability = Math.min(100, sustainability + 5);
                         pollution = Math.max(0, pollution - 3);
                     }
                     if (b.type === "water") {
-                        resources.water += 5;
+                        funds += 300;
                         sustainability = Math.min(100, sustainability + 3);
                     }
                 });
@@ -1005,21 +937,18 @@
                 sustainability = Math.max(0, sustainability - 2);
                 pollution = Math.min(100, pollution + 1);
 
-                document.getElementById("energy").textContent = Math.max(0, resources.energy);
-                document.getElementById("water").textContent = Math.max(0, resources.water);
-                document.getElementById("co2").textContent = Math.max(0, resources.co2);
+                document.getElementById("funds").textContent = funds;
                 document.getElementById("sustainability").textContent = Math.round(sustainability);
                 document.getElementById("pollution").textContent = Math.round(pollution);
 
-                // Avatar feedback based on stats
                 if (pollution > 70) {
-                    let index = Math.min(Math.floor(pollution / 20) - 3, yearMessagesHighPollution.length - 1);
-                    showAvatarMessage(yearMessagesHighPollution[index]);
+                    let index = Math.min(Math.floor(pollution / 20) - 3, 2);
+                    showChatbotDialog("high_pollution", index);
                 } else if (sustainability > 70) {
-                    let index = Math.min(Math.floor(sustainability / 20) - 3, yearMessagesHighSustainability.length - 1);
-                    showAvatarMessage(yearMessagesHighSustainability[index]);
+                    let index = Math.min(Math.floor(sustainability / 20) - 3, 2);
+                    showChatbotDialog("high_sustainability", index);
                 } else if (years === 3 && pollution < 30) {
-                    showAvatarMessage(yearMessagesMidway[Math.floor(Math.random() * yearMessagesMidway.length)]);
+                    showChatbotDialog("midway", Math.floor(Math.random() * 3));
                 }
 
                 if (years === 5 || pollution >= 100) showResult();
@@ -1038,107 +967,116 @@
             let totalPollutionLevel = buildings.reduce((sum, b) => 
                 b.type === "factory" ? sum + b.pollutionLevel : sum, 0);
 
-            let score = (sustainability * 2) + 
-                       (resources.energy * 0.5) + 
-                       (resources.water * 0.4) - 
-                       (pollution * 1.5) + 
-                       (solarCount * 20) + 
-                       (waterCount * 15) - 
-                       (factoryCount * 10);
+            let score = (sustainability * 2) + (funds * 0.1) + (solarCount * 20) + (waterCount * 15) - (factoryCount * 10) - (pollution * 1.5);
 
             if (score >= 200 && pollution < 30) {
                 outcome.textContent = "Sustainable Tirupati! A green paradise!";
-                resultDiv.style.backgroundColor = "rgba(195, 230, 203, 0.95)";
+                resultDiv.style.backgroundColor = "rgba(184, 228, 201, 0.95)";
                 suggestions.textContent = "Perfect balance of progress and nature!";
-                showAvatarMessage("You’re a legend! Unlike LA’s smog, Tirupati’s air stays pure!");
+                showChatbotDialog("win");
             } else if (score >= 100 && pollution < 60) {
                 outcome.textContent = "Green Tirupati! A sustainable success.";
-                resultDiv.style.backgroundColor = "rgba(255, 250, 205, 0.95)";
+                resultDiv.style.backgroundColor = "rgba(255, 245, 200, 0.95)";
                 suggestions.textContent = "Well done! Fine-tune pollution control.";
-                showAvatarMessage("Solid work! Better than Delhi’s haze—society’s thriving!");
+                showChatbotDialog("moderate");
             } else {
                 outcome.textContent = "Polluted Tirupati! Sustainability failed.";
-                resultDiv.style.backgroundColor = "rgba(222, 184, 135, 0.95)";
+                resultDiv.style.backgroundColor = "rgba(220, 180, 130, 0.95)";
                 suggestions.textContent = getLossSuggestions(solarCount, waterCount, factoryCount, totalPollutionLevel);
-                showAvatarMessage("Ouch! Like Bhopal’s tragedy, pollution hit society hard!");
+                showChatbotDialog("lose");
             }
         }
 
         function getLossSuggestions(solarCount, waterCount, factoryCount, totalPollutionLevel) {
             let tips = [];
-            if (pollution > 70) {
-                tips.push("Pollution too high—add more solar plants near factories.");
-            }
-            if (sustainability < 30) {
-                tips.push("Sustainability low—prioritize green buildings.");
-            }
-            if (solarCount < factoryCount) {
-                tips.push("More solar needed to offset factories.");
-            }
-            if (waterCount < 2) {
-                tips.push("Water towers boost sustainability.");
-            }
+            if (pollution > 70) tips.push("Pollution too high—add more solar plants near factories.");
+            if (sustainability < 30) tips.push("Sustainability low—prioritize green buildings.");
+            if (solarCount < factoryCount) tips.push("More solar needed to offset factories.");
+            if (waterCount < 2) tips.push("Water towers boost sustainability.");
             return "Tips: " + (tips.length ? tips.join(" ") : "Focus on sustainability!");
         }
 
         function resetGame() {
-            resources = { water: 150, energy: 150, co2: 300 };
+            funds = 10000;
             sustainability = 50;
             pollution = 0;
             years = 0;
             buildings = [];
             pollutionParticles = [];
-            clouds = [];
-            buildingCounts = { solar: 0, water: 0, factory: 0 }; // Reset counts
-            initializeClouds();
-            document.getElementById("energy").textContent = resources.energy;
-            document.getElementById("water").textContent = resources.water;
-            document.getElementById("co2").textContent = resources.co2;
+            document.getElementById("funds").textContent = funds;
             document.getElementById("years").textContent = years;
             document.getElementById("sustainability").textContent = sustainability;
             document.getElementById("pollution").textContent = pollution;
             document.getElementById("result").style.display = "none";
-            showAvatarMessage("Fresh start! Let’s avoid a Bhopal rerun!");
+            showChatbotDialog("reset");
         }
 
-        const music = document.getElementById("background-music");
-        const musicToggle = document.getElementById("music-toggle");
-        let isMusicPlaying = false;
+        const chatbotDialog = document.getElementById("chatbot-dialog");
+        const chatbotDialogMessage = document.getElementById("chatbot-dialog-message");
 
-        function toggleMusic() {
-            if (isMusicPlaying) {
-                music.pause();
-                musicToggle.textContent = "Play Music";
-            } else {
-                music.play();
-                musicToggle.textContent = "Pause Music";
+        function showChatbotDialog(type, index = null) {
+            chatbotDialog.style.display = "block";
+            chatbotDialog.style.animation = "fadeIn 0.5s ease";
+            let message;
+            if (index === null) index = Math.min(buildingCounts[type] || 0, 3);
+
+            switch (type) {
+                case "solar":
+                    message = solarMessages[index];
+                    break;
+                case "water":
+                    message = waterMessages[index];
+                    break;
+                case "factory":
+                    message = factoryMessages[index];
+                    break;
+                case "factory_restricted":
+                    message = "Factories can’t be near homes—keep the air clean!";
+                    break;
+                case "error":
+                    message = "Not enough funds or game over!";
+                    break;
+                case "high_pollution":
+                    message = ["Pollution’s rising! Beijing’s 2015 smog choked millions—don’t let Tirupati follow!",
+                              "High pollution! Mexico City’s 1990s smog crippled health—act fast!",
+                              "Factories dominate! Kanpur’s tanneries still poison the Ganges—scary precedent!"][index];
+                    break;
+                case "high_sustainability":
+                    message = ["Wow, you’re a star! Tirupati’s thriving—like Copenhagen’s green model!",
+                              "Sustainability’s soaring! Costa Rica hit 90% renewable energy—nice!",
+                              "Society’s loving this! Bhutan’s carbon-negative success inspires us!"][index];
+                    break;
+                case "midway":
+                    message = ["Halfway there! Society loves your green choices—keep it up!",
+                              "Year 3 and clean? Freiburg, Germany’s green future shines here!",
+                              "Mid-game strong! Solar wins—unlike Gary, Indiana’s steel smog!"][index];
+                    break;
+                case "win":
+                    message = "You’re a legend! Unlike LA’s smog, Tirupati’s air stays pure!";
+                    break;
+                case "moderate":
+                    message = "Solid work! Better than Delhi’s haze—society’s thriving!";
+                    break;
+                case "lose":
+                    message = "Ouch! Like Bhopal’s tragedy, pollution hit society hard!";
+                    break;
+                case "reset":
+                    message = "Fresh start! Let’s avoid a Bhopal rerun!";
+                    break;
+                default:
+                    message = "Hey! Let’s make Tirupati a green haven—plan wisely!";
             }
-            isMusicPlaying = !isMusicPlaying;
+
+            chatbotDialogMessage.textContent = message;
         }
 
-        const chatbotMessages = document.getElementById("chatbot-messages");
-        const chatbotAvatar = document.getElementById("chatbot-avatar");
-
-        function showAvatarMessage(message) {
-            const messageDiv = document.createElement("div");
-            messageDiv.className = "chat-message bot";
-            messageDiv.textContent = message;
-            chatbotMessages.appendChild(messageDiv);
-
-            // Limit to 2 messages
-            while (chatbotMessages.children.length > 2) {
-                chatbotMessages.removeChild(chatbotMessages.firstChild);
-            }
-
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-
-            // Animate avatar
-            chatbotAvatar.classList.add("active");
-            setTimeout(() => chatbotAvatar.classList.remove("active"), 1000);
+        function hideChatbotDialog() {
+            chatbotDialog.style.animation = "fadeOut 0.5s ease";
+            setTimeout(() => {
+                chatbotDialog.style.display = "none";
+                chatbotDialog.style.animation = "";
+            }, 500);
         }
-
-        // Initial message
-        showAvatarMessage("Hey! Let’s keep Tirupati holy—plan wisely!");
 
         drawCity();
     </script>

@@ -15,6 +15,7 @@
         #gameContainer {
             position: relative;
             margin-top: 20px;
+            display: none; /* Hidden initially */
         }
         #gameCanvas {
             border: 2px solid #333;
@@ -29,6 +30,7 @@
             background: rgba(255, 255, 255, 0.8);
             padding: 5px 15px;
             border-radius: 5px;
+            display: none; /* Hidden initially */
         }
         #objective {
             font-size: 20px;
@@ -38,23 +40,27 @@
             background: rgba(255, 255, 255, 0.8);
             padding: 5px 15px;
             border-radius: 5px;
+            display: none; /* Hidden initially */
         }
         #message {
             position: absolute;
-            top: 50%; /* Centered vertically */
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 28px; /* Slightly larger for emphasis */
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 25px;
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.4);
+            font-size: 32px;
+            background: linear-gradient(135deg, #f0f8ff, #e6e6fa);
+            padding: 20px 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             display: none;
             text-align: center;
+            font-family: 'Georgia', serif;
             font-weight: bold;
-            border: 2px solid #333;
-            opacity: 0; /* Start hidden for fade effect */
-            transition: opacity 0.3s ease-in-out; /* Smooth fade transition */
+            color: #2f4f4f;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+            border: 3px solid #4682b4;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
         }
         #playAgainButton {
             margin-top: 10px;
@@ -85,6 +91,41 @@
             border-radius: 3px;
             transition: width 0.1s;
         }
+        #introScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #87ceeb, #d4e8d4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        #introScreen h1 {
+            font-size: 64px;
+            color: #2f4f4f;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+            font-family: 'Georgia', serif;
+            margin-bottom: 40px;
+        }
+        #introScreen button, #howToPlayOverlay button {
+            padding: 15px 30px;
+            font-size: 24px;
+            margin: 10px;
+            background-color: #008000;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        #introScreen button:hover, #howToPlayOverlay button:hover {
+            background-color: #006600;
+            transform: scale(1.05);
+        }
         #howToPlayOverlay {
             position: fixed;
             top: 0;
@@ -92,10 +133,10 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.7);
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 1001;
         }
         #howToPlayBox {
             background: #fff;
@@ -113,25 +154,14 @@
             margin: 10px 0;
             color: #555;
         }
-        #playButton {
-            padding: 10px 20px;
-            font-size: 18px;
-            background-color: #008000;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #playButton:hover {
-            background-color: #006600;
-        }
-        #playButton:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
     </style>
 </head>
 <body>
+    <div id="introScreen">
+        <h1>Trashmaster Saga</h1>
+        <button id="howToPlayButton">How to Play</button>
+        <button id="playButtonIntro">Play</button>
+    </div>
     <div id="scoreBoard">Score: 0 | Misses: 0 | Combo: 0x</div>
     <div id="objective">Objective: Reach 50 points to win!</div>
     <div id="gameContainer">
@@ -147,11 +177,11 @@
             <p>Welcome to TRASHMASTER SAGA! Sort waste into the correct bins to score points.</p>
             <p><strong>Controls:</strong></p>
             <p>- Use <strong>A</strong> and <strong>D</strong> keys to aim left or right (red line shows direction).</p>
-            <p>- Click and hold the <strong>mouse</strongBD to charge power (green line shows trajectory), release to throw.</p>
+            <p>- Click and hold the <strong>mouse</strong> to charge power (green line shows trajectory), release to throw.</p>
             <p><strong>Objective:</strong></p>
             <p>- Throw trash into the correct bin: Recycling (blue), Compost (green), or Waste (gray).</p>
             <p>- Reach 50 points to win the game!</p>
-            <button id="playButton" disabled>Loading images...</button>
+            <button id="backButton">Back</button>
         </div>
     </div>
 
@@ -162,8 +192,12 @@
         const objectiveDisplay = document.getElementById('objective');
         const message = document.getElementById('message');
         const powerFill = document.getElementById('powerFill');
+        const introScreen = document.getElementById('introScreen');
         const howToPlayOverlay = document.getElementById('howToPlayOverlay');
-        const playButton = document.getElementById('playButton');
+        const howToPlayButton = document.getElementById('howToPlayButton');
+        const playButtonIntro = document.getElementById('playButtonIntro');
+        const backButton = document.getElementById('backButton');
+        const gameContainer = document.getElementById('gameContainer');
 
         // Game state
         let score = 0;
@@ -191,7 +225,7 @@
             { name: 'APPLE CORE', correctBin: 'compost', size: 100, image: 'images/apple_core.png', bonus: 0 },
             { name: 'BANANA PEEL', correctBin: 'compost', size: 100, image: 'images/banana_peel.png', bonus: 0 },
             { name: 'COFFEE GROUNDS', correctBin: 'compost', size: 100, image: 'images/coffee_grounds.png', bonus: 0 },
-            { name: 'CANDY WRAPPER', correctBin: 'waste', size: 100, image: 'images/candy_wrapper.png', bonus: 0 },
+            { name: 'CHOCOLATE WRAPPER', correctBin: 'waste', size: 100, image: 'images/candy_wrapper.png', bonus: 0 },
             { name: 'USED TISSUE', correctBin: 'waste', size: 100, image: 'images/used_tissue.png', bonus: 0 },
             { name: 'STYROFOAM CUP', correctBin: 'waste', size: 100, image: 'images/styrofoam_cup.png', bonus: 0 }
         ];
@@ -199,30 +233,22 @@
         const gravity = 0.5;
         const friction = 0.98;
 
-        // Preload images (background, trash, bins, and lids)
+        // Preload images
         const trashImages = {};
         const binImages = {};
         const lidImages = {};
         let backgroundImage = new Image();
-        backgroundImage.src = 'images/background.jpg'; // Replace with your background image path
+        backgroundImage.src = 'images/background.jpg';
         let imagesLoaded = 0;
-        const totalImages = trashTypes.length + bins.length * 2 + 1; // +1 for background
+        const totalImages = trashTypes.length + bins.length * 2 + 1;
 
         function preloadImages() {
             backgroundImage.onload = () => {
                 imagesLoaded++;
-                if (imagesLoaded === totalImages) {
-                    playButton.disabled = false;
-                    playButton.textContent = 'Play';
-                }
             };
             backgroundImage.onerror = () => {
                 console.error('Failed to load background image');
                 imagesLoaded++;
-                if (imagesLoaded === totalImages) {
-                    playButton.disabled = false;
-                    playButton.textContent = 'Play';
-                }
             };
 
             trashTypes.forEach(trash => {
@@ -230,18 +256,10 @@
                 img.src = trash.image;
                 img.onload = () => {
                     imagesLoaded++;
-                    if (imagesLoaded === totalImages) {
-                        playButton.disabled = false;
-                        playButton.textContent = 'Play';
-                    }
                 };
                 img.onerror = () => {
                     console.error(`Failed to load image: ${trash.image}`);
                     imagesLoaded++;
-                    if (imagesLoaded === totalImages) {
-                        playButton.disabled = false;
-                        playButton.textContent = 'Play';
-                    }
                 };
                 trashImages[trash.name] = img;
             });
@@ -251,18 +269,10 @@
                 binImg.src = bin.binImage;
                 binImg.onload = () => {
                     imagesLoaded++;
-                    if (imagesLoaded === totalImages) {
-                        playButton.disabled = false;
-                        playButton.textContent = 'Play';
-                    }
                 };
                 binImg.onerror = () => {
                     console.error(`Failed to load image: ${bin.binImage}`);
                     imagesLoaded++;
-                    if (imagesLoaded === totalImages) {
-                        playButton.disabled = false;
-                        playButton.textContent = 'Play';
-                    }
                 };
                 binImages[bin.type] = binImg;
 
@@ -270,18 +280,10 @@
                 lidImg.src = bin.lidImage;
                 lidImg.onload = () => {
                     imagesLoaded++;
-                    if (imagesLoaded === totalImages) {
-                        playButton.disabled = false;
-                        playButton.textContent = 'Play';
-                    }
                 };
                 lidImg.onerror = () => {
                     console.error(`Failed to load image: ${bin.lidImage}`);
                     imagesLoaded++;
-                    if (imagesLoaded === totalImages) {
-                        playButton.disabled = false;
-                        playButton.textContent = 'Play';
-                    }
                 };
                 lidImages[bin.type] = lidImg;
             });
@@ -394,7 +396,7 @@
                         if (!this.countedAsMiss) {
                             misses++;
                             combo = 0;
-                            showMessage('Missed! Combo reset.');
+                            showMessage('MISSED! COMBO RESET.');
                             this.countedAsMiss = true;
                             spawnNewTrash();
                         }
@@ -416,7 +418,7 @@
                                 combo++;
                                 const points = 1 + this.bonus + Math.floor(combo / 3);
                                 score += points;
-                                showMessage(`Correct! +${points} points (Combo: ${combo}x)`);
+                                showMessage(`CORRECT BIN! +${points} POINTS`);
                                 bin.targetLidAngle = Math.PI / 3;
 
                                 if (score >= targetScore) {
@@ -427,7 +429,7 @@
                             } else {
                                 misses++;
                                 combo = 0;
-                                showMessage('Wrong bin! Combo reset.');
+                                showMessage('WRONG BIN!');
                                 bin.targetLidAngle = -Math.PI / 6;
                             }
                             spawnNewTrash();
@@ -438,26 +440,21 @@
         }
 
         function drawBackground() {
-            // Draw the background image if it loaded successfully
             if (backgroundImage && backgroundImage.complete) {
                 ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
             } else {
-                // Fallback: Enhanced 2D background
-                // Gradient sky
                 const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height - 150);
                 skyGradient.addColorStop(0, '#87ceeb');
                 skyGradient.addColorStop(1, '#e0f7fa');
                 ctx.fillStyle = skyGradient;
                 ctx.fillRect(0, 0, canvas.width, canvas.height - 150);
 
-                // Textured ground
                 const groundGradient = ctx.createLinearGradient(0, canvas.height - 150, 0, canvas.height);
                 groundGradient.addColorStop(0, '#4caf50');
                 groundGradient.addColorStop(1, '#388e3c');
                 ctx.fillStyle = groundGradient;
                 ctx.fillRect(0, canvas.height - 150, canvas.width, 150);
 
-                // More realistic clouds
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
                 ctx.beginPath();
                 ctx.arc(150, 100, 40, 0, Math.PI * 2);
@@ -473,7 +470,6 @@
                 ctx.arc(560, 120, 50, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Sun with rays
                 ctx.fillStyle = '#ffeb3b';
                 ctx.beginPath();
                 ctx.arc(700, 80, 40, 0, Math.PI * 2);
@@ -536,7 +532,6 @@
                     ctx.restore();
                 }
 
-                // Draw text above the bin
                 ctx.fillStyle = '#fff';
                 ctx.font = 'bold 14px Arial';
                 ctx.textAlign = 'center';
@@ -555,7 +550,10 @@
             powerFill.style.width = '0%';
             angle = 0;
             directionLocked = false;
-            showTrashNamePopup(trash.type); // Show the name of the new trash
+            // For the very first trash, show its name immediately
+            if (score === 0 && misses === 0) {
+                showTrashNamePopup(trash.type);
+            }
         }
 
         function showMessage(text) {
@@ -565,16 +563,30 @@
             }
             message.textContent = text;
             message.style.display = 'block';
-            message.style.opacity = '1';
-            message.style.color = text.includes('Correct') ? '#008000' : '#ff0000';
-            messageTimeout = setTimeout(() => {
-                message.style.opacity = '0';
-                setTimeout(() => {
+            message.style.opacity = '0';
+            message.style.transform = 'translate(-50%, -50%) scale(1)';
+            // Set color based on message content
+            if (text.includes('CORRECT')) {
+                message.style.color = '#008000'; // Green for correct bin
+            } else if (text.includes('WRONG') || text.includes('MISSED')) {
+                message.style.color = '#ff0000'; // Red for wrong bin or missed
+            }
+            setTimeout(() => {
+                message.style.opacity = '1';
+                message.style.transform = 'translate(-50%, -50%) scale(0.9)';
+                messageTimeout = setTimeout(() => {
                     if (!gameOver) {
-                        message.style.display = 'none';
+                        message.style.opacity = '0';
+                        setTimeout(() => {
+                            message.style.display = 'none';
+                            // Show the next trash name right after the bin message disappears
+                            if (trash && !gameOver) {
+                                showTrashNamePopup(trash.type);
+                            }
+                        }, 300); // Fade-out duration
                     }
-                }, 300); // Match transition duration
-            }, 1500);
+                }, 1000); // Display duration
+            }, 10);
         }
 
         function showWinMessage() {
@@ -584,7 +596,8 @@
             message.innerHTML = `Congratulations! You've won!<br>Final Score: ${score}<br><button id="playAgainButton">Play Again</button>`;
             message.style.display = 'block';
             message.style.opacity = '1';
-            message.style.color = '#008000';
+            message.style.transform = 'translate(-50%, -50%) scale(1)';
+            message.style.color = '#008000'; // Green for win message
 
             const playAgainButton = document.getElementById('playAgainButton');
             playAgainButton.addEventListener('click', resetGame);
@@ -597,21 +610,21 @@
             }
             message.textContent = trashName;
             message.style.display = 'block';
-            message.style.color = '#333';
-            message.style.opacity = '0'; // Start at 0 for fade-in
-            // Fade in
+            message.style.color = '#2f4f4f'; // Default color for trash name
+            message.style.opacity = '0';
+            message.style.transform = 'translate(-50%, -50%) scale(0.9)';
             setTimeout(() => {
                 message.style.opacity = '1';
-            }, 10); // Small delay to trigger transition
-            // Fade out after 1 second
-            messageTimeout = setTimeout(() => {
-                message.style.opacity = '0';
-                setTimeout(() => {
-                    if (!gameOver) {
-                        message.style.display = 'none';
-                    }
-                }, 300); // Match transition duration
-            }, 1000);
+                message.style.transform = 'translate(-50%, -50%) scale(1)';
+                messageTimeout = setTimeout(() => {
+                    message.style.opacity = '0';
+                    setTimeout(() => {
+                        if (!gameOver) {
+                            message.style.display = 'none';
+                        }
+                    }, 300);
+                }, 1000);
+            }, 10);
         }
 
         function resetGame() {
@@ -626,6 +639,9 @@
             gameOver = false;
             message.style.display = 'none';
             powerFill.style.width = '0%';
+            if (messageTimeout) {
+                clearTimeout(messageTimeout);
+            }
             spawnNewTrash();
         }
 
@@ -707,10 +723,24 @@
             requestAnimationFrame(gameLoop);
         }
 
-        playButton.addEventListener('click', () => {
-            howToPlayOverlay.style.display = 'none';
+        // Intro screen button handlers
+        howToPlayButton.addEventListener('click', () => {
+            introScreen.style.display = 'none';
+            howToPlayOverlay.style.display = 'flex';
+        });
+
+        playButtonIntro.addEventListener('click', () => {
+            introScreen.style.display = 'none';
+            gameContainer.style.display = 'block';
+            scoreBoard.style.display = 'block';
+            objectiveDisplay.style.display = 'block';
             spawnNewTrash();
             gameLoop();
+        });
+
+        backButton.addEventListener('click', () => {
+            howToPlayOverlay.style.display = 'none';
+            introScreen.style.display = 'flex';
         });
     </script>
 </body>

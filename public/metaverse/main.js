@@ -3,7 +3,7 @@ const engine = new BABYLON.Engine(canvas, true);
 const scene = new BABYLON.Scene(engine);
 
 // Camera (First-Person)
-const camera = new BABYLON.UniversalCamera("camera", new BABYLON.Vector3(-190, 10, 90), scene);
+const camera = new BABYLON.UniversalCamera("camera", new BABYLON.Vector3(5, 10, 5), scene);
 camera.attachControl(canvas, true);
 camera.inertia = 0;
 camera.angularSensibility = 1000;
