@@ -1,7 +1,7 @@
 // pages/Ecology.jsx
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
-import taxonomy from '../data/species';
+import taxonomy from '../data/species.jsx';
 import '../styles/Ecology.css';
 
 const Ecology = () => {
