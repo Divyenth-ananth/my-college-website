@@ -12,12 +12,9 @@ const About = () => {
         animate={{ opacity: 1, y: 0 }}
         className="about-content"
       >
-        <h2>Our Ecological Mission</h2>
+    <h2 style={{ textAlign: 'center' }}>Milestones of IIT Tirupati</h2>
         <p className="mission-statement">
-          Someone pls save me from here. But also, you can write some random text here.
-          It's gonna be hilarious when someone sees this. 
-          <br/> 
-          FR tho, like, What would they think. 
+        Founded in 2015, IIT Tirupati has swiftly risen as a hub of innovation and learning. From its mentorship under IIT Madras to a thriving campus in Yerpedu, it embodies excellence. This milestone page celebrates a decade of impact and ambition. 
         </p>
         
         <div className="timeline">

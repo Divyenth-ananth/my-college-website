@@ -26,8 +26,8 @@ const Home = () => {
       <div className="highlights-section">
   {[ 
     { id: 1, title: 'Flora & Fauna', description: 'Discover 150+ native species thriving in our ecosystem' },
-    { id: 2, title: 'Mountain Views', description: 'Burns sometimes but ok' },
-    { id: 3, title: 'Water Tank', description: 'Can Watch sunset and also become the sunset' }
+    { id: 2, title: 'Mountain Views', description: 'Pretty mountain views visibly from anywhere on campus.' },
+    { id: 3, title: 'Water Tank', description: 'An unpopular go to spot for hiking.' }
   ].map((item) => (
     <motion.div 
       key={item.id}
