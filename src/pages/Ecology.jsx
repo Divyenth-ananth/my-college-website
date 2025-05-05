@@ -26,10 +26,10 @@ const Ecology = () => {
   const faunaData = taxonomy.filter(item => item.kingdom === 'Animalia');
   const floraData = taxonomy.filter(item => item.kingdom === 'Plantae');
 
-  const baseSpeciesList = activeCategory === 'fauna' 
-    ? faunaData[0]?.children 
-    : activeCategory === 'flora' 
+  const baseSpeciesList = activeCategory === 'flora' 
     ? floraData[0]?.children 
+    : activeCategory === 'fauna' 
+    ? faunaData[0]?.children 
     : [];
 
   // Get unique filter options

@@ -313,39 +313,139 @@ scene.onBeforeRenderObservable.add(() => {
 // Quiz System
 const questionSets = [
     [
-        { question: "What color is the sky on a clear day?", options: ["Blue", "Green"], correctIndex: 0 },
-        { question: "Which animal barks?", options: ["Cat", "Dog"], correctIndex: 1 },
-        { question: "What is 2 + 2?", options: ["3", "4"], correctIndex: 1 },
-        { question: "Which fruit is yellow?", options: ["Banana", "Apple"], correctIndex: 0 },
-        { question: "Sun rises in the?", options: ["East", "West"], correctIndex: 0 },
+        { 
+            question: "Which gas is primarily responsible for the greenhouse effect?", 
+            options: ["Oxygen", "Carbon dioxide"], 
+            correctIndex: 1 
+        },
+        { 
+            question: "Which of the following is a renewable source of energy?", 
+            options: ["Solar power", "Coal"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "What is the primary cause of acid rain?", 
+            options: ["Sulfur dioxide emissions", "Carbon monoxide"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Smog is a combination of smoke and:", 
+            options: ["Fog", "Dust"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Which gas released from air conditioners damages the ozone layer?", 
+            options: ["CFCs", "Oxygen"], 
+            correctIndex: 0 
+        },
     ],
     [
-        { question: "Which one is a web browser?", options: ["Chrome", "Excel"], correctIndex: 0 },
-        { question: "How many legs does a spider have?", options: ["6", "8"], correctIndex: 1 },
-        { question: "Which one is a vegetable?", options: ["Carrot", "Strawberry"], correctIndex: 0 },
-        { question: "Which day comes after Friday?", options: ["Saturday", "Thursday"], correctIndex: 0 },
-        { question: "What is H2O?", options: ["Water", "Salt"], correctIndex: 0 },
+        { 
+            question: "Bioaccumulation refers to:", 
+            options: ["Accumulation of toxins in organisms", "Increase in oxygen levels in water"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Which of the following is a biodegradable item?", 
+            options: ["Plastic bag", "Banana peel"], 
+            correctIndex: 1 
+        },
+        { 
+            question: "Which is a more eco-friendly mode of transport?", 
+            options: ["Bicycle", "Car"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Which type of bag is more environmentally friendly?", 
+            options: ["Cloth bag", "Plastic bag"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Which gas causes the sharp smell near garbage dumps?", 
+            options: ["Methane", "Helium"], 
+            correctIndex: 0 
+        },
     ],
     [
-        { question: "What is the capital of Japan?", options: ["Tokyo", "Seoul"], correctIndex: 0 },
-        { question: "Which gas do plants breathe in?", options: ["Oxygen", "Carbon Dioxide"], correctIndex: 1 },
-        { question: "Which shape has 3 sides?", options: ["Triangle", "Square"], correctIndex: 0 },
-        { question: "What sound does a cow make?", options: ["Moo", "Meow"], correctIndex: 0 },
-        { question: "How many hours in a day?", options: ["24", "12"], correctIndex: 0 },
+        { 
+            question: "Which action helps reduce air pollution?", 
+            options: ["Carpooling", "Driving alone daily"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Which of these is an effect of global warming?", 
+            options: ["Melting glaciers", "Formation of coral reefs"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Ozone protects us from which type of radiation?", 
+            options: ["Ultraviolet rays", "Infrared rays"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Which process converts waste into reusable material?", 
+            options: ["Recycling", "Landfilling"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Which natural disaster is worsened by deforestation?", 
+            options: ["Floods", "Earthquakes"], 
+            correctIndex: 0 
+        },
     ],
     [
-        { question: "Which is a planet?", options: ["Earth", "Pluto (old)", "Mars"], correctIndex: 2 },
-        { question: "What do bees make?", options: ["Milk", "Honey"], correctIndex: 1 },
-        { question: "Which sport uses a bat?", options: ["Football", "Cricket"], correctIndex: 1 },
-        { question: "What is frozen water called?", options: ["Ice", "Steam"], correctIndex: 0 },
-        { question: "What do you wear on your feet?", options: ["Shoes", "Hat"], correctIndex: 0 },
+        { 
+            question: "Which of the following is a fossil fuel?", 
+            options: ["Petroleum", "Biogas"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Which of these human activities causes soil pollution?", 
+            options: ["Excessive use of pesticides", "Organic farming"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Which of these can reduce the urban heat island effect?", 
+            options: ["Green roofs", "Asphalt roads"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Which of the following increases your carbon footprint?", 
+            options: ["Driving a petrol car", "Walking to school"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Planting trees helps reduce carbon footprint by:", 
+            options: ["Absorbing CO₂", "Releasing CO₂"], 
+            correctIndex: 0 
+        },
     ],
     [
-        { question: "What’s 5 x 2?", options: ["10", "12"], correctIndex: 0 },
-        { question: "Which is a bird?", options: ["Penguin", "Snake"], correctIndex: 0 },
-        { question: "What do you write with?", options: ["Pen", "Fork"], correctIndex: 0 },
-        { question: "What is the opposite of cold?", options: ["Hot", "Wet"], correctIndex: 0 },
-        { question: "What color is grass?", options: ["Green", "Red"], correctIndex: 0 },
+        { 
+            question: "Which of these is an effect of climate change?", 
+            options: ["Rising sea levels", "Lower sunlight"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Which of the following is a natural carbon sink?", 
+            options: ["Forest", "Factory"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Which human activity leads directly to desertification?", 
+            options: ["Overgrazing", "Tree planting"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Which of these is an endangered species?", 
+            options: ["Bengal tiger", "House cat"], 
+            correctIndex: 0 
+        },
+        { 
+            question: "Which ecosystem is rich in biodiversity?", 
+            options: ["Rainforest", "Desert"], 
+            correctIndex: 0 
+        },
     ]
 ];
 
