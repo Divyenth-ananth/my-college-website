@@ -2,14 +2,20 @@ const canvas = document.getElementById('renderCanvas');
 const engine = new BABYLON.Engine(canvas, true);
 const scene = new BABYLON.Scene(engine);
 
+// Enable collisions globally
+scene.collisionsEnabled = true;
+
 // Camera (First-Person)
 const camera = new BABYLON.UniversalCamera("camera", new BABYLON.Vector3(5, 10, 5), scene);
 camera.attachControl(canvas, true);
 camera.inertia = 0;
 camera.angularSensibility = 1000;
+camera.checkCollisions = true;
+camera.ellipsoid = new BABYLON.Vector3(1, 2, 1); // Define collision ellipsoid (width, height, depth)
+camera.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0); // Offset to align with camera's "head"
 
+// Display camera position
 let positionDisplay = document.getElementById("positionDisplay");
-
 scene.onBeforeRenderObservable.add(() => {
     if (scene.activeCamera) {
         const pos = scene.activeCamera.position;
@@ -20,19 +26,14 @@ scene.onBeforeRenderObservable.add(() => {
     }
 });
 
-
 // Pointer Lock
 canvas.addEventListener('click', () => canvas.requestPointerLock());
-
 
 // Lighting
 const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
 
-//minimap
-// Create advanced texture for the GUI
+// Minimap
 const minimapUI = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-
-// Container for minimap
 const minimapContainer = new BABYLON.GUI.Rectangle("minimapContainer");
 minimapContainer.width = "200px";
 minimapContainer.height = "200px";
@@ -45,8 +46,7 @@ minimapContainer.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTT
 minimapContainer.left = "10px";
 minimapContainer.top = "-10px";
 minimapUI.addControl(minimapContainer);
-// Dot representing the player
-const playerDot = new BABYLON.GUI.Ellipse();
+const playerDot = new BABYLON.GUI.Ellipse("playerDot");
 playerDot.width = "10px";
 playerDot.height = "10px";
 playerDot.color = "white";
@@ -54,63 +54,64 @@ playerDot.thickness = 2;
 playerDot.background = "blue";
 minimapContainer.addControl(playerDot);
 
+const triggerPoints = [
+    new BABYLON.Vector3(-467.9, 10, -343.92),
+    new BABYLON.Vector3(10, 10, 30),
+    new BABYLON.Vector3(100, 10, -80),
+    new BABYLON.Vector3(-200, 10, 150),
+    new BABYLON.Vector3(60, 10, 200)
+];
 
+// Quiz Markers on Minimap
+const quizMarkers = [];
+triggerPoints.forEach((point, index) => {
+    const marker = new BABYLON.GUI.Ellipse(`quizMarkerDot${index}`);
+    marker.width = "6px";
+    marker.height = "6px";
+    marker.addClass = "quizMarker red"; // Initial red state
+    // Map world coordinates to minimap
+    const minimapX = ((point.x + 1000) / 2000) * 200;
+    const minimapZ = ((point.z + 1000) / 2000) * 200;
+    const clampedX = Math.max(3, Math.min(197, minimapX)); // Account for 6x6px size
+    const clampedZ = Math.max(3, Math.min(197, minimapZ));
+    marker.left = clampedX - 100;
+    marker.top = -(clampedZ - 100); // Flip Z-axis
+    minimapContainer.addControl(marker);
+    quizMarkers.push(marker);
+});
 
+// Update player dot and quiz markers
+scene.onBeforeRenderObservable.add(() => {
+    if (scene.activeCamera) {
+        const pos = scene.activeCamera.position;
+        // Update player dot
+        const minimapX = ((pos.x + 1000) / 2000) * 200;
+        const minimapZ = ((pos.z + 1000) / 2000) * 200;
+        const clampedX = Math.max(5, Math.min(195, minimapX));
+        const clampedZ = Math.max(5, Math.min(195, minimapZ));
+        playerDot.left = clampedX - 100;
+        playerDot.top = -(clampedZ - 100);
+        // Update quiz marker colors
+        quizMarkers.forEach((marker, index) => {
+            marker.addClass = quizCompleted[index] ? "quizMarker green" : "quizMarker red";
+        });
+    }
+});
 
-
-// Infinite Ground
-// const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 1000, height: 1000 }, scene);
-// const groundMat = new BABYLON.StandardMaterial("groundMat", scene);
-// const groundTex = new BABYLON.Texture("assets/textures/grass.jpg", scene);
-// groundTex.uScale = 50;  // Repeat grass texture
-// groundTex.vScale = 50;
-// groundMat.diffuseTexture = groundTex;
-// ground.material = groundMat;
-
-let fenceHeight = 50;      // Adjust height of the fence
-let fenceThickness = 10;   // Thickness of the fence
-let fenceSize = 2000;      // Size of the square fence
-
-// Create fence material
-let fenceMaterial = new BABYLON.StandardMaterial("fenceMaterial", scene);
-fenceMaterial.diffuseColor = new BABYLON.Color3(0.6, 0.4, 0.2); // Brownish color
-
-// Function to create a fence segment
-function createFence(x, z, width, rotationY) {
-    let fence = BABYLON.MeshBuilder.CreateBox("fence", { 
-        width: width, 
-        height: fenceHeight, 
-        depth: fenceThickness 
-    }, scene);
-    fence.position = new BABYLON.Vector3(x, fenceHeight / 2, z); // Center at ground level
-    fence.rotation.y = rotationY; // Rotate if needed
-    fence.material = fenceMaterial;
-    return fence;
-}
-
-// Create four fence sides
-let fence1 = createFence(0, fenceSize / 2, fenceSize, 0);            // Top
-let fence2 = createFence(0, -fenceSize / 2, fenceSize, 0);           // Bottom
-let fence3 = createFence(fenceSize / 2, 0, fenceSize, Math.PI / 2);  // Right
-let fence4 = createFence(-fenceSize / 2, 0, fenceSize, Math.PI / 2); // Left
-
-
-
+// Ground
 const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 2000, height: 2000 }, scene);
+ground.checkCollisions = true; // Enable collisions for the ground
 const groundMat = new BABYLON.PBRMaterial("groundMat", scene);
-
-groundMat.albedoTexture = new BABYLON.Texture("assets/textures/color.jpg", scene);  // Color
-groundMat.bumpTexture = new BABYLON.Texture("assets/textures/Normal.jpg", scene);  // Normal Map
-groundMat.ambientTexture = new BABYLON.Texture("assets/textures/AO.jpg", scene);  // AO Map
-groundMat.metallicTexture = new BABYLON.Texture("assets/textures/Roughness.jpg", scene);  // Roughness Map
+groundMat.albedoTexture = new BABYLON.Texture("assets/textures/color.jpg", scene);
+groundMat.bumpTexture = new BABYLON.Texture("assets/textures/Normal.jpg", scene);
+groundMat.ambientTexture = new BABYLON.Texture("assets/textures/AO.jpg", scene);
+groundMat.metallicTexture = new BABYLON.Texture("assets/textures/Roughness.jpg", scene);
 groundMat.useRoughnessFromMetallicTextureAlpha = false;
 groundMat.useRoughnessFromMetallicTextureGreen = true;
-
-groundMat.displacementTexture = new BABYLON.Texture("assets/textures/Displacement.jpg", scene);  // Height Map
+groundMat.displacementTexture = new BABYLON.Texture("assets/textures/Displacement.jpg", scene);
 groundMat.useParallax = true;
 groundMat.useParallaxOcclusion = true;
-groundMat.parallaxScaleBias = 0.1;  // Adjust for subtle height
-
+groundMat.parallaxScaleBias = 0.1;
 groundMat.albedoTexture.uScale = 100;
 groundMat.albedoTexture.vScale = 100;
 groundMat.bumpTexture.uScale = 100;
@@ -121,104 +122,49 @@ groundMat.metallicTexture.uScale = 100;
 groundMat.metallicTexture.vScale = 100;
 groundMat.displacementTexture.uScale = 100;
 groundMat.displacementTexture.vScale = 100;
-
 ground.material = groundMat;
 
+// Fences
+let fenceHeight = 50;
+let fenceThickness = 10;
+let fenceSize = 2000;
+let fenceMaterial = new BABYLON.StandardMaterial("fenceMaterial", scene);
+fenceMaterial.diffuseColor = new BABYLON.Color3(0.6, 0.4, 0.2);
 
+function createFence(x, z, width, rotationY) {
+    let fence = BABYLON.MeshBuilder.CreateBox("fence", { 
+        width: width, 
+        height: fenceHeight, 
+        depth: fenceThickness 
+    }, scene);
+    fence.position = new BABYLON.Vector3(x, fenceHeight / 2, z);
+    fence.rotation.y = rotationY;
+    fence.material = fenceMaterial;
+    fence.checkCollisions = true; // Enable collisions for the fence
+    return fence;
+}
+
+let fence1 = createFence(0, fenceSize / 2, fenceSize, 0);
+let fence2 = createFence(0, -fenceSize / 2, fenceSize, 0);
+let fence3 = createFence(fenceSize / 2, 0, fenceSize, Math.PI / 2);
+let fence4 = createFence(-fenceSize / 2, 0, fenceSize, Math.PI / 2);
+
+// Environment (Skybox, Trees, Buildings)
 const environmentTexture = new BABYLON.HDRCubeTexture("assets/environment/sky1.hdr", scene, 512);
 scene.environmentTexture = environmentTexture;
-
-// Skybox (optional, depends if you want a physical skybox mesh)
 const skybox = scene.createDefaultSkybox(environmentTexture, true, 1000);
 
-
-
-// Scaling function
 function scaleMesh(mesh, factor) {
     mesh.scaling = new BABYLON.Vector3(factor, factor, factor);
 }
 
-// NPC Data
-const npcs = [
-    {
-        name: "Guide Bot",
-        position: new BABYLON.Vector3(3, 0, 3),
-        model: "npc1.glb",
-        dialogue: [
-            "Welcome to our world!",
-            "Could you please talk to the Explorer nearby?"
-        ],
-        quest: { description: "Find and talk to Explorer", completed: false, target: "Explorer" }
-    },
-    {
-        name: "Explorer",
-        position: new BABYLON.Vector3(-5, 0, 6),
-        model: "npc1.glb",
-        dialogue: ["Thanks for finding me!", "Have you seen the tree nearby?"],
-        quest: null
-    }
-];
-
-// Current Quests
-let currentQuests = [];
-function updateQuestLog() {
-    const log = document.getElementById('questLog');
-    log.innerHTML = currentQuests.map(q => `${q.description} - ${q.completed ? '✅' : '❌'}`).join('<br>');
-}
-
-// Load NPCs
-// npcs.forEach(npc => {
-//     BABYLON.SceneLoader.ImportMesh("", "assets/characters/", npc.model, scene, (meshes) => {
-//         npc.mesh = meshes[0];
-//         npc.mesh.position = npc.position;
-//         scaleMesh(npc.mesh,4);
-
-//         scene.onBeforeRenderObservable.add(() => {
-//             if (camera.position.subtract(npc.mesh.position).length() < 3) {
-//                 showDialogue(npc);
-//             }
-//         });
-//     });
-// });
-
-// Show Dialogue
-function showDialogue(npc) {
-    const box = document.getElementById('dialogueBox');
-    box.innerText = npc.dialogue.join("\n");
-    box.style.display = 'block';
-
-    window.addEventListener('keydown', (e) => {
-        if (e.key.toLowerCase() === 'y') {
-            startQuest(npc);
-            box.style.display = 'none';
-        } else if (e.key.toLowerCase() === 'n') {
-            box.style.display = 'none';
-        }
-    }, {once: true});
-}
-
-// Start Quest
-function startQuest(npc) {
-    if (npc.quest && !npc.quest.completed) {
-        currentQuests.push({...npc.quest});
-        updateQuestLog();
-    }
-}
-
-// Check Quest Completion
-function checkQuestCompletion(npcName) {
-    currentQuests.forEach(q => {
-        if (q.target === npcName) {
-            q.completed = true;
-        }
-    });
-    updateQuestLog();
-}
-
-// Trees and Buildings
 function loadEnvironment() {
     BABYLON.SceneLoader.ImportMesh("", "assets/environment/", "tree.glb", scene, (meshes) => {
-        const treeMesh = meshes[0];  // Get the main tree mesh
+        const treeMesh = meshes[0];
+        meshes.forEach(mesh => {
+            mesh.checkCollisions = true;
+            mesh.refreshBoundingInfo(); // Ensure accurate collision boundaries
+        });
         treeMesh.position = new BABYLON.Vector3(0, 0, 0);
         treeMesh.scaling = new BABYLON.Vector3(0.7, 0.7, 0.7);
 
@@ -226,244 +172,116 @@ function loadEnvironment() {
         function isOverlappingBlocked(pos, treeSize, blockedMeshes) {
             const treeMin = pos.subtract(treeSize.scale(0.5));
             const treeMax = pos.add(treeSize.scale(0.5));
-        
             for (const mesh of blockedMeshes) {
                 const bbox = mesh.getBoundingInfo().boundingBox;
                 const min = bbox.minimumWorld;
                 const max = bbox.maximumWorld;
-        
                 const isIntersecting =
                     treeMin.x <= max.x && treeMax.x >= min.x &&
                     treeMin.y <= max.y && treeMax.y >= min.y &&
                     treeMin.z <= max.z && treeMax.z >= min.z;
-        
                 if (isIntersecting) return true;
             }
-        
             return false;
         }
-        const treeCount = 80;
+        const treeCount = 100;
         let placed = 0;
         let tries = 0;
         const maxTries = 200;
-        const treeSize = new BABYLON.Vector3(5, 10, 5); // rough size of the tree
-        
+        const treeSize = new BABYLON.Vector3(5, 10, 5);
         while (placed < treeCount && tries < maxTries) {
             tries++;
-        
             const pos = new BABYLON.Vector3(
                 Math.random() * 1000 - 500,
                 0,
                 Math.random() * 1000 - 500
             );
-        
             if (isOverlappingBlocked(pos, treeSize, blockedMeshes)) continue;
-        
             const tree = treeMesh.clone("treeClone" + placed);
             tree.position = pos;
+            tree.refreshBoundingInfo();
             placed++;
         }
-                
-    
     });
 
     BABYLON.SceneLoader.ImportMesh("", "assets/environment/", "LHC_final.glb", scene, (meshes) => {
-        var LHC = meshes[0];  // Reference to the loaded model
+        var LHC = meshes[0];
         meshes.forEach(mesh => {
             mesh.metadata = { isBuilding: true };
+            mesh.checkCollisions = true;
+            mesh.refreshBoundingInfo();
         });
-        LHC.position = new BABYLON.Vector3(-186,0,-2294);
-        LHC.scaling = new BABYLON.Vector3(0.7,0.7,0.7);
-        // let woodTexture = new BABYLON.StandardMaterial("woodMaterial", scene);
-        // woodTexture.diffuseTexture = new BABYLON.Texture("assets/textures/eco_texture.jpg", scene); 
-
-        // // Apply the texture to all child meshes of the cottage
-        // meshes.forEach(mesh => {
-        // mesh.material = woodTexture;
-        // });
-
-
-        // let woodTexture = new BABYLON.StandardMaterial("woodMaterial", scene);
-        // woodTexture.diffuseTexture = new BABYLON.Texture("assets/textures/eco_texture.jpg", scene); 
-
-        // // Apply the texture to all child meshes of the cottage
-        // meshes.forEach(mesh => {
-        // mesh.material = woodTexture;
-        // });
-
-       
+        LHC.position = new BABYLON.Vector3(-163.7, 5, -2144);
+        LHC.scaling = new BABYLON.Vector3(0.7, 0.7, 0.7);
     });
-    
-    // BABYLON.SceneLoader.ImportMesh("", "assets/environment/", "Road.glb", scene, (meshes) => {
-    //     const roadRoot = meshes[0]; // This is a transform node
-    //     roadRoot.position = new BABYLON.Vector3(0, 0.01, 0); // Slightly above ground
-    //     roadRoot.scaling = new BABYLON.Vector3(0.05, 0.05, 0.05); // Adjusted to fit scene
-    
-    //     // Ensure all child meshes are visible and correctly set
-    //     // meshes.forEach(mesh => {
-    //     //     mesh.isVisible = true;
-    //     //     mesh.metadata = { isRoad: true }; // Optional tagging
-    //     //     if (mesh.material) {
-    //     //         mesh.material.alpha = 1;
-    //     //         mesh.material.backFaceCulling = false;
-    //     //     }
-    //     // });
-    
-    // });
 
-    // MATERIAL FOR ROADS
-// MATERIAL FOR ROADS
-const roadMaterial = new BABYLON.StandardMaterial("roadMat", scene);
-roadMaterial.diffuseColor = new BABYLON.Color3(0.05, 0.05, 0.05); // asphalt look
-roadMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
-
-// STRAIGHT ROAD SEGMENTS (larger size)
-function createStraightRoad(start, length, direction = "z") {
-    const width = 8;
-    const road = BABYLON.MeshBuilder.CreateGround("road", {
-        width: width,
-        height: length,
-    }, scene);
-
-    road.material = roadMaterial;
-
-    if (direction === "z") {
-        road.position = new BABYLON.Vector3(start.x, 0.01, start.z + length / 2);
-    } else if (direction === "x") {
-        road.rotation.y = Math.PI / 2;
-        road.position = new BABYLON.Vector3(start.x + length / 2, 0.01, start.z);
-    }
-
-    return road;
-}
-
-// CURVED ROAD SEGMENTS using extrusion
-function createCurvedRoad(center, radius = 15, thickness = 8, startAngle = 0, endAngle = Math.PI / 2) {
-    const points = [];
-
-    const segments = 30; // More = smoother curve
-    for (let i = 0; i <= segments; i++) {
-        const angle = startAngle + (endAngle - startAngle) * (i / segments);
-        const outerX = (radius + thickness / 2) * Math.cos(angle);
-        const outerZ = (radius + thickness / 2) * Math.sin(angle);
-        points.push(new BABYLON.Vector3(outerX, 0, outerZ));
-    }
-    for (let i = segments; i >= 0; i--) {
-        const angle = startAngle + (endAngle - startAngle) * (i / segments);
-        const innerX = (radius - thickness / 2) * Math.cos(angle);
-        const innerZ = (radius - thickness / 2) * Math.sin(angle);
-        points.push(new BABYLON.Vector3(innerX, 0, innerZ));
-    }
-
-    const shape = BABYLON.MeshBuilder.CreateRibbon("curveRoad", {
-        pathArray: [points],
-        closeArray: true,
-        closePath: true,
-    }, scene);
-
-    shape.material = roadMaterial;
-    shape.position = new BABYLON.Vector3(center.x, 0.01, center.z);
-    return shape;
-}
-
-// === COMPOSE THE ROAD NETWORK ===
-// Vertical road up
-const road1 = createStraightRoad(new BABYLON.Vector3(0, 0, 0), 60, "z");
-
-// Curve (L-shape turn)
-const curve1 = createCurvedRoad(new BABYLON.Vector3(0, 0, 60), 15, 8, 0, Math.PI / 2);
-
-// Horizontal road right
-const road2 = createStraightRoad(new BABYLON.Vector3(0, 0, 60), 80, "x");
-
-// Downward road from the end
-const road3 = createStraightRoad(new BABYLON.Vector3(80, 0, 60), 40, "z");
-
-    
+    BABYLON.SceneLoader.ImportMesh("", "assets/environment/", "Road.glb", scene, (meshes) => {
+        const roadRoot = meshes[0];
+        roadRoot.position = new BABYLON.Vector3(0, 0.01, 0);
+        roadRoot.scaling = new BABYLON.Vector3(0.05, 0.05, 0.05);
+        meshes.forEach(mesh => {
+            mesh.checkCollisions = true;
+            mesh.refreshBoundingInfo();
+        });
+    });
 
     BABYLON.SceneLoader.ImportMesh("", "assets/environment/", "arcade_machine.glb", scene, (meshes) => {
-        const original = meshes[0]; // Main arcade model
+        const original = meshes[0];
         meshes.forEach(mesh => {
             mesh.metadata = { isBuilding: true };
+            mesh.checkCollisions = true;
+            mesh.refreshBoundingInfo();
         });
-        original.position = new BABYLON.Vector3(-439.31,0,33);
+        original.position = new BABYLON.Vector3(-430.7, 0, -183.1);
         original.name = "arcade_original";
-    
-        // Clone 1
         const clone1 = original.clone("arcade1");
-        clone1.position = new BABYLON.Vector3(-439.31,0,74);
-    
-        // Clone 2
+        clone1.position = new BABYLON.Vector3(67.77, 0, -372.34);
         const clone2 = original.clone("arcade2");
-        clone2.position = new BABYLON.Vector3(-439.31,0,107);
+        clone2.position = new BABYLON.Vector3(500.97, 0, -306.65);
     });
-    
-    
 
     BABYLON.SceneLoader.ImportMesh("", "assets/environment/", "AB1_final.glb", scene, (meshes) => {
-        var AB1 = meshes[0];  // Reference to the loaded model
+        var AB1 = meshes[0];
         meshes.forEach(mesh => {
             mesh.metadata = { isBuilding: true };
+            mesh.checkCollisions = true;
+            mesh.refreshBoundingInfo();
         });
-        AB1.position = new BABYLON.Vector3(1001,0,-2260);
-        AB1.scaling = new BABYLON.Vector3(0.7,0.7,0.7);
+        AB1.position = new BABYLON.Vector3(1101, 0, -1865);
+        AB1.scaling = new BABYLON.Vector3(0.7, 0.7, 0.7);
         AB1.rotation.y = Math.PI;
-        // let woodTexture = new BABYLON.StandardMaterial("woodMaterial", scene);
-        // woodTexture.diffuseTexture = new BABYLON.Texture("assets/textures/eco_texture.jpg", scene); 
-
-        // // Apply the texture to all child meshes of the cottage
-        // meshes.forEach(mesh => {
-        // mesh.material = woodTexture;
-        // });
     });
 
     BABYLON.SceneLoader.ImportMesh("", "assets/environment/", "adminblocklol.glb", scene, (meshes) => {
-        var admin = meshes[0];  // Reference to the loaded model
+        var admin = meshes[0];
         meshes.forEach(mesh => {
             mesh.metadata = { isBuilding: true };
+            mesh.checkCollisions = true;
+            mesh.refreshBoundingInfo();
         });
-        admin.position = new BABYLON.Vector3(65.97,10,-654.03);
-        admin.scaling = new BABYLON.Vector3(0.7,0.7,0.7);
+        admin.position = new BABYLON.Vector3(57.21, 10, -518.7);
+        admin.scaling = new BABYLON.Vector3(0.7, 0.7, 0.7);
         admin.rotation.y = Math.PI;
-        // let woodTexture = new BABYLON.StandardMaterial("woodMaterial", scene);
-        // woodTexture.diffuseTexture = new BABYLON.Texture("assets/textures/eco_texture.jpg", scene); 
-
-        // // Apply the texture to all child meshes of the cottage
-        // meshes.forEach(mesh => {
-        // mesh.material = woodTexture;
-        // });
     });
 
-
-    BABYLON.SceneLoader.ImportMesh("", "assets/environment/", "Cottage.glb", scene, function (meshes) {
-        let cottage = meshes[0]; // The main mesh of the cottage
+    BABYLON.SceneLoader.ImportMesh("", "assets/environment/", "Cottage.glb", scene, (meshes) => {
+        let cottage = meshes[0];
         meshes.forEach(mesh => {
             mesh.metadata = { isBuilding: true };
+            mesh.checkCollisions = true;
+            mesh.refreshBoundingInfo();
         });
-    
-        // Position the cottage in the world
-        cottage.position = new BABYLON.Vector3(-208, 0, 98);  // Adjust coordinates as needed
-    
-        // Scale the model if it's too big or small
-        cottage.scaling = new BABYLON.Vector3(0.05, 0.05, 0.05);  // Adjust scale if needed
-    
-        // Rotate it to face a direction if required
-        cottage.rotation.y = BABYLON.Tools.ToRadians(180);  // Rotate by 180 degrees
-
+        cottage.position = new BABYLON.Vector3(-208, 0, 98);
+        cottage.scaling = new BABYLON.Vector3(0.05, 0.05, 0.05);
+        cottage.rotation.y = BABYLON.Tools.ToRadians(180);
         let woodTexture = new BABYLON.StandardMaterial("woodMaterial", scene);
-        woodTexture.diffuseTexture = new BABYLON.Texture("assets/textures/eco_texture.jpg", scene); 
-
-        // Apply the texture to all child meshes of the cottage
+        woodTexture.diffuseTexture = new BABYLON.Texture("assets/textures/eco_texture.jpg", scene);
         meshes.forEach(mesh => {
-        mesh.material = woodTexture;
+            mesh.material = woodTexture;
         });
-    
-        console.log("Cottage loaded successfully!");
     });
-    
 }
 loadEnvironment();
-
 
 // Movement - Relative to Camera Direction (FPS-like)
 let inputMap = {};
@@ -492,10 +310,8 @@ scene.onBeforeRenderObservable.add(() => {
     camera.position.addInPlace(movement);
 });
 
-
-
+// Quiz System
 const questionSets = [
-    // Quiz sets (same as you provided)
     [
         { question: "What color is the sky on a clear day?", options: ["Blue", "Green"], correctIndex: 0 },
         { question: "Which animal barks?", options: ["Cat", "Dog"], correctIndex: 1 },
@@ -533,12 +349,10 @@ const questionSets = [
     ]
 ];
 
-// Global variables
 let currentQuestionIndex = 0;
 let activeQuestions = [];
 let currentQuizSetIndex = 0;
 let score = 0;
-
 
 function showQuizPopup(setIndex) {
     currentQuizSetIndex = setIndex;
@@ -548,9 +362,6 @@ function showQuizPopup(setIndex) {
     document.getElementById("closeQuiz").style.display = "none";
     loadQuestion();
     document.getElementById("quizPopup").style.display = "block";
-
-    // Optional: disable player movement if you have controls
-    // controls.enabled = false;
 }
 
 function loadQuestion() {
@@ -558,18 +369,9 @@ function loadQuestion() {
     document.getElementById("quizQuestion").textContent = q.question;
     const optionsDiv = document.getElementById("quizOptions");
     optionsDiv.innerHTML = "";
-
     q.options.forEach((option, index) => {
         const btn = document.createElement("button");
         btn.textContent = option;
-        btn.style.margin = "5px";
-        btn.style.padding = "8px 16px";
-        btn.style.borderRadius = "6px";
-        btn.style.border = "1px solid #444";
-        btn.style.background = "#eee";
-        btn.style.cursor = "pointer";
-
-        // Correct click binding
         btn.addEventListener("click", () => handleAnswer(index === q.correctIndex));
         optionsDiv.appendChild(btn);
     });
@@ -578,12 +380,10 @@ function loadQuestion() {
 function handleAnswer(isCorrect) {
     const feedbackDiv = document.getElementById("quizFeedback");
     feedbackDiv.textContent = isCorrect ? "✅ Correct!" : "❌ Wrong!";
-
     if (isCorrect) {
         score += 10;
         document.getElementById("scoreValue").textContent = score;
     }
-
     setTimeout(() => {
         feedbackDiv.textContent = "";
         currentQuestionIndex++;
@@ -593,8 +393,6 @@ function handleAnswer(isCorrect) {
             document.getElementById("quizQuestion").textContent = "🎉 Quiz Completed!";
             document.getElementById("quizOptions").innerHTML = "";
             document.getElementById("closeQuiz").style.display = "block";
-
-            // Mark quiz as completed and change marker color
             quizCompleted[currentQuizSetIndex] = true;
             const markerMesh = scene.getMeshByName(`quizMarker${currentQuizSetIndex}`);
             if (markerMesh) {
@@ -605,100 +403,84 @@ function handleAnswer(isCorrect) {
     }, 1000);
 }
 
-
 function hideQuizPopup() {
     document.getElementById("quizPopup").style.display = "none";
     document.getElementById("quizFeedback").textContent = "";
 }
-
-const triggerPoints = [
-    new BABYLON.Vector3(-467.9, 10, -343.92),
-    new BABYLON.Vector3(10, 10, 30),
-    new BABYLON.Vector3(100, 10, -80),
-    new BABYLON.Vector3(-200, 10, 150),
-    new BABYLON.Vector3(60, 10, 200)
-];
 
 
 
 let quizShownFlags = Array(triggerPoints.length).fill(false);
 let quizCompleted = Array(triggerPoints.length).fill(false);
 
-
 triggerPoints.forEach((point, index) => {
     let marker = BABYLON.MeshBuilder.CreateSphere(`quizMarker${index}`, { diameter: 2 }, scene);
     marker.position = point;
-
     let mat = new BABYLON.StandardMaterial(`quizMat${index}`, scene);
     mat.diffuseColor = new BABYLON.Color3(1, 0, 0);
     mat.emissiveColor = new BABYLON.Color3(1, 0, 0);
     marker.material = mat;
-
-    scene.onBeforeRenderObservable.add(() => {
-        if (!scene.activeCamera) return;
-    
-        const cameraPos = scene.activeCamera.position;
-    
-        triggerPoints.forEach((point, index) => {
-            const distance = BABYLON.Vector3.Distance(cameraPos, point);
-    
-            // Only trigger quiz once if not completed
-            if (distance < 10) {
-                if (!quizShownFlags[index] && !quizCompleted[index]) {
-                    quizShownFlags[index] = true;
-                    showQuizPopup(index);
-                }
-            } else {
-                if (quizShownFlags[index]) {
-                    hideQuizPopup();
-                    quizShownFlags[index] = false;
-                }
-            }
-        });
-    });
-    
 });
 
+scene.onBeforeRenderObservable.add(() => {
+    if (!scene.activeCamera) return;
+    const cameraPos = scene.activeCamera.position;
+    triggerPoints.forEach((point, index) => {
+        const distance = BABYLON.Vector3.Distance(cameraPos, point);
+        if (distance < 10) {
+            if (!quizShownFlags[index] && !quizCompleted[index]) {
+                quizShownFlags[index] = true;
+                showQuizPopup(index);
+            }
+        } else {
+            if (quizShownFlags[index]) {
+                hideQuizPopup();
+                quizShownFlags[index] = false;
+            }
+        }
+    });
+});
 
-
-
-// Let's assume your camera is named 'camera'
+// Game Spheres
 const spheres = [];
-
-// Create spheres
 const sphere1 = BABYLON.MeshBuilder.CreateSphere("sphere1", {diameter: 1}, scene);
-sphere1.position = new BABYLON.Vector3(-442.31,5,33);
+sphere1.position = new BABYLON.Vector3(-433.7, 5, -183.1);
 sphere1.metadata = { gameUrl: "/games/game1.html", description: "Ecoverse" };
 spheres.push(sphere1);
 
 const sphere2 = BABYLON.MeshBuilder.CreateSphere("sphere2", {diameter: 1}, scene);
-sphere2.position = new BABYLON.Vector3(-442.31,5,74);
+sphere2.position = new BABYLON.Vector3(64.77, 5, -372.34);
 sphere2.metadata = { gameUrl: "/games/game2.html", description: "Space Adventure" };
 spheres.push(sphere2);
 
-// Function to check proximity
+const sphere3 = BABYLON.MeshBuilder.CreateSphere("sphere3", {diameter: 1}, scene);
+sphere3.position = new BABYLON.Vector3(497.97, 5, -306.65);
+sphere3.metadata = { gameUrl: "/games/game3.html", description: "night" };
+spheres.push(sphere3);
+
 function checkProximity() {
+    let isNearAnySphere = false;
     spheres.forEach(sphere => {
         const distance = BABYLON.Vector3.Distance(camera.position, sphere.position);
-        if (distance < 10) { // Increase distance threshold to 5
-            if (!document.getElementById('game-popup')) { 
+        if (distance < 10) {
+            isNearAnySphere = true;
+            if (!document.getElementById('game-popup')) {
                 showPopup(sphere.metadata.description, sphere.metadata.gameUrl);
             }
         }
     });
+    if (!isNearAnySphere) {
+        const existingPopup = document.getElementById('game-popup');
+        if (existingPopup) {
+            existingPopup.remove();
+        }
+    }
 }
 
-// Function to show popup
 function showPopup(description, gameUrl) {
     const popup = document.createElement('div');
     popup.id = 'game-popup';
-    popup.style.position = 'absolute';
-    popup.style.top = '30%';
-    popup.style.left = '35%';
-    popup.style.padding = '20px';
-    popup.style.backgroundColor = 'white';
-    popup.style.border = '2px solid black';
-    popup.style.zIndex = 999;
+    popup.className = 'show';
     popup.innerHTML = `
         <p><strong>Wanna play a game?</strong></p>
         <p>${description}</p>
@@ -706,7 +488,6 @@ function showPopup(description, gameUrl) {
         <button id="no-btn">No</button>
     `;
     document.body.appendChild(popup);
-
     document.getElementById('yes-btn').onclick = () => {
         window.location.href = gameUrl;
     };
@@ -715,12 +496,7 @@ function showPopup(description, gameUrl) {
     };
 }
 
-// Hook into the render loop properly
 scene.onBeforeRenderObservable.add(checkProximity);
-
-  
-
-
 
 // Render Loop
 engine.runRenderLoop(() => scene.render());

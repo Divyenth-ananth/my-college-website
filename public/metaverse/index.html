@@ -16,7 +16,6 @@
       Score: <span id="scoreValue">0</span>
     </div>
 
-    
     <div id="dialogueBox" style="display: none; position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 15px; border-radius: 5px;">
     </div>
 
@@ -37,34 +36,15 @@
     Z: 0
 </div>
 
-
-   
-<div id="quizPopup" style="
-    display: none;
-    position: absolute;
-    top: 30%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    padding: 20px 30px;
-    border: 2px solid #333;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.4);
-    z-index: 999;
-    font-family: 'Segoe UI', sans-serif;
-    text-align: center;
-    width: 300px;
-">
-    <h3 id="quizQuestion">Question</h3>
-    <div id="quizOptions" style="margin: 15px 0;"></div>
-    <p id="quizFeedback" style="color: green; font-weight: bold;"></p>
-    <button onclick="hideQuizPopup()" id="closeQuiz" style="display:none; margin-top: 10px;">Close</button>
-</div>
-
-
+    <div id="quizPopup">
+        <h3 id="quizQuestion">Question</h3>
+        <div id="quizOptions"></div>
+        <p id="quizFeedback"></p>
+        <button onclick="hideQuizPopup()" id="closeQuiz">Close</button>
+    </div>
 
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
-    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>  <!-- This is the important part -->
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
     <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
     <script src="main.js"></script>
 </body>

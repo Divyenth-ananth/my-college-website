@@ -37,3 +37,191 @@ html, body {
     border: 1px solid black;
     z-index: 10;
 }
+
+#quizPopup {
+    display: none;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    background: linear-gradient(135deg, #4a90e2, #50c9c3);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    text-align: center;
+    width: 320px;
+    color: #fff;
+    animation: popupFadeIn 0.3s ease-out;
+}
+
+#quizPopup.show {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+#quizQuestion {
+    font-size: 1.4em;
+    margin: 0 0 20px;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+#quizOptions {
+    margin: 15px 0;
+}
+
+#quizOptions button {
+    display: inline-block;
+    margin: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #333;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+#quizOptions button:hover {
+    background: #e0e0e0;
+    transform: scale(1.05);
+}
+
+#quizFeedback {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 10px 0;
+    min-height: 1.5em;
+    transition: opacity 0.3s;
+}
+
+#closeQuiz {
+    display: none;
+    margin-top: 15px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #ff6b6b;
+    color: #fff;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+#closeQuiz:hover {
+    background: #ff4d4d;
+    transform: scale(1.05);
+}
+
+#game-popup {
+    display: none;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    background: linear-gradient(135deg, #ff7e5f, #feb47b);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    text-align: center;
+    width: 300px;
+    color: #fff;
+    animation: popupFadeIn 0.3s ease-out;
+}
+
+#game-popup.show {
+    display: block;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+#game-popup p {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+#game-popup p:first-child {
+    font-weight: 600;
+    font-size: 1.4em;
+}
+
+#yes-btn {
+    margin: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #2ecc71;
+    color: #fff;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+#yes-btn:hover {
+    background: #27ae60;
+    transform: scale(1.05);
+}
+
+#no-btn {
+    margin: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #ff6b6b;
+    color: #fff;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+#no-btn:hover {
+    background: #ff4d4d;
+    transform: scale(1.05);
+}
+
+#minimapContainer {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #ffffff;
+}
+
+#playerDot {
+    background: #00f7ff;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 8px #00f7ff;
+    transition: left 0.1s, top 0.1s;
+}
+
+.quizMarker {
+    width: 6px;
+    height: 6px;
+    border: 1px solid #ffffff;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+
+.quizMarker.red {
+    background: #ff0000;
+}
+
+.quizMarker.green {
+    background: #00ff00;
+}
+
+@keyframes popupFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.85);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+}
